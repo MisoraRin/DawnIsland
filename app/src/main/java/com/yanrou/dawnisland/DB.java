@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author suche
+ * 用于将fid与板块名称对应
+ * 需要先初始化后再执行其他任务
+ */
 public class DB {
     static public Map<Integer, String> db = new HashMap<>();
 

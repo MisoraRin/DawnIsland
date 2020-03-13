@@ -34,16 +34,10 @@ allprojects {
         google()
         mavenCentral()
         jcenter()
-
         maven { url 'https://jitpack.io' }
-
-
-
         maven { url 'http://maven.google.com' }
         maven { url 'http://jcenter.bintray.com'}
-
         maven { url 'https://dl.bintray.com/richzjc/maven' }
-        
     }
 }
 

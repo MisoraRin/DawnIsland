@@ -45,6 +45,10 @@ public class ReplysBean extends LitePalSupport {
     @SerializedName("status")
     private String status;
 
+    public ReplysBean() {
+
+    }
+
     public ReplysBean(String id, String userid, int admin, String title, String email, String now, String content, String img, String ext, String name, int sage) {
         this.seriesId = id;
         this.userid = userid;
