@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ImageViewer">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/content_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
+        app:contentInsetStartWithNavigation="0dp"
+        app:subtitle=""
+        app:subtitleTextAppearance="@style/CollSubTitle"
+        app:subtitleTextColor="#D2FFFFFF"
+        app:title="大图模式"
+        app:titleTextColor="#FFFFFF">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/save_button"
+            android:text="Save"
+            android:textColor="#D2FFFFFF"
+            android:background="@color/colorPrimary"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_save_black_24dp"
+            />
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/photo_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/rabbit_black"/>
+
+</LinearLayout>
