@@ -476,8 +476,10 @@ class SeriesContentModel {
         if (state != READY) {
             return;
         }
+
         state = GET_NEXT_PAGE;
         if (!wholePage) {
+            //TODO 恶性bug注意：由于a岛的机制，可能会插一条广告进来，导致实际回复条数突然间多出一条，下一次没有广告即会导致参数错误+下标越界
             Log.d(TAG, "loadPage: 因为是最后一页并且不齐全，所以要从网络加载");
             getPageFromNet(backpage);
         } else {
