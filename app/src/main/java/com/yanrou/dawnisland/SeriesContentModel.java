@@ -58,7 +58,10 @@ class SeriesContentModel {
      */
     private boolean wholePage = true;
     private int lastPageCount;
-
+    /**
+     * 标记最后一页是否有广告
+     */
+    private boolean hasAd;
     /**
      * 控制翻页，如果有缓存就会从缓存中获取上次看到的位置,没有的话从第一页开始
      */
@@ -121,9 +124,10 @@ class SeriesContentModel {
 
                 /**
                  * 防止翻页翻过，这一句表示已经翻到底了
+                 * TODO 添加饼干后还可能什么都没有
                  * TODO 等待处理
                  */
-                if (seriesContentJson.getReplys().size() == 1 && seriesContentJson.getReplys().get(0).getSeriesId().equals("9999999")) {
+                if (seriesContentJson.getReplys().size() == 0 || (seriesContentJson.getReplys().size() == 1 && "9999999".equals(seriesContentJson.getReplys().get(0).getSeriesId()))) {
                     return;
                 }
                 /**
@@ -371,11 +375,37 @@ class SeriesContentModel {
             contentItem.titleAndName = nametitleBulider.toString();
             contentItems.add(contentItem);
         }
-
+        /*数据处理完成，下面将数据添加进去*/
+        //*********************************************************************
+        int adindex = 0;
+        if (page == 1) {
+            adindex = 1;
+        }
         if (state == GET_NEXT_PAGE) {
             if (wholePage) {
                 items.addAll(items.size() - 1, contentItems);
+                //只在第一次添加的时候判定是否有广告，因为后面都不会变了
+                hasAd = "9999999".equals(seriesContentJson.getReplys().get(adindex).getSeriesId());
             } else {
+                //这里就是加载最后一页不全的时候，要添加数据
+                //最后一页是否有广告
+
+                Log.d(TAG, "formatContent: 新获取的" + "9999999".equals(seriesContentJson.getReplys().get(adindex).getSeriesId()) + "已加载的" + hasAd);
+                if (hasAd) {
+                    //有广告
+                    if (!"9999999".equals(seriesContentJson.getReplys().get(adindex).getSeriesId())) {
+                        //新获取的页面没广告,加一条空数据在开头
+                        Log.d(TAG, "formatContent: 加了一条数据");
+                        contentItems.add(adindex, new ContentItem());
+                    }
+                } else {
+                    //没有广告
+                    if ("9999999".equals(seriesContentJson.getReplys().get(0).getSeriesId())) {
+                        //新获取的页面有广告，需要对齐数据
+                        Log.d(TAG, "formatContent: 删了一条数据");
+                        contentItems.remove(adindex);
+                    }
+                }
                 items.addAll(items.size() - 1, contentItems.subList(lastPageCount, contentItems.size()));
             }
             presenter.loadMoreSuccess();
@@ -401,28 +431,31 @@ class SeriesContentModel {
         seriesData.lastReplyCount = seriesContentJson.getReplyCount();
         seriesData.save();
         /**
-         * 已经搞定了所有的事了，就可以页数+1了
+         * 已经搞定了所有的事了，开始修改页数
          * 如果是frontpage就减一，backpage并且当前页面已经满了就加一
          */
-        Log.d(TAG, "formatContent: " + page);
+        Log.d(TAG, "formatContent: 页数" + page);
         if (page == backpage) {
             //这个if用来判断这一页是否完整，如果完整才能到下一页
-            Log.d(TAG, "formatContent: " + seriesContentJson.getReplys().size());
-            if (seriesContentJson.getReplys().size() == 20 || (seriesContentJson.getReplys().size() == 19 && !seriesContentJson.getReplys().get(0).getSeriesId().equals("9999999"))) {
+            Log.d(TAG, "formatContent: 这一页有几个回复" + seriesContentJson.getReplys().size());
+            if (seriesContentJson.getReplys().size() == 20 || (seriesContentJson.getReplys().size() == 19 && !"9999999".equals(seriesContentJson.getReplys().get(0).getSeriesId()))) {
                 Log.d(TAG, "formatContent: case1+1");
+                wholePage = true;
                 backpage++;
             } else if (page == 1 && (seriesContentJson.getReplys().size() == 21 || (seriesContentJson.getReplys().size() == 20 && !seriesContentJson.getReplys().get(0).getSeriesId().equals("9999999")))) {
                 Log.d(TAG, "formatContent: case2+1");
+                wholePage = true;
                 backpage++;
             } else {
                 //不完整需要做标记，下次刷新的时候特殊处理
-                Log.d(TAG, "formatContent: case3不加1");
+                Log.d(TAG, "formatContent: case3不加1 " + contentItems.size());
                 wholePage = false;
-                lastPageCount = seriesContentJson.getReplys().size();
+                lastPageCount = contentItems.size();
             }
         } else {
             frontpage--;
         }
+
         state = READY;
     }
 
@@ -461,7 +494,7 @@ class SeriesContentModel {
     private void loadPage(int page) {
         //若存在缓存则检测数组下标是否越界并获取缓存
         if (hasCache && seriesData.seriesContentJsons.size() > page && seriesData.seriesContentJsons.get(page) != null && !"".equals(seriesData.seriesContentJsons.get(page))) {
-            Log.d(TAG, "loadPage: 缓存加载");
+            Log.d(TAG, "loadPage: 缓存加载" + seriesData.seriesContentJsons.get(page));
             SeriesContentJson seriesContentJson = new Gson().fromJson(seriesData.seriesContentJsons.get(page), SeriesContentJson.class);
             formatContent(seriesContentJson, page);
         } else {

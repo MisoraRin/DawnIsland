@@ -8,15 +8,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
-public class DawViewPager extends ViewPager {
+public class DawnViewPager extends ViewPager {
     private float startX;
     private float startY;
 
-    public DawViewPager(@NonNull Context context) {
+    public DawnViewPager(@NonNull Context context) {
         super(context);
     }
 
-    public DawViewPager(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public DawnViewPager(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
