@@ -82,6 +82,7 @@ public class SeriesContentActivity extends AppCompatActivity implements SeriesCo
 
         presenter = new SeriesContentPresenter(id, this);
         multiTypeAdapter = new MultiTypeAdapter();
+
         multiTypeAdapter.register(ContentItem.class, new ContentViewBinder());
         multiTypeAdapter.register(FooterView.class, new SeriesListFooterViewBinder());
 
