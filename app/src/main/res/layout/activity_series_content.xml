@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Constrain"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".SeriesContentActivity">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/cotent_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
+        app:contentInsetStartWithNavigation="0dp"
+        app:subtitle="adnmb.com"
+        app:subtitleTextAppearance="@style/CollSubTitle"
+        app:subtitleTextColor="#D2FFFFFF"
+        app:title="欢乐恶搞"
+        app:titleTextColor="#FFFFFF" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/series_content_swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/series_content_recycleview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF">
+
+        </androidx.recyclerview.widget.RecyclerView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+</LinearLayout>

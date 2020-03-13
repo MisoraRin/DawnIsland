@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="SeriesListCard" type="id" />
+    <item name="SeriesListContraintLayout" type="id" />
+    <item name="SeriesListCookie" type="id" />
+    <item name="SeriesListTime" type="id" />
+    <item name="SeriesListForum" type="id" />
+    <item name="SeriesListContent" type="id" />
+    <item name="SeriesListImageView2" type="id" />
+    <item name="SeriesListReply_count" type="id" />
+    <item name="s" type="id" />
+</resources>

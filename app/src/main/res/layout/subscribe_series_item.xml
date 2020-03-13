@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linearLayout"
+    android:layout_width="150dp"
+    android:layout_height="100dp"
+    android:background="@drawable/series_content_background"
+    android:layout_marginLeft="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginRight="8dp"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/SeriesListCookie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WYd58d"
+        android:textColor="#000000"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/new_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/red_circle"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:text="PO:1235字"
+        android:textColor="#FFFFFF"
+        android:textSize="8dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/SeriesListCookie"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/SeriesListContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="5"
+        android:text="郭老板粗重的呼吸平缓了一些，湿热的气息喷的张云雷耳朵痒痒的：“师父白天做人，今儿晚上就做一回鬼！”哈哈哈哈昂昂昂昂啊哈哈昂杭杭杭杭杭杭杭杭杭杭杭杭杭杭杭杭杭杭和哈哈昂哈昂昂"
+        android:textColor="#000000"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SeriesListCookie" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -1,0 +1,25 @@
+def taskName = getGradle().getStartParameter().taskNames.toString().toLowerCase()
+def inDebug = taskName.contains("debug") //这里要改成针对当前打包系统的判断方式
+def rabbitVersion = "1.0.1"
+def rabbitDepen = "com.susion:rabbit-noop:$rabbitVersion"
+
+if(inDebug){
+    print("apply rabbit transform ! ---->")
+    apply plugin: 'rabbit-tracer'
+
+    rabbitConfig {
+        //是否启动字节码插桩; 状态切换应clean工程
+        enable = true
+
+        enableMethodCostCheck = true //默认是关闭的
+
+        methodMonitorPkgs = ['com.yanrou.dawnisland.MainActivity']  //指定检测范围
+
+
+    }
+    rabbitDepen = "com.susion:rabbit:$rabbitVersion"
+}
+
+rootProject.ext {
+    rabbitDependence = rabbitDepen
+}

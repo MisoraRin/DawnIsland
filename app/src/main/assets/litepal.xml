@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <!--
+    	Define the database name of your application.
+    	By default each database name should be end with .db.
+    	If you didn't name your database end with .db,
+    	LitePal would plus the suffix automatically for you.
+    	For example:
+    	<dbname value="demo" />
+    -->
+    <dbname value="DawnIsland" />
+    <version value="3" />
+
+    <list>
+        <mapping class="com.yanrou.dawnisland.SeriesData" />
+        <mapping class="com.yanrou.dawnisland.CookieData" />
+        <mapping class="com.yanrou.dawnisland.json2class.SeriesContentJson" />
+        <mapping class="com.yanrou.dawnisland.json2class.ReplysBean" />
+    </list>
+
+
+</litepal>
