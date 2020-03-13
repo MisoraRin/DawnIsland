@@ -58,31 +58,13 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.yanrou.dawnisland.DawViewPager
+        <com.yanrou.dawnisland.DawnViewPager
             android:id="@+id/main_page_viewer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        </com.yanrou.dawnisland.DawViewPager>
-
-        <!--
-       <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
--->
-        <!--
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/content_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
---><!--
-        </LinearLayout>
-
-
--->
+        </com.yanrou.dawnisland.DawnViewPager>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <LinearLayout
