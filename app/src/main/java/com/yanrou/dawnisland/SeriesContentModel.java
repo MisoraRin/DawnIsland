@@ -127,7 +127,9 @@ class SeriesContentModel {
                  * TODO 添加饼干后还可能什么都没有
                  * TODO 等待处理
                  */
-                if (seriesContentJson.getReplys().size() == 0 || (seriesContentJson.getReplys().size() == 1 && "9999999".equals(seriesContentJson.getReplys().get(0).getSeriesId()))) {
+                Log.d(TAG, "onResponse: " + (page != 1) + page);
+                if ((page != 1) && ((seriesContentJson.getReplys().size() == 1 && "9999999".equals(seriesContentJson.getReplys().get(0).getSeriesId())) || seriesContentJson.getReplys().size() == 0)) {
+                    Log.d(TAG, "onResponse: 空页");
                     return;
                 }
                 /**
