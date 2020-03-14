@@ -1,7 +1,6 @@
 package com.yanrou.dawnisland;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,9 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.drakeet.multitype.MultiTypeAdapter;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.util.List;
 
@@ -23,11 +22,12 @@ public class SeriesFragment extends Fragment implements SeriesListView {
     private static final String TAG = "SeriesFragment";
 
     private RecyclerView seriesList;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private Activity activity;
 
     private MultiTypeAdapter seriesListAdapter;
     private SeriesListGetterPresenter presenter;
+
+    private SmartRefreshLayout smartRefreshLayout;
 
     public SeriesFragment() {
     }
@@ -40,11 +40,26 @@ public class SeriesFragment extends Fragment implements SeriesListView {
         presenter = new SeriesListGetterPresenter(this);
         seriesListAdapter.register(SeriesCardView.class, new SeriesCardViewBinder(activity));
         seriesListAdapter.register(FooterView.class, new SeriesListFooterViewBinder());
+
+
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        smartRefreshLayout.setEnableAutoLoadMore(false);
+
+
+        smartRefreshLayout.setOnLoadMoreListener(refreshLayout -> {
+            Log.d(TAG, "onLoadMore: 触发了onLoadMore");
+            smartRefreshLayout.finishLoadMore(0);
+        });
+        smartRefreshLayout.setOnRefreshListener(refreshLayout -> {
+            Log.d(TAG, "onActivityCreated: 触发了刷新");
+            reFresh();
+        });
+
+
         /**
          * 这里是设定滑动监听，以便实现加载下一页的效果
          */
@@ -68,8 +83,6 @@ public class SeriesFragment extends Fragment implements SeriesListView {
         seriesList.setAdapter(seriesListAdapter);
 
         Log.d(TAG, "onActivityCreated: 到这里");
-        swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#2197da"), Color.parseColor("#38e1cd"), Color.parseColor("#ff2dcd"), Color.parseColor("#4f22dc"));
-        swipeRefreshLayout.setOnRefreshListener(this::reFresh);
         presenter.getFirstPage();
     }
 
@@ -77,21 +90,21 @@ public class SeriesFragment extends Fragment implements SeriesListView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_series, container, false);
         seriesList = view.findViewById(R.id.series_list_fragment);
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        smartRefreshLayout = view.findViewById(R.id.smartrefresh);
         Log.d(TAG, "onCreateView: " + view.findViewById(R.id.series_list_fragment));
         return view;
     }
 
     @Override
     public void setStartGetFirstPage() {
-        swipeRefreshLayout.setRefreshing(true);
+        //swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void setFirstPage(List<Object> items) {
         seriesListAdapter.setItems(items);
         activity.runOnUiThread(() -> {
-            swipeRefreshLayout.setRefreshing(false);
+            smartRefreshLayout.finishRefresh();
             seriesListAdapter.notifyDataSetChanged();
         });
     }
@@ -111,20 +124,26 @@ public class SeriesFragment extends Fragment implements SeriesListView {
     @Override
     public void setRefreshSuccess() {
         activity.runOnUiThread(() -> {
-            swipeRefreshLayout.setRefreshing(false);
+            Log.d(TAG, "setRefreshSuccess: 回调中的finishRefresh被调用");
+            smartRefreshLayout.finishRefresh();
             seriesListAdapter.notifyDataSetChanged();
         });
     }
 
     void changeForum(int fid) {
         seriesList.scrollToPosition(0);
-        swipeRefreshLayout.setRefreshing(true);
+        Log.d(TAG, "changeForum: 调用refresh前finish一遍");
+        smartRefreshLayout.finishRefresh();
+        Log.d(TAG, "changeForum: 启动刷新动画");
+        boolean d = smartRefreshLayout.autoRefreshAnimationOnly();
+        Log.d(TAG, "changeForum: 启用动画的返回值" + d);
         presenter.changeForum(fid);
     }
 
     public void reFresh() {
-        swipeRefreshLayout.setRefreshing(true);
         seriesList.scrollToPosition(0);
+
+        smartRefreshLayout.autoRefreshAnimationOnly();
         presenter.startRefresh();
     }
     /**因为服务器禁止，取消获取新提醒相关功能

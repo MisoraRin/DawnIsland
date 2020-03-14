@@ -18,5 +18,6 @@ public class MyApplication extends Application {
         LitePal.initialize(this);
         CrashReport.initCrashReport(getApplicationContext(), "65043f91b1", false);
         Rabbit.INSTANCE.init(this, new RabbitConfig());
+
     }
 }

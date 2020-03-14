@@ -6,16 +6,34 @@
     android:orientation="vertical"
     tools:context=".SeriesFragment">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/series_list_fragment"
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/smartrefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#F8F8F9" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            android:tag="close egg"
+            android:background="#F8F8F9">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="77dp"
+                    android:gravity="center"
+                    android:background="@android:color/transparent"
+                    android:text="看看我会不会变成Header" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/series_list_fragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#F8F8F9"
+                    android:overScrollMode="never" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="77dp"
+                    android:gravity="center"
+                    android:text="看看我会不会变成footer" />
+
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
 
 </LinearLayout>

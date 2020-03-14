@@ -80,6 +80,9 @@ dependencies {
     implementation 'me.dkzwm.widget.srl:ext-classics:1.7.1.androidx'
     implementation 'me.dkzwm.widget.srl:ext-two-level:1.7.1.androidx'
 
+
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
+
     implementation rootProject.ext.rabbitDependence
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.0-beta-5"
 }

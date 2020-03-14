@@ -158,6 +158,8 @@ public class SeriesListGetterModel {
                         footerView.text = "加载大成功";
                         items.add(footerView);
                         presenter.refreshSuccess();
+                    default:
+                        break;
                 }
                 page++;
             }
