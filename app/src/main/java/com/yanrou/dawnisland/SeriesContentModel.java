@@ -388,6 +388,7 @@ class SeriesContentModel {
                 items.addAll(items.size() - 1, contentItems);
                 //只在第一次添加的时候判定是否有广告，因为后面都不会变了
                 hasAd = "9999999".equals(seriesContentJson.getReplys().get(adindex).getSeriesId());
+                Log.d(TAG, "formatContent: " + hasAd + seriesContentJson.getReplys().get(adindex).getSeriesId());
             } else {
                 //这里就是加载最后一页不全的时候，要添加数据
                 //最后一页是否有广告
@@ -415,6 +416,7 @@ class SeriesContentModel {
             items.addAll(contentItems);
             footerView.text = "加载完成";
             items.add(footerView);
+            hasAd = "9999999".equals(seriesContentJson.getReplys().get(adindex).getSeriesId());
             presenter.loadFirstPageSuccess(items);
         } else if (state == GET_FRONT_PAGE) {
             items.addAll(0, contentItems);
