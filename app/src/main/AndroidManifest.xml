@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/MyAppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ImageViewer" />
+        <activity android:name=".imageviewer.ImageViewerView" />
         <activity android:name=".CustomizeSizeActivity" />
         <activity android:name=".CookiesManageActivity" />
         <activity

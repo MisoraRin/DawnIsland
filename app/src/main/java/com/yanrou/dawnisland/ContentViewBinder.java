@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.drakeet.multitype.ItemViewBinder;
+import com.yanrou.dawnisland.imageviewer.ImageViewerView;
 
 public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBinder.ViewHolder> {
 
@@ -59,7 +60,7 @@ public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBi
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
 
-                    Intent fullScreenImageViewer = new Intent(callerActivity, ImageViewer.class);
+                    Intent fullScreenImageViewer = new Intent(callerActivity, ImageViewerView.class);
                     fullScreenImageViewer.putExtra("imgurl", "https://nmbimg.fastmirror.org/image/" + content.imgurl);
                     callerActivity.startActivity(fullScreenImageViewer);
 
