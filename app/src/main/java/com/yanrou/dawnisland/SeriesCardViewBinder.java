@@ -4,6 +4,7 @@ package com.yanrou.dawnisland;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -39,6 +40,8 @@ public class SeriesCardViewBinder extends ViewDelegate<SeriesCardView, CardViewF
                     .load("https://nmbimg.fastmirror.org/thumb/" + seriesCardView.imageUri)
                     .override(250, 250)
                     .into(myCardView.getImageContent());
+
+
         } else {
             myCardView.getImageContent().setVisibility(View.GONE);
         }

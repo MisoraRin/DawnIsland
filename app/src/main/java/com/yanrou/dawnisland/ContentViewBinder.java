@@ -1,8 +1,12 @@
 package com.yanrou.dawnisland;
 
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,6 +20,11 @@ import com.drakeet.multitype.ItemViewBinder;
 
 public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBinder.ViewHolder> {
 
+    private Activity callerActivity;
+
+    public ContentViewBinder(Activity callerActivity){
+        this.callerActivity = callerActivity;
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
@@ -23,6 +32,7 @@ public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBi
         return new ViewHolder(root);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @NonNull ContentItem content) {
         holder.cookie.setText(content.cookie, TextView.BufferType.SPANNABLE);
@@ -44,6 +54,18 @@ public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBi
                     .load("https://nmbimg.fastmirror.org/thumb/" + content.imgurl)
                     .override(250, 250)
                     .into(holder.imageView);
+
+            holder.imageView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    Intent fullScreenImageViewer = new Intent(callerActivity, ImageViewer.class);
+                    fullScreenImageViewer.putExtra("imgurl", "https://nmbimg.fastmirror.org/image/" + content.imgurl);
+                    callerActivity.startActivity(fullScreenImageViewer);
+
+                    return false;
+                }
+            });
         } else {
             holder.imageView.setVisibility(View.GONE);
         }
@@ -68,6 +90,7 @@ public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBi
             time = itemView.findViewById(R.id.SeriesListTime);
             titleAndName = itemView.findViewById(R.id.title_and_name);
             imageView = itemView.findViewById(R.id.series_content_imageView);
+
 
             content.setMovementMethod(LinkMovementMethod.getInstance());
         }

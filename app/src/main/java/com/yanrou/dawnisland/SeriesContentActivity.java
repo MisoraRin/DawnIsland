@@ -1,5 +1,6 @@
 package com.yanrou.dawnisland;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -82,8 +83,9 @@ public class SeriesContentActivity extends AppCompatActivity implements SeriesCo
 
         presenter = new SeriesContentPresenter(id, this);
         multiTypeAdapter = new MultiTypeAdapter();
+        
+        multiTypeAdapter.register(ContentItem.class, new ContentViewBinder(SeriesContentActivity.this));
 
-        multiTypeAdapter.register(ContentItem.class, new ContentViewBinder());
         multiTypeAdapter.register(FooterView.class, new SeriesListFooterViewBinder());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
