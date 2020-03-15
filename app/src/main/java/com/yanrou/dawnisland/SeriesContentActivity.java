@@ -1,6 +1,5 @@
 package com.yanrou.dawnisland;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,9 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.drakeet.multitype.MultiTypeAdapter;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class SeriesContentActivity extends AppCompatActivity implements SeriesCo
     String id;
     String forumName;
 
-    SwipeRefreshLayout swipeRefreshLayout;
+    SmartRefreshLayout smartRefreshLayout;
 
     ReplyDialog replyDialog = null;
 
@@ -98,8 +97,10 @@ public class SeriesContentActivity extends AppCompatActivity implements SeriesCo
         });
 
         recyclerView.setAdapter(multiTypeAdapter);
-
-        swipeRefreshLayout.setOnRefreshListener(presenter::refresh);
+        smartRefreshLayout.setFooterTriggerRate(2);
+        smartRefreshLayout.setEnableAutoLoadMore(false);
+        smartRefreshLayout.setOnRefreshListener(refreshLayout -> presenter.refresh());
+        //swipeRefreshLayout.setOnRefreshListener(presenter::refresh);
         presenter.loadFirstPage();
     }
 
@@ -108,7 +109,7 @@ public class SeriesContentActivity extends AppCompatActivity implements SeriesCo
         toolbar = findViewById(R.id.cotent_toolbar);
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
-        swipeRefreshLayout = findViewById(R.id.series_content_swipe_refresh);
+        smartRefreshLayout = findViewById(R.id.smart_refresh);
     }
 
     @Override
@@ -181,7 +182,7 @@ public class SeriesContentActivity extends AppCompatActivity implements SeriesCo
                 multiTypeAdapter.notifyItemRangeInserted(0, itemCount);
                 recyclerView.smoothScrollToPosition(itemCount - 1);
             }
-            swipeRefreshLayout.setRefreshing(false);
+            smartRefreshLayout.finishRefresh(0);
         });
     }
 

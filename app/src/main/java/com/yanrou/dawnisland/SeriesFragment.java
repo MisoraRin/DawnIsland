@@ -50,6 +50,7 @@ public class SeriesFragment extends Fragment implements SeriesListView {
         smartRefreshLayout.setEnableAutoLoadMore(false);
 
 
+        smartRefreshLayout.setFooterTriggerRate(2f);
         smartRefreshLayout.setOnLoadMoreListener(refreshLayout -> {
             Log.d(TAG, "onLoadMore: 触发了onLoadMore");
             smartRefreshLayout.finishLoadMore(0);
