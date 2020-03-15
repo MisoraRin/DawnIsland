@@ -415,7 +415,11 @@ class SeriesContentModel {
             items.addAll(contentItems);
             footerView.text = "加载完成";
             items.add(footerView);
-            hasAd = "9999999".equals(seriesContentJson.getReplys().get(adindex).getSeriesId());
+            if (seriesContentJson.getReplys().size() == 1) {
+                hasAd = false;
+            } else {
+                hasAd = "9999999".equals(seriesContentJson.getReplys().get(adindex).getSeriesId());
+            }
             presenter.loadFirstPageSuccess(items);
         } else if (state == GET_FRONT_PAGE) {
             items.addAll(0, contentItems);
