@@ -124,7 +124,6 @@ class SeriesContentModel {
 
                 /**
                  * 防止翻页翻过，这一句表示已经翻到底了
-                 * TODO 添加饼干后还可能什么都没有
                  * TODO 等待处理
                  */
                 Log.d(TAG, "onResponse: " + (page != 1) + page);
@@ -388,6 +387,7 @@ class SeriesContentModel {
                 items.addAll(items.size() - 1, contentItems);
                 //只在第一次添加的时候判定是否有广告，因为后面都不会变了
                 hasAd = "9999999".equals(seriesContentJson.getReplys().get(adindex).getSeriesId());
+                Log.d(TAG, "formatContent: " + hasAd + seriesContentJson.getReplys().get(adindex).getSeriesId());
             } else {
                 //这里就是加载最后一页不全的时候，要添加数据
                 //最后一页是否有广告
@@ -402,7 +402,7 @@ class SeriesContentModel {
                     }
                 } else {
                     //没有广告
-                    if ("9999999".equals(seriesContentJson.getReplys().get(0).getSeriesId())) {
+                    if ("9999999".equals(seriesContentJson.getReplys().get(adindex).getSeriesId())) {
                         //新获取的页面有广告，需要对齐数据
                         Log.d(TAG, "formatContent: 删了一条数据");
                         contentItems.remove(adindex);
@@ -415,6 +415,7 @@ class SeriesContentModel {
             items.addAll(contentItems);
             footerView.text = "加载完成";
             items.add(footerView);
+            hasAd = "9999999".equals(seriesContentJson.getReplys().get(adindex).getSeriesId());
             presenter.loadFirstPageSuccess(items);
         } else if (state == GET_FRONT_PAGE) {
             items.addAll(0, contentItems);
