@@ -56,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
     AppBarLayout appBarLayout;
 
     List<ForumJson.ForumsBean> forumsList = new ArrayList<>();
-    final ForumAdapter forumAdapter = new ForumAdapter(forumsList);
+
+    ForumAdapter forumAdapter;
     /**
      * 记录当前的页数
      */
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         Rabbit.INSTANCE.open(true, this);
 
+        forumAdapter = new ForumAdapter(forumsList, getApplicationContext());
         /**
          *读饼干
          */
