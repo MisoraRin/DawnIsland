@@ -3,23 +3,27 @@
     android:id="@+id/forum_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
-    android:layout_alignParentLeft="true"
-  android:layout_marginLeft="10dp">
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
 
     <ImageView
-      android:layout_width="32dp"
-      android:layout_height="32dp"
-      android:id="@+id/icon"
-      android:layout_gravity="center"
-      android:background="@color/rabbit_white" />
+        android:id="@+id/icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp"
+        android:padding="4dp"
+        android:tint="#828282" />
 
     <TextView
         android:id="@+id/forum_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="2dp"
         android:text="TextView"
         android:textColor="#000000"
         android:textSize="16dp" />

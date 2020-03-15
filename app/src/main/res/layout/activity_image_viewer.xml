@@ -22,16 +22,16 @@
         app:titleTextColor="#FFFFFF">
 
         <ImageButton
+            android:id="@+id/save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/save_button"
+            android:layout_gravity="right"
+            android:layout_marginRight="10dp"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/ic_save_black_24dp"
             android:text="Save"
             android:textColor="#D2FFFFFF"
-            android:background="@color/colorPrimary"
-            android:layout_marginRight="10dp"
-            android:layout_gravity="right"
-            android:src="@drawable/ic_save_black_24dp"
-            />
+            android:tint="#FFFFFF" />
 
     </androidx.appcompat.widget.Toolbar>
 
