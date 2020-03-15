@@ -70,7 +70,10 @@ public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ViewHolder> 
         int resourceId = applicationContext.getResources().getIdentifier("bi_"+String.valueOf(biId), "drawable",
             applicationContext.getPackageName());
         if (resourceId != 0){
+            holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageResource(resourceId);
+        } else {
+            holder.imageView.setVisibility(View.INVISIBLE);
         }
     }
 
