@@ -403,7 +403,7 @@ class SeriesContentModel {
                     }
                 } else {
                     //没有广告
-                    if ("9999999".equals(seriesContentJson.getReplys().get(0).getSeriesId())) {
+                    if ("9999999".equals(seriesContentJson.getReplys().get(adindex).getSeriesId())) {
                         //新获取的页面有广告，需要对齐数据
                         Log.d(TAG, "formatContent: 删了一条数据");
                         contentItems.remove(adindex);
