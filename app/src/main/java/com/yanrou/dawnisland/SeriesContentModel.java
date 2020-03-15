@@ -124,7 +124,6 @@ class SeriesContentModel {
 
                 /**
                  * 防止翻页翻过，这一句表示已经翻到底了
-                 * TODO 添加饼干后还可能什么都没有
                  * TODO 等待处理
                  */
                 Log.d(TAG, "onResponse: " + (page != 1) + page);
