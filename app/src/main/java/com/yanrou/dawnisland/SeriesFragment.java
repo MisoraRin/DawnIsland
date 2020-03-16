@@ -48,7 +48,7 @@ public class SeriesFragment extends Fragment implements SeriesListView {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         smartRefreshLayout.setEnableAutoLoadMore(false);
-
+        smartRefreshLayout.setDragRate(0.3f);
 
         smartRefreshLayout.setFooterTriggerRate(2f);
         smartRefreshLayout.setOnLoadMoreListener(refreshLayout -> {
@@ -133,8 +133,8 @@ public class SeriesFragment extends Fragment implements SeriesListView {
 
     void changeForum(int fid) {
         seriesList.scrollToPosition(0);
-        Log.d(TAG, "changeForum: 调用refresh前finish一遍");
-        smartRefreshLayout.finishRefresh();
+        //Log.d(TAG, "changeForum: 调用refresh前finish一遍");
+        //smartRefreshLayout.finishRefresh();
         Log.d(TAG, "changeForum: 启动刷新动画");
         boolean d = smartRefreshLayout.autoRefreshAnimationOnly();
         Log.d(TAG, "changeForum: 启用动画的返回值" + d);
