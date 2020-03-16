@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
@@ -45,15 +46,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
-import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -77,6 +75,7 @@ public class ReplyDialog extends DialogFragment {
 
     View partLine;
 
+    Context mContext;
 
     ConstraintLayout constraintLayout;
 
@@ -95,6 +94,12 @@ public class ReplyDialog extends DialogFragment {
      */
     boolean isNameExpand = false, isFullScreen = false;
     private List<CookieData> cookies;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        mContext = context;
+        super.onAttach(context);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -260,11 +265,11 @@ public class ReplyDialog extends DialogFragment {
     }
 
     AlertDialog alertDialog;
-    final int KEYBOARD_NONE = 0;
-    final int KEYBOARD_IMAGE = 1;
-    final int KEYBOARD_NAME = 2;
-    final int KEYBOARD_BUTTON = 3;
-    int enpandKeyFlag = KEYBOARD_NONE;
+    private final int KEYBOARD_NONE = 0;
+    private final int KEYBOARD_IMAGE = 1;
+    private final int KEYBOARD_NAME = 2;
+    private final int KEYBOARD_BUTTON = 3;
+    private int enpandKeyFlag = KEYBOARD_NONE;
 
     @Override
     public void onStart() {
@@ -368,7 +373,7 @@ public class ReplyDialog extends DialogFragment {
         }
     }
 
-    void sendReply() {
+    private void sendReply() {
 
 
         MultipartBody.Builder builder = new MultipartBody.Builder()
@@ -392,6 +397,9 @@ public class ReplyDialog extends DialogFragment {
                 .header("Cookie", cookies.get(0).userHash)
                 .post(formBody)
                 .build();
+        new SendReplyTask().execute(request);
+        dismiss();
+        /*
         new OkHttpClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -404,6 +412,26 @@ public class ReplyDialog extends DialogFragment {
                 dismiss();
             }
         });
+
+         */
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    class SendReplyTask extends AsyncTask<Request, Void, String> {
+        @Override
+        protected String doInBackground(Request... requests) {
+            try {
+                Response response = new OkHttpClient().newCall(requests[0]).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Toast.makeText(mContext, "回复成功", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -536,7 +564,7 @@ public class ReplyDialog extends DialogFragment {
         }
     }
 
-    PopupWindow popup;
+    private PopupWindow popup;
 
     private void popupWindow() {
 
@@ -555,7 +583,7 @@ public class ReplyDialog extends DialogFragment {
         popup.showAsDropDown(cookie, 0, 0);//显示在edit控件的下面0,0代表偏移量
     }
 
-    int cookieIndex;
+    private int cookieIndex;
 
     private TextView genCookieView(String s, int id) {
         TextView textView = new TextView(this.getContext());
