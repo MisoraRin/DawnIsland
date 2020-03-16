@@ -250,6 +250,13 @@ public class ReplyDialog extends DialogFragment {
 
         }
         cookies = LitePal.findAll(CookieData.class);
+        if (cookies.size() > 0) {
+            cookie.setText(cookies.get(0).cookieName);
+            cookieIndex = 0;
+        } else {
+            cookieIndex = -1;
+            cookie.setText("没有饼干");
+        }
 
         //TODO 当点击输入框时将其他元素隐藏
         contentText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -375,7 +382,6 @@ public class ReplyDialog extends DialogFragment {
 
     private void sendReply() {
 
-
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("resto", seriesId)
@@ -390,11 +396,9 @@ public class ReplyDialog extends DialogFragment {
         }
 
         RequestBody formBody = builder.build();
-
-
         Request request = new Request.Builder()
                 .url("https://adnmb2.com/Home/Forum/doReplyThread.html")
-                .header("Cookie", cookies.get(0).userHash)
+                .header("Cookie", "userhash=" + cookies.get(cookieIndex).userHash)
                 .post(formBody)
                 .build();
         new SendReplyTask().execute(request);
@@ -409,7 +413,6 @@ public class ReplyDialog extends DialogFragment {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 Log.d(TAG, "onResponse: " + response.body().string());
-                dismiss();
             }
         });
 
@@ -567,7 +570,6 @@ public class ReplyDialog extends DialogFragment {
     private PopupWindow popup;
 
     private void popupWindow() {
-
         popup = new PopupWindow(this.getActivity());
         popup.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
         popup.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
@@ -575,12 +577,16 @@ public class ReplyDialog extends DialogFragment {
         linearLayout.setBackgroundColor(Color.WHITE);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(20, 20, 20, 20);
-        linearLayout.addView(genCookieView("cookie1", 1));
-        linearLayout.addView(genCookieView("cookie2", 2));
-        popup.setContentView(linearLayout);//设置显示内容
-        popup.setOutsideTouchable(true);//点击PopupWindow以外的区域自动关闭该窗口
+        for (int i = 0; i < cookies.size(); i++) {
+            linearLayout.addView(genCookieView(cookies.get(i).cookieName, i));
+        }
+        //设置显示内容
+        popup.setContentView(linearLayout);
+        //点击PopupWindow以外的区域自动关闭该窗口
+        popup.setOutsideTouchable(true);
         popup.setBackgroundDrawable(new ColorDrawable(0));
-        popup.showAsDropDown(cookie, 0, 0);//显示在edit控件的下面0,0代表偏移量
+        //显示在edit控件的下面0,0代表偏移量
+        popup.showAsDropDown(cookie, 0, 0);
     }
 
     private int cookieIndex;
@@ -594,6 +600,7 @@ public class ReplyDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 cookieIndex = v.getId() - 1000;
+                cookie.setText(textView.getText());
                 popup.dismiss();
             }
         });
