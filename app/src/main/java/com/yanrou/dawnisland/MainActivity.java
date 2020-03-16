@@ -292,11 +292,7 @@ public class MainActivity extends AppCompatActivity {
             ViewDragHelper.Callback leftCallback = (ViewDragHelper.Callback) leftCallbackField.get(drawerLayout);
             Field peekRunnableField = leftCallback.getClass().getDeclaredField("mPeekRunnable");
             peekRunnableField.setAccessible(true);
-            Runnable nullRunnalbe = new Runnable() {
-                @Override
-                public void run() {
-
-                }
+            Runnable nullRunnalbe = () -> {
             };
             peekRunnableField.set(leftCallback, nullRunnalbe);
         } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
