@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.yanrou.dawnisland.database.CookieData;
+
 import java.util.List;
 
 public class CookiesListAdapter extends RecyclerView.Adapter<CookiesListAdapter.ViewHolder> {

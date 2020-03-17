@@ -46,6 +46,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
+import com.yanrou.dawnisland.database.CookieData;
+
 import org.litepal.LitePal;
 
 import java.io.File;

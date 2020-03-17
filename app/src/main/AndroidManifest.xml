@@ -24,7 +24,7 @@
         <activity android:name=".CustomizeSizeActivity" />
         <activity android:name=".CookiesManageActivity" />
         <activity
-            android:name=".SeriesContentActivity"
+            android:name=".content.SeriesContentActivity"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".MainActivity">

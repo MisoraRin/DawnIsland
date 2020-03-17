@@ -12,8 +12,8 @@
     <version value="3" />
 
     <list>
-        <mapping class="com.yanrou.dawnisland.SeriesData" />
-        <mapping class="com.yanrou.dawnisland.CookieData" />
+        <mapping class="com.yanrou.dawnisland.database.SeriesData" />
+        <mapping class="com.yanrou.dawnisland.database.CookieData" />
         <mapping class="com.yanrou.dawnisland.json2class.SeriesContentJson" />
         <mapping class="com.yanrou.dawnisland.json2class.ReplysBean" />
     </list>

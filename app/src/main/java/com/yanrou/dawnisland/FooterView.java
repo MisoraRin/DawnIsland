@@ -1,5 +1,5 @@
 package com.yanrou.dawnisland;
 
 public class FooterView {
-    String text;
+    public String text;
 }

@@ -31,7 +31,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.susion.rabbit.Rabbit;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.yanrou.dawnisland.database.CookieData;
 import com.yanrou.dawnisland.json2class.ForumJson;
+import com.yanrou.dawnisland.serieslist.SeriesFragment;
+import com.yanrou.dawnisland.trend.TrandFragment;
+import com.yanrou.dawnisland.util.HttpUtil;
+import com.yanrou.dawnisland.util.ReadableTime;
 
 import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;
@@ -236,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                 allForum.addAll(forumJsonList.get(i).getForums());
             }
             Log.d(TAG, "onResponse: " + allForum.size());
-            DB.setDB(allForum);
+            Fid2Name.setDB(allForum);
             forumsList.addAll(allForum);
             runOnUiThread(new Runnable() {
                 @Override
