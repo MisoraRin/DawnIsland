@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
@@ -45,15 +46,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
-import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -77,6 +75,7 @@ public class ReplyDialog extends DialogFragment {
 
     View partLine;
 
+    Context mContext;
 
     ConstraintLayout constraintLayout;
 
@@ -95,6 +94,12 @@ public class ReplyDialog extends DialogFragment {
      */
     boolean isNameExpand = false, isFullScreen = false;
     private List<CookieData> cookies;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        mContext = context;
+        super.onAttach(context);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -245,6 +250,13 @@ public class ReplyDialog extends DialogFragment {
 
         }
         cookies = LitePal.findAll(CookieData.class);
+        if (cookies.size() > 0) {
+            cookie.setText(cookies.get(0).cookieName);
+            cookieIndex = 0;
+        } else {
+            cookieIndex = -1;
+            cookie.setText("没有饼干");
+        }
 
         //TODO 当点击输入框时将其他元素隐藏
         contentText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -260,11 +272,11 @@ public class ReplyDialog extends DialogFragment {
     }
 
     AlertDialog alertDialog;
-    final int KEYBOARD_NONE = 0;
-    final int KEYBOARD_IMAGE = 1;
-    final int KEYBOARD_NAME = 2;
-    final int KEYBOARD_BUTTON = 3;
-    int enpandKeyFlag = KEYBOARD_NONE;
+    private final int KEYBOARD_NONE = 0;
+    private final int KEYBOARD_IMAGE = 1;
+    private final int KEYBOARD_NAME = 2;
+    private final int KEYBOARD_BUTTON = 3;
+    private int enpandKeyFlag = KEYBOARD_NONE;
 
     @Override
     public void onStart() {
@@ -368,8 +380,7 @@ public class ReplyDialog extends DialogFragment {
         }
     }
 
-    void sendReply() {
-
+    private void sendReply() {
 
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -385,13 +396,14 @@ public class ReplyDialog extends DialogFragment {
         }
 
         RequestBody formBody = builder.build();
-
-
         Request request = new Request.Builder()
                 .url("https://adnmb2.com/Home/Forum/doReplyThread.html")
-                .header("Cookie", cookies.get(0).userHash)
+                .header("Cookie", "userhash=" + cookies.get(cookieIndex).userHash)
                 .post(formBody)
                 .build();
+        new SendReplyTask().execute(request);
+        dismiss();
+        /*
         new OkHttpClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -401,9 +413,28 @@ public class ReplyDialog extends DialogFragment {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 Log.d(TAG, "onResponse: " + response.body().string());
-                dismiss();
             }
         });
+
+         */
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    class SendReplyTask extends AsyncTask<Request, Void, String> {
+        @Override
+        protected String doInBackground(Request... requests) {
+            try {
+                Response response = new OkHttpClient().newCall(requests[0]).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Toast.makeText(mContext, "回复成功", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -536,10 +567,9 @@ public class ReplyDialog extends DialogFragment {
         }
     }
 
-    PopupWindow popup;
+    private PopupWindow popup;
 
     private void popupWindow() {
-
         popup = new PopupWindow(this.getActivity());
         popup.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
         popup.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
@@ -547,15 +577,19 @@ public class ReplyDialog extends DialogFragment {
         linearLayout.setBackgroundColor(Color.WHITE);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(20, 20, 20, 20);
-        linearLayout.addView(genCookieView("cookie1", 1));
-        linearLayout.addView(genCookieView("cookie2", 2));
-        popup.setContentView(linearLayout);//设置显示内容
-        popup.setOutsideTouchable(true);//点击PopupWindow以外的区域自动关闭该窗口
+        for (int i = 0; i < cookies.size(); i++) {
+            linearLayout.addView(genCookieView(cookies.get(i).cookieName, i));
+        }
+        //设置显示内容
+        popup.setContentView(linearLayout);
+        //点击PopupWindow以外的区域自动关闭该窗口
+        popup.setOutsideTouchable(true);
         popup.setBackgroundDrawable(new ColorDrawable(0));
-        popup.showAsDropDown(cookie, 0, 0);//显示在edit控件的下面0,0代表偏移量
+        //显示在edit控件的下面0,0代表偏移量
+        popup.showAsDropDown(cookie, 0, 0);
     }
 
-    int cookieIndex;
+    private int cookieIndex;
 
     private TextView genCookieView(String s, int id) {
         TextView textView = new TextView(this.getContext());
@@ -566,6 +600,7 @@ public class ReplyDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 cookieIndex = v.getId() - 1000;
+                cookie.setText(textView.getText());
                 popup.dismiss();
             }
         });
