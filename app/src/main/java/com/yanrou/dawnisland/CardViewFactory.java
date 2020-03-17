@@ -45,7 +45,6 @@ public class CardViewFactory {
     private int DEFAULT_CARDVIEW_MARGINTOP = 16;
     private int DEFAULT_CARDVIEW_MARGINBOTTOM = 6;
 
-    private MyCardView cardView;
     private ConstraintLayout constraintLayout;
     private TextView cookieView;
     private TextView timeView;
@@ -177,7 +176,7 @@ public class CardViewFactory {
         /**
          * 创建CardView
          */
-        cardView = new MyCardView(context);
+        MyCardView cardView = new MyCardView(context);
         cardView.setId(R.id.SeriesListCard);
         /**
          * 设置CardView layout属性
