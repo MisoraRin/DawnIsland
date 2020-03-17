@@ -36,7 +36,7 @@ public class DawnViewPager extends ViewPager {
                 float distanceX = endX - startX;
                 float distanceY = endY - startY;
                 //判断滑动方向
-                if (Math.abs(distanceX) > Math.abs(distanceY)) {
+                if (Math.abs(distanceX) > (Math.abs(distanceY) * 3)) {
                     //水平方向滑动
 //                   当滑动到ViewPager的第0个页面，并且是从左到右滑动
                     if (getCurrentItem() == 0 && distanceX > 0) {
