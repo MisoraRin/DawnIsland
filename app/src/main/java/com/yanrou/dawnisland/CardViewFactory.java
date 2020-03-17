@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.text.SpannableString;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.ViewGroup;
@@ -44,14 +43,6 @@ public class CardViewFactory {
     private int DEFAULT_CARDVIEW_MARGINEND = 10;
     private int DEFAULT_CARDVIEW_MARGINTOP = 16;
     private int DEFAULT_CARDVIEW_MARGINBOTTOM = 6;
-
-    private ConstraintLayout constraintLayout;
-    private TextView cookieView;
-    private TextView timeView;
-    private TextView forumAndRelpycount;
-    private TextView contentView;
-    private SpannableString exampleText;
-    private ImageView imageContent;
 
     private DisplayMetrics displayMetrics;
 
@@ -210,14 +201,14 @@ public class CardViewFactory {
         cardView.setRadius(cardRadius);
         cardView.setElevation(cardElevaion);
 
-        constraintLayout = new ConstraintLayout(context);
+        ConstraintLayout constraintLayout = new ConstraintLayout(context);
         constraintLayout.setId(R.id.SeriesListContraintLayout);
         constraintLayout.setPadding(contentMarginLeft, headBarMarginTop, contentMarginRight, contentMarginBottom);
 
         /**
          * cookie TextView
          */
-        cookieView = new TextView(context);
+        TextView cookieView = new TextView(context);
         cookieView.setId(R.id.SeriesListCookie);
         cookieView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
@@ -231,7 +222,7 @@ public class CardViewFactory {
         /**
          * time TextView
          */
-        timeView = new TextView(context);
+        TextView timeView = new TextView(context);
         timeView.setId(R.id.SeriesListTime);
 
         ConstraintLayout.LayoutParams timeLayoutParams = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -243,7 +234,7 @@ public class CardViewFactory {
         /**
          * forum TextView
          */
-        forumAndRelpycount = new TextView(context);
+        TextView forumAndRelpycount = new TextView(context);
         forumAndRelpycount.setId(R.id.SeriesListForum);
         ConstraintLayout.LayoutParams forumLayoutParams = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         forumLayoutParams.topToTop = R.id.SeriesListContraintLayout;
@@ -258,7 +249,7 @@ public class CardViewFactory {
         /**
          * content TextView
          */
-        contentView = new TextView(context);
+        TextView contentView = new TextView(context);
         contentView.setId(R.id.SeriesListContent);
 
         ConstraintLayout.LayoutParams contentLayoutParam = new ConstraintLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -277,7 +268,7 @@ public class CardViewFactory {
         trueLetterSpace /= 50;
         contentView.setLetterSpacing(trueLetterSpace);
 
-        imageContent = new ImageView(context);
+        ImageView imageContent = new ImageView(context);
         imageContent.setId(R.id.SeriesListImageView2);
 
         ConstraintLayout.LayoutParams imageLayoutParam = new ConstraintLayout.LayoutParams(250, 250);
