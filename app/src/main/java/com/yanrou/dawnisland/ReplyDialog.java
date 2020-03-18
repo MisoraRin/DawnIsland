@@ -46,6 +46,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
+import com.yanrou.dawnisland.database.CookieData;
+
 import org.litepal.LitePal;
 
 import java.io.File;
@@ -251,7 +253,7 @@ public class ReplyDialog extends DialogFragment {
         }
         cookies = LitePal.findAll(CookieData.class);
         if (cookies.size() > 0) {
-            cookie.setText(cookies.get(0).cookieName);
+            cookie.setText(cookies.get(0).getCookieName());
             cookieIndex = 0;
         } else {
             cookieIndex = -1;
@@ -398,7 +400,7 @@ public class ReplyDialog extends DialogFragment {
         RequestBody formBody = builder.build();
         Request request = new Request.Builder()
                 .url("https://adnmb2.com/Home/Forum/doReplyThread.html")
-                .header("Cookie", "userhash=" + cookies.get(cookieIndex).userHash)
+                .header("Cookie", "userhash=" + cookies.get(cookieIndex).getUserHash())
                 .post(formBody)
                 .build();
         new SendReplyTask().execute(request);
@@ -578,7 +580,7 @@ public class ReplyDialog extends DialogFragment {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(20, 20, 20, 20);
         for (int i = 0; i < cookies.size(); i++) {
-            linearLayout.addView(genCookieView(cookies.get(i).cookieName, i));
+            linearLayout.addView(genCookieView(cookies.get(i).getCookieName(), i));
         }
         //设置显示内容
         popup.setContentView(linearLayout);

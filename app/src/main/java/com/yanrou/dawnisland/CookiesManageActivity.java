@@ -16,8 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.yanrou.dawnisland.database.CookieData;
 import com.yanrou.dawnisland.json2class.ReplysBean;
 import com.yanrou.dawnisland.json2class.SeriesContentJson;
+import com.yanrou.dawnisland.util.HttpUtil;
 
 import org.litepal.LitePal;
 
@@ -85,8 +87,8 @@ public class CookiesManageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 CookieData cookieData = new CookieData();
-                cookieData.userHash = cookieHash.getText().toString();
-                cookieData.cookieName = cookieName.getText().toString();
+                cookieData.setUserHash(cookieHash.getText().toString());
+                cookieData.setCookieName(cookieName.getText().toString());
                 cookieData.save();
                 dialog.dismiss();
             }

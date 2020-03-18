@@ -16,6 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.preference.PreferenceManager;
 
+import com.yanrou.dawnisland.serieslist.CardViewFactory;
+import com.yanrou.dawnisland.span.RoundBackgroundColorSpan;
+import com.yanrou.dawnisland.span.SegmentSpacingSpan;
+
 public class CustomizeSizeActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
     private static final String TAG = "CustomizeSizeActivity";
     private final int anTextViewInt = 1000;

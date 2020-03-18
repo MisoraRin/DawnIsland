@@ -5,7 +5,7 @@
     style="@style/Constrain"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".SeriesContentActivity">
+    tools:context=".content.SeriesContentActivity">
 
 
     <androidx.appcompat.widget.Toolbar
