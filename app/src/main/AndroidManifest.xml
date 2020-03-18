@@ -21,7 +21,7 @@
         android:theme="@style/MyAppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".imageviewer.ImageViewerView" />
-        <activity android:name=".CustomizeSizeActivity" />
+        <activity android:name=".settings.SettingsActivity" />
         <activity android:name=".CookiesManageActivity" />
         <activity
             android:name=".content.SeriesContentActivity"

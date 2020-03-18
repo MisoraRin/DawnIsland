@@ -34,6 +34,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.yanrou.dawnisland.database.CookieData;
 import com.yanrou.dawnisland.json2class.ForumJson;
 import com.yanrou.dawnisland.serieslist.SeriesFragment;
+import com.yanrou.dawnisland.settings.SettingsActivity;
 import com.yanrou.dawnisland.trend.TrandFragment;
 import com.yanrou.dawnisland.util.HttpUtil;
 import com.yanrou.dawnisland.util.ReadableTime;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.setting:
                 //Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                Intent intent = new Intent(MainActivity.this, CustomizeSizeActivity.class);
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 break;
             case R.id.cookie_button:
