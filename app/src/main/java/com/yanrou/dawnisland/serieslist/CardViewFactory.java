@@ -1,4 +1,4 @@
-package com.yanrou.dawnisland;
+package com.yanrou.dawnisland.serieslist;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.card.MaterialCardView;
+import com.yanrou.dawnisland.R;
 
 public class CardViewFactory {
     private static CardViewFactory cardViewFactory;
@@ -300,7 +301,7 @@ public class CardViewFactory {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, displayMetrics);
     }
 
-    class MyCardView extends MaterialCardView {
+    public class MyCardView extends MaterialCardView {
         String id;
         String forum;
         private ConstraintLayout constraintLayout;

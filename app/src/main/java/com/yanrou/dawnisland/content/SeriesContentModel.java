@@ -140,13 +140,13 @@ class SeriesContentModel {
                 /**
                  * 保存页面数据用于下次加载
                  */
-                if (seriesData.seriesContentJsons.size() < page + 1) {
-                    int d = page + 1 - seriesData.seriesContentJsons.size();
+                if (seriesData.getSeriesContentJsons().size() < page + 1) {
+                    int d = page + 1 - seriesData.getSeriesContentJsons().size();
                     for (int i = 0; i < d; i++) {
-                        seriesData.seriesContentJsons.add("");
+                        seriesData.getSeriesContentJsons().add("");
                     }
                 }
-                seriesData.seriesContentJsons.set(page, s);
+                seriesData.getSeriesContentJsons().set(page, s);
                 seriesData.save();
 
                 formatContent(seriesContentJson, page);
@@ -214,9 +214,9 @@ class SeriesContentModel {
     private void formatContent(SeriesContentJson seriesContentJson, int page) {
         if (page == 1) {
             Log.d(TAG, "onResponse: 第一页");
-            seriesData.lastPage = 1;
-            seriesData.lastReplyCount = seriesContentJson.getReplyCount();
-            seriesData.po.add(seriesContentJson.getUserid());
+            seriesData.setLastPage(1);
+            seriesData.setLastReplyCount(seriesContentJson.getReplyCount());
+            seriesData.getPo().add(seriesContentJson.getUserid());
             seriesData.save();
 
             po.add(seriesContentJson.getUserid());
@@ -439,8 +439,8 @@ class SeriesContentModel {
         /**
          * 存一下最新看到的页数和最新的回复数
          */
-        seriesData.lastPage = page;
-        seriesData.lastReplyCount = seriesContentJson.getReplyCount();
+        seriesData.setLastPage(page);
+        seriesData.setLastReplyCount(seriesContentJson.getReplyCount());
         seriesData.save();
         /**
          * 已经搞定了所有的事了，开始修改页数
@@ -485,19 +485,19 @@ class SeriesContentModel {
         //没找到
         if (seriesDatas.size() == 0) {
             seriesData = new SeriesData();
-            seriesData.seriesid = id;
+            seriesData.setSeriesid(id);
             hasCache = false;
         } else {
             //找到了
             seriesData = seriesDatas.get(0);
             //虽然缓存了但是没有数据
-            if (seriesDatas.get(0).seriesContentJsons.size() == 0) {
+            if (seriesDatas.get(0).getSeriesContentJsons().size() == 0) {
                 seriesData.delete();
                 loadFirst();
             }
-            backpage = seriesData.lastPage;
+            backpage = seriesData.getLastPage();
             frontpage = backpage - 1;
-            po = seriesData.po;
+            po = seriesData.getPo();
             hasCache = true;
         }
         loadPage(backpage);
@@ -505,9 +505,9 @@ class SeriesContentModel {
 
     private void loadPage(int page) {
         //若存在缓存则检测数组下标是否越界并获取缓存
-        if (hasCache && seriesData.seriesContentJsons.size() > page && seriesData.seriesContentJsons.get(page) != null && !"".equals(seriesData.seriesContentJsons.get(page))) {
-            Log.d(TAG, "loadPage: 缓存加载" + seriesData.seriesContentJsons.get(page));
-            SeriesContentJson seriesContentJson = new Gson().fromJson(seriesData.seriesContentJsons.get(page), SeriesContentJson.class);
+        if (hasCache && seriesData.getSeriesContentJsons().size() > page && seriesData.getSeriesContentJsons().get(page) != null && !"".equals(seriesData.getSeriesContentJsons().get(page))) {
+            Log.d(TAG, "loadPage: 缓存加载" + seriesData.getSeriesContentJsons().get(page));
+            SeriesContentJson seriesContentJson = new Gson().fromJson(seriesData.getSeriesContentJsons().get(page), SeriesContentJson.class);
             formatContent(seriesContentJson, page);
         } else {
             getPageFromNet(page);

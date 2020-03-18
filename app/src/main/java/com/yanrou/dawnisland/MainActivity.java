@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
          */
         List<CookieData> cookieData = LitePal.findAll(CookieData.class);
         if (cookieData.size() > 0) {
-            HttpUtil.cookie = cookieData.get(0).userHash;
+            HttpUtil.cookie = cookieData.get(0).getUserHash();
         }
         /**
          * 初始化

@@ -87,8 +87,8 @@ public class CookiesManageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 CookieData cookieData = new CookieData();
-                cookieData.userHash = cookieHash.getText().toString();
-                cookieData.cookieName = cookieName.getText().toString();
+                cookieData.setUserHash(cookieHash.getText().toString());
+                cookieData.setCookieName(cookieName.getText().toString());
                 cookieData.save();
                 dialog.dismiss();
             }
