@@ -1,58 +1,22 @@
-<!--
-  ~ Copyright 2018 The app Open Source Project
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~      http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!--
-        <PreferenceCategory app:title="@string/messages_header">
-
-            <EditTextPreference
-                app:key="signature"
-                app:title="@string/signature_title"
-                app:useSimpleSummaryProvider="true" />
-
-            <ListPreference
-                app:defaultValue="reply"
-                app:entries="@array/reply_entries"
-                app:entryValues="@array/reply_values"
-                app:key="reply"
-                app:title="@string/reply_title"
-                app:useSimpleSummaryProvider="true" />
-
-        </PreferenceCategory>
-
-        <PreferenceCategory app:title="@string/sync_header">
-
-            <SwitchPreferenceCompat
-                app:key="sync"
-                app:title="@string/sync_title" />
-
-            <SwitchPreferenceCompat
-                app:dependency="sync"
-                app:key="attachment"
-                app:summaryOff="@string/attachment_summary_off"
-                app:summaryOn="@string/attachment_summary_on"
-                app:title="@string/attachment_title" />
-
-        </PreferenceCategory>
-    -->
-    <PreferenceCategory android:title="Preference category">
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="switch_preference_1"
-            android:title="Switch preference" />
+    <PreferenceCategory android:title="常规">
+        <EditTextPreference
+          android:defaultValue="missing"
+          android:key="subscriber_id"
+          android:title="订阅ID" />
+        <ListPreference
+          android:key="time_format"
+          android:defaultValue="original"
+          android:entries="@array/time_format_entries"
+          android:entryValues="@array/time_format_values"
+          android:title="设置时间显示模式" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="外观">
+        <Preference
+          android:key="customize_sizes_activity"
+          android:title="串卡片显示">
+            <intent android:action="com.yanrou.dawnisland.settings.CustomizeSizesActivity"/>
+        </Preference>
+    </PreferenceCategory>
+
 </PreferenceScreen>
