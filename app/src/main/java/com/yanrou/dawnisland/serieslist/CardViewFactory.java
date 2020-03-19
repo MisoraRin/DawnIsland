@@ -31,7 +31,7 @@ public class CardViewFactory {
     public static final String HEAD_BAR_MARGIN_TOP = "head_bar_margin_top";
     public static final String CONTENT_MARGIN_TOP = "content_margin_top";
     public static final String CONTENT_MARGIN_LEFT = "content_margin_left";
-    public static final String COTENT_MARGIN_RIGHT = "cotent_margin_right";
+    public static final String CONTENT_MARGIN_RIGHT = "content_margin_right";
     public static final String CONTENT_MARGIN_BOTTOM = "content_margin_bottom";
     public static final String LETTER_SPACE = "letter_space";
     public static final String LINE_HEIGHT = "line_height";
@@ -157,7 +157,7 @@ public class CardViewFactory {
         headBarMarginTop = sharedPreferences.getInt(HEAD_BAR_MARGIN_TOP, DEFAULT_CARDVIEW_PADDING);
         contentMarginTop = sharedPreferences.getInt(CONTENT_MARGIN_TOP, dip2px(8));
         contentMarginLeft = sharedPreferences.getInt(CONTENT_MARGIN_LEFT, DEFAULT_CARDVIEW_PADDING);
-        contentMarginRight = sharedPreferences.getInt(COTENT_MARGIN_RIGHT, DEFAULT_CARDVIEW_PADDING);
+        contentMarginRight = sharedPreferences.getInt(CONTENT_MARGIN_RIGHT, DEFAULT_CARDVIEW_PADDING);
         contentMarginBottom = sharedPreferences.getInt(CONTENT_MARGIN_BOTTOM, DEFAULT_CARDVIEW_PADDING);
         letterSpace = sharedPreferences.getInt(LETTER_SPACE, 0);
         lineHeight = sharedPreferences.getInt(LINE_HEIGHT, 0);
@@ -314,7 +314,6 @@ public class CardViewFactory {
         public MyCardView(Context context) {
             super(context);
         }
-
 
         public ConstraintLayout getConstraintLayout() {
             return constraintLayout;

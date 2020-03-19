@@ -34,6 +34,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.yanrou.dawnisland.database.CookieData;
 import com.yanrou.dawnisland.json2class.ForumJson;
 import com.yanrou.dawnisland.serieslist.SeriesFragment;
+import com.yanrou.dawnisland.settings.SettingsActivity;
 import com.yanrou.dawnisland.trend.TrandFragment;
 import com.yanrou.dawnisland.util.HttpUtil;
 import com.yanrou.dawnisland.util.ReadableTime;
@@ -50,6 +51,7 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -85,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.setting:
-                //Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                Intent intent = new Intent(MainActivity.this, CustomizeSizeActivity.class);
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+
                 startActivity(intent);
                 break;
             case R.id.cookie_button:

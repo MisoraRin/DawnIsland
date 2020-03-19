@@ -88,5 +88,15 @@
         <item>⊂彡☆))∀`)</item>
         <item>(´∀((☆ミつ"</item>
     </string-array>
+    <!-- Time Format Preference -->
+    <string-array name="time_format_entries">
+        <item>原始</item>
+        <item>简易</item>
+    </string-array>
+
+    <string-array name="time_format_values">
+        <item>原始</item>
+        <item>简易</item>
+    </string-array>
 
 </resources>

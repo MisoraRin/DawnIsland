@@ -41,6 +41,7 @@
     <plurals name="year">
         <item quantity="other">年</item>
     </plurals>
+    <string name="title_activity_settings">Settings</string>
 
 
 </resources>

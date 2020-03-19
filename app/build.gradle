@@ -5,7 +5,6 @@ apply plugin: 'bugly'
 apply from: 'rabbit-plugin.gradle'
 
 
-
 bugly {
     appId = '65043f91b1' // 注册时分配的App ID
     appKey = '51c8d927-9fcf-4b58-8574-f5a434babc90' // 注册时分配的App Key
@@ -74,11 +73,8 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport:3.1.9'
 
 
-
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.1'
 
     implementation rootProject.ext.rabbitDependence
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.0-beta-5"
 }
-
-

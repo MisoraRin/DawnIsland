@@ -73,7 +73,7 @@ public class SeriesContentAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.seris_content_card, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.series_content_card, parent, false);
             return new SeriesContentView(view);
         } else if (viewType == TYPE_FOOTER) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.series_content_list_footer, parent, false);
