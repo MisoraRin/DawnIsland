@@ -19,18 +19,8 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="显示">
-        <Preference
-          app:title="设置串卡片布局">
-<!--          app:fragment="com.yanrou.dawnisland.settings.CustomizeSizesFragment">-->
-            <intent
-              android:action="com.yanrou.dawnisland.settings.CustomizeActivity"/>
-
-
-<!--          app:fragment="com.yanrou.dawnisland.settings.CustomizeSizeActivity2"/>-->
-<!--            <intent-->
-<!--              android:targetPackage="com.yanrou.dawnisland.settings"-->
-<!--            android:targetClass="settings.CustomizeSizeActivity"/>-->
-
+        <Preference app:title="设置串卡片布局">
+            <intent android:action="com.yanrou.dawnisland.settings.CustomizeActivity"/>
         </Preference>
 
     </PreferenceCategory>

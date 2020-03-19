@@ -6,16 +6,17 @@ import android.text.SpannableString;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.google.android.material.card.MaterialCardView;
 import com.yanrou.dawnisland.R;
+import com.yanrou.dawnisland.serieslist.CardViewFactory;
 import com.yanrou.dawnisland.span.SegmentSpacingSpan;
 
-public class CustomizeSizesFragment extends PreferenceFragmentCompat{
+public class SizesCustomizationFragment extends PreferenceFragmentCompat{
   private static final String TAG="CustmoizeSizesFragment";
   private static final String MAIN_TEXT_SIZE = "main_text_size";
   private static final String CARD_RADIUS = "card_radius";
@@ -30,26 +31,19 @@ public class CustomizeSizesFragment extends PreferenceFragmentCompat{
   private static final String CONTENT_MARGIN_BOTTOM = "content_margin_bottom";
   private static final String LETTER_SPACE = "letter_space";
   private static final String LINE_HEIGHT = "line_height";
-  private static final String SEGMENT_GAP = "seg_gap";
-  
-  private View sampleCard;
+  private static final String SEG_GAP = "seg_gap";
+
 
   private SharedPreferences.OnSharedPreferenceChangeListener listener =
-      new SharedPreferences.OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-          Log.i("Shared preference", "Preference " + key + " was updated to: " + String.valueOf(sharedPreferences.getInt(key, -1)));
+      (sharedPreferences, key) -> {
+        Log.i("Shared preference", "Preference " + key + " was updated to: " + sharedPreferences.getInt(key, -1));
 
-          Integer progress = sharedPreferences.getInt(key, -1);
-          if (progress < 0){
-            Log.e(TAG, "Error on retrieving/saving SharedPreference with key "+key );
-            return;
-          }
-//          LinearLayout li = getActivity().findViewById(R.id.demo_card_container);
-//          CardViewFactory.MyCardView cardView = (CardViewFactory.MyCardView) li.getChildAt(0);
-//          Log.d(TAG, "shred pref "+ cardView.getCookieView().getText());
-          updateDemoCard(key, progress);
+        Integer progress = sharedPreferences.getInt(key, -1);
+        if (progress < 0){
+          Log.e(TAG, "Error on retrieving/saving SharedPreference with key "+key );
+          return;
         }
+        updateDemoCard(key, progress);
       };
 
   @Override
@@ -64,24 +58,20 @@ public class CustomizeSizesFragment extends PreferenceFragmentCompat{
     getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener);
   }
 
-
-
   @Override
   public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
     setPreferencesFromResource(R.xml.sizes_preferences, rootKey);
-
   }
 
   private void updateDemoCard(String key, Integer progress){
-//    LinearLayout li = getActivity().findViewById(R.id.demo_card_container);
-//    CardViewFactory.MyCardView cardView = (CardViewFactory.MyCardView) li.getChildAt(0);
-    MaterialCardView cardView = getActivity().findViewById(R.id.sample_card);
-    ConstraintLayout SeriesConstraintLayout = cardView.findViewById(R.id.SeriesListContraintLayout);
+    LinearLayout li = getActivity().findViewById(R.id.demo_card_container);
+    CardViewFactory.MyCardView cardView = (CardViewFactory.MyCardView) li.getChildAt(0);
+    ConstraintLayout SeriesConstraintLayout = cardView.getConstraintLayout();
     ViewGroup.MarginLayoutParams CardLayoutParams = (ViewGroup.MarginLayoutParams)
-        cardView.findViewById(R.id.SeriesListContraintLayout).getLayoutParams();
-    TextView cookie = cardView.findViewById(R.id.SeriesListCookie);
+        cardView.getLayoutParams();
+    TextView cookie = cardView.getCookieView();
     ConstraintLayout.LayoutParams cookieLayoutParams = (ConstraintLayout.LayoutParams) cookie.getLayoutParams();
-    View contentView = cardView.findViewById(R.id.SeriesListContent);
+    View contentView = cardView.getContentView();
     CharSequence charSequence = ((TextView) contentView).getText();
 
       switch (key) {
@@ -122,23 +112,23 @@ public class CustomizeSizesFragment extends PreferenceFragmentCompat{
           SeriesConstraintLayout.setPadding(SeriesConstraintLayout.getPaddingLeft(), SeriesConstraintLayout.getPaddingTop(), progress, SeriesConstraintLayout.getPaddingBottom());
 
           break;
-        case CONTENT_MARGIN_BOTTOM: // ??check
+        case CONTENT_MARGIN_BOTTOM:
           SeriesConstraintLayout.setPadding(SeriesConstraintLayout.getPaddingLeft(), SeriesConstraintLayout.getPaddingTop(), SeriesConstraintLayout.getPaddingRight(), progress);
 
           break;
-        case LETTER_SPACE: // ??check
+        case LETTER_SPACE:
           float i = progress * 1.0f;
           i /= 50;
           ((TextView) contentView).setLetterSpacing(i);
           break;
-        case LINE_HEIGHT: // ??check
+        case LINE_HEIGHT:
           if (charSequence instanceof SpannableString) {
             SegmentSpacingSpan[] segmentSpacingSpans = ((SpannableString) charSequence).getSpans(0, charSequence.length(), SegmentSpacingSpan.class);
             segmentSpacingSpans[0].setmHeight(progress);
           }
           contentView.requestLayout();
           break;
-        case SEGMENT_GAP: // ??check
+        case SEG_GAP:
           if (charSequence instanceof SpannableString) {
             SegmentSpacingSpan[] segmentSpacingSpans = ((SpannableString) charSequence).getSpans(0, charSequence.length(), SegmentSpacingSpan.class);
             segmentSpacingSpans[0].setSegmentGap(progress);

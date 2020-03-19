@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.ViewGroup;
@@ -302,7 +301,7 @@ public class CardViewFactory {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, displayMetrics);
     }
 
-    public static class MyCardView extends MaterialCardView {
+    public class MyCardView extends MaterialCardView {
         String id;
         String forum;
         private ConstraintLayout constraintLayout;
@@ -315,15 +314,6 @@ public class CardViewFactory {
         public MyCardView(Context context) {
             super(context);
         }
-
-        public MyCardView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        public MyCardView(Context context, AttributeSet attrs, int defStyleAttr) {
-            super(context, attrs, defStyleAttr);
-        }
-
 
         public ConstraintLayout getConstraintLayout() {
             return constraintLayout;
