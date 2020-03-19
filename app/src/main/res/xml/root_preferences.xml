@@ -1,22 +1,38 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="常规">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="常规">
+
         <EditTextPreference
-          android:defaultValue="missing"
-          android:key="subscriber_id"
-          android:title="订阅ID" />
+          app:key="subscriber_id"
+          app:title="订阅"
+          app:useSimpleSummaryProvider="true" />
+
         <ListPreference
-          android:key="time_format"
-          android:defaultValue="original"
-          android:entries="@array/time_format_entries"
-          android:entryValues="@array/time_format_values"
-          android:title="设置时间显示模式" />
+          app:defaultValue="原始"
+          app:entries="@array/time_format_entries"
+          app:entryValues="@array/time_format_values"
+          app:key="time_format"
+          app:title="设置时间显示格式"
+          app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
-    <PreferenceCategory android:title="外观">
+
+    <PreferenceCategory app:title="显示">
         <Preference
-          android:key="customize_sizes_activity"
-          android:title="串卡片显示">
-            <intent android:action="com.yanrou.dawnisland.settings.CustomizeSizesActivity"/>
+          app:title="设置串卡片布局">
+<!--          app:fragment="com.yanrou.dawnisland.settings.CustomizeSizesFragment">-->
+            <intent
+              android:action="com.yanrou.dawnisland.settings.CustomizeActivity"/>
+
+
+<!--          app:fragment="com.yanrou.dawnisland.settings.CustomizeSizeActivity2"/>-->
+<!--            <intent-->
+<!--              android:targetPackage="com.yanrou.dawnisland.settings"-->
+<!--            android:targetClass="settings.CustomizeSizeActivity"/>-->
+
         </Preference>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

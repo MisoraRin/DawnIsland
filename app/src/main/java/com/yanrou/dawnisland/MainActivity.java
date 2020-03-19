@@ -52,6 +52,8 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+//import com.yanrou.dawnisland.settings.CustomizeSizeActivity;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
@@ -87,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.setting:
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+//                Intent intent = new Intent(MainActivity.this, CustomizeSizeActivity.class);
+
                 startActivity(intent);
                 break;
             case R.id.cookie_button:

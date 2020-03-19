@@ -20,15 +20,23 @@
       android:supportsRtl="true"
       android:theme="@style/MyAppTheme"
       tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".settings.CustomizeActivity">
+            <intent-filter>
+                <action android:name="com.yanrou.dawnisland.settings.CustomizeActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
           android:name=".settings.SettingsActivity"
           android:label="@string/title_activity_settings" />
         <activity android:name=".imageviewer.ImageViewerView" />
         <activity android:name=".settings.CustomizeSizesActivity">
-            <intent-filter>
-                <action android:name="com.yanrou.dawnisland.settings.CustomizeSizesActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+<!--            <intent-filter>-->
+<!--                <action android:name="com.yanrou.dawnisland.settings.CustomizeSizesActivity" />-->
+
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity android:name=".CookiesManageActivity" />
         <activity

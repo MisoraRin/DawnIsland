@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  tools:context=".settings.CustomizeActivity">
+<!--    <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--      android:layout_width="match_parent"-->
+<!--      android:layout_height="wrap_content">-->
+        <include
+          android:id="@+id/sample_card"
+          android:layout_height="wrap_content"
+          android:layout_width="match_parent"
+          layout="@layout/series_card" />
+<!--    </androidx.appcompat.widget.LinearLayoutCompat>-->
+<!--    <view class="com.yanrou.dawnisland.serieslist.CardViewFactory$MyCardView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/sample_my_card_view"-->
+<!--      app:elevation="20dp"-->
+<!--      app:cardElevation="20dp">-->
+<!--    </view>-->
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/demo_card_container"
+      android:orientation="horizontal"/>
+    <fragment
+      android:name="com.yanrou.dawnisland.settings.CustomizeSizesFragment"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+        android:id="@+id/prefs"/>
+
+</LinearLayout>

@@ -30,7 +30,7 @@ public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
-        View root = inflater.inflate(R.layout.seris_content_card, parent, false);
+        View root = inflater.inflate(R.layout.series_content_card, parent, false);
         return new ViewHolder(root);
     }
 

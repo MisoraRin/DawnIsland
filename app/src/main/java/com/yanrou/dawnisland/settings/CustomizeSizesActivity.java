@@ -66,31 +66,7 @@ public class CustomizeSizesActivity extends AppCompatActivity {
     }
 
     void loadSettings(){
-        loadSubscriberID();
-        loadTimeFormat();
         loadCardViewSettings();
-    }
-
-    private void loadSubscriberID(){}
-
-    private void loadTimeFormat() {
-//        Spinner timeFormatSetter = findViewById(R.id.time_format_setter);
-//        String[] items = new String[]{"Time FormatA", "Time FormatB"};
-//        StringArrayAdapter adapter = new StringArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items);
-//        timeFormatSetter.setAdapter(adapter);
-//        timeFormatSetter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view,
-//                                       int position, long id) {
-//                // Here you get the current item (a User object) that is selected by its position
-//                String format = adapter.getItem(position);
-//                // Here you can do the action you want to...
-//                Toast.makeText(getApplicationContext(), "Selected time format:"+format, Toast.LENGTH_SHORT).show();
-//                Log.d(TAG, "TODO: add time format conversion!!");
-//            }
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapter) {  }
-//        });
     }
 
 
@@ -224,7 +200,7 @@ public class CustomizeSizesActivity extends AppCompatActivity {
                     break;
                 case CONTENT_MARGIN_RIGHT:
                     SeriesConstraintLayout.setPadding(SeriesConstraintLayout.getPaddingLeft(), SeriesConstraintLayout.getPaddingTop(), progress, SeriesConstraintLayout.getPaddingBottom());
-                    sharedPreferences.edit().putInt(CardViewFactory.COTENT_MARGIN_RIGHT, progress).apply();
+                    sharedPreferences.edit().putInt(CardViewFactory.CONTENT_MARGIN_RIGHT, progress).apply();
                     break;
                 case CONTENT_MARGIN_BOTTOM:
                     SeriesConstraintLayout.setPadding(SeriesConstraintLayout.getPaddingLeft(), SeriesConstraintLayout.getPaddingTop(), SeriesConstraintLayout.getPaddingRight(), progress);
