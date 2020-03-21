@@ -302,8 +302,8 @@ public class CardViewFactory {
     }
 
     public class MyCardView extends MaterialCardView {
-        String id;
-        String forum;
+        public String id;
+        public String forum;
         private ConstraintLayout constraintLayout;
         private TextView cookieView;
         private TextView timeView;
