@@ -32,6 +32,7 @@ import com.google.gson.reflect.TypeToken;
 import com.susion.rabbit.Rabbit;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.yanrou.dawnisland.database.CookieData;
+import com.yanrou.dawnisland.feed.FeedFragment;
 import com.yanrou.dawnisland.json2class.ForumJson;
 import com.yanrou.dawnisland.serieslist.SeriesFragment;
 import com.yanrou.dawnisland.settings.SettingsActivity;
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     SeriesFragment seriesFragment;
     TrandFragment trandFragment;
+    FeedFragment feedFragment;
 
     String forumName;
 
@@ -171,11 +173,15 @@ public class MainActivity extends AppCompatActivity {
             myViewPagerAdapter.addFragment(seriesFragment);
             trandFragment = TrandFragment.newInstance(this);
             myViewPagerAdapter.addFragment(trandFragment);
+            feedFragment = new FeedFragment();
+            myViewPagerAdapter.addFragment(feedFragment);
         } else {
             seriesFragment = (SeriesFragment) getSupportFragmentManager().getFragments().get(0);
             myViewPagerAdapter.addFragment(seriesFragment);
             trandFragment = (TrandFragment) getSupportFragmentManager().getFragments().get(1);
             myViewPagerAdapter.addFragment(trandFragment);
+            feedFragment = (FeedFragment) getSupportFragmentManager().getFragments().get(2);
+            myViewPagerAdapter.addFragment(feedFragment);
         }
 
         toolbar.setOnClickListener(v -> {
