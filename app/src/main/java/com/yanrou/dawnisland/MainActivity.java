@@ -29,6 +29,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.SubtitleCollapsingToolbarLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.susion.rabbit.Rabbit;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.yanrou.dawnisland.database.CookieData;
 import com.yanrou.dawnisland.json2class.ForumJson;
@@ -50,8 +51,6 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-
-//import com.susion.rabbit.Rabbit;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -111,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         sharedPreferences = getSharedPreferences("DawnIsland", MODE_PRIVATE);
 
-//        Rabbit.INSTANCE.open(true, this);
+        Rabbit.INSTANCE.open(true, this);
 
         forumAdapter = new ForumAdapter(forumsList, getApplicationContext());
         /**

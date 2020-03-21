@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Html;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -156,6 +157,7 @@ class SeriesContentModel {
     }
 
     /**
+     * 如果采用https://adnmb2.com/Api/ref?id=23294468形式的话， 这个function就没有意义了
      * 用来获取引用内容
      * 引用内容分为串内引用和串外引用，这个是用来获取串外引用的跳转原帖链接的
      *
@@ -256,6 +258,7 @@ class SeriesContentModel {
              */
             SpannableStringBuilder cookie = new SpannableStringBuilder(temp.getUserid());
             ForegroundColorSpan normalColor = new ForegroundColorSpan(Color.parseColor("#B0B0B0"));
+            ForegroundColorSpan quoteColor = new ForegroundColorSpan(Color.parseColor("#19A8A8")); // primary color
             ForegroundColorSpan adminColor = new ForegroundColorSpan(Color.parseColor("#FF0F0F"));
             ForegroundColorSpan poColor = new ForegroundColorSpan(Color.parseColor("#000000"));
 
@@ -300,7 +303,7 @@ class SeriesContentModel {
                 ClickableSpan clickableSpan = new ClickableSpan() {
                     @Override
                     public void updateDrawState(@NonNull TextPaint ds) {
-                        //super.updateDrawState(ds);
+                        super.updateDrawState(ds);
                     }
 
                     @Override
@@ -323,32 +326,68 @@ class SeriesContentModel {
             }
 
             /*****************************************************************8
+             * temporary solution for quotation, needs rework after restructuring
              * 支持点击展开
              * 暂时先取消掉这一段
              * TODO 读取设置选择这里是打开对话框还是直接展开
+             * TODO **目前仅支持串内引用**
              */
-                    /*
-                    ForegroundColorSpan[] foregroundColorSpans = contentSpan.getSpans(0, contentSpan.length(), ForegroundColorSpan.class);
-                    Log.d(TAG, "onResponse: " + foregroundColorSpans.length);
-                    if (foregroundColorSpans.length != 0) {
-                        Log.d(TAG, "onResponse: 进入选字阶段！");
-                        for (int j = 0; j < foregroundColorSpans.length; j++) {
 
-                            int start = contentSpan.getSpanStart(foregroundColorSpans[j]);
-                            int end = contentSpan.getSpanEnd(foregroundColorSpans[j]);
+            ForegroundColorSpan[] foregroundColorSpans = contentSpan.getSpans(0, contentSpan.length(), ForegroundColorSpan.class);
+            Log.d(TAG, "onResponse: " + foregroundColorSpans.length);
+            if (foregroundColorSpans.length != 0) {
+                Log.d(TAG, "onResponse: 进入选字阶段！");
+                for (int j = 0; j < foregroundColorSpans.length; j++) {
 
-                            CharSequence charSequence = contentSpan.subSequence(start, end);
+                    int start = contentSpan.getSpanStart(foregroundColorSpans[j]);
+                    int end = contentSpan.getSpanEnd(foregroundColorSpans[j]);
 
-                            if (charSequence.toString().contains(">>No.")) {
-                                Log.d(TAG, "onResponse: 起" + start + " 末" + end + contentSpan.subSequence(start, end).toString().substring(5));
-                                String seriesId = contentSpan.subSequence(start, end).toString().substring(5);
-                                if (start != -1 && end != -1) {
-                                    //contentSpan.setSpan(clickableSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                                }
-                            }
-                        }
+                    CharSequence charSequence = contentSpan.subSequence(start, end);
+
+                    if (charSequence.toString().contains(">>No.")) {
+                        Log.d(TAG, "onResponse: 起" + start + " 末" + end + contentSpan.subSequence(start, end).toString().substring(5));
+                        String seriesId = contentSpan.subSequence(start, end).toString().substring(5);
+                        CharSequence originalText = contentSpan.subSequence(end, contentSpan.length());
+                          Log.d(TAG, "onResponse: seriesID" + seriesId + " ");
+                          ReplysBean quote = null;
+                          for (ReplysBean d : replysBeans) {
+                              if (seriesId.equals(d.getSeriesId())){
+                                  quote = d;
+                                  break;
+                              }
+                          }
+                          if (quote != null){
+                              ReplysBean finalQuote = quote;
+                              ClickableSpan clickableSpan = new ClickableSpan() {
+                                  @Override
+                                  public void onClick(@NonNull View widget) {
+                                      if (widget instanceof TextView) {
+                                          Log.d(TAG,"Clicked on quote " + finalQuote.getSeriesId());
+                                          CharSequence charSequence = ((TextView) widget).getText();
+                                          if (charSequence instanceof Spannable) {
+                                              charSequence = charSequence.subSequence(start,end) + "\n"
+                                                  + finalQuote.getUserid() +" " + finalQuote.getNow() + "\n"
+                                                  + finalQuote.getContent();
+                                              int divider = charSequence.length();
+                                              Spannable s = new SpannableString(charSequence+ "\n" + Html.fromHtml(originalText.toString()));
+                                              s.setSpan(quoteColor, start, divider,Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                                              ((TextView) widget).setText(s);
+                                          }
+                                      }
+                                  }
+
+                                  @Override
+                                  public void updateDrawState(@NonNull TextPaint ds) {
+                                      super.updateDrawState(ds);
+                                  }
+                              };
+                              contentSpan.setSpan(clickableSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                          }
+
                     }
-                     */
+                }
+            }
+
             contentItem.content = contentSpan;
 
             if (temp.getSage() == 1) {
