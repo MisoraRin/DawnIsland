@@ -29,8 +29,7 @@ buildscript {
 
 allprojects {
     repositories {
-        maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
-        maven{ url'http://maven.aliyun.com/nexus/content/groups/public/' }
+
         google()
         mavenCentral()
         jcenter()
@@ -38,6 +37,8 @@ allprojects {
         maven { url 'http://maven.google.com' }
         maven { url 'http://jcenter.bintray.com'}
         maven { url 'https://dl.bintray.com/richzjc/maven' }
+        maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
+        maven{ url'http://maven.aliyun.com/nexus/content/groups/public/' }
     }
 }
 
