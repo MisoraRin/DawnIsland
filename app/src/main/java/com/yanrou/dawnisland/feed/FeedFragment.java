@@ -19,16 +19,19 @@ import com.yanrou.dawnisland.json2class.FeedJson;
 
 public class FeedFragment extends Fragment {
 
-    private FeedViewModel mViewModel;
-    private RecyclerView recyclerView;
-    private SmartRefreshLayout refreshLayout;
-    private MultiTypeAdapter multiTypeAdapter;
+  private FeedViewModel mViewModel;
+  private RecyclerView recyclerView;
+  private SmartRefreshLayout refreshLayout;
+
+  private MultiTypeAdapter multiTypeAdapter;
 
     public static FeedFragment newInstance() {
         return new FeedFragment();
     }
 
-    @Override
+
+
+  @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.feed_fragment, container, false);
@@ -39,23 +42,25 @@ public class FeedFragment extends Fragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(FeedViewModel.class);
+      super.onActivityCreated(savedInstanceState);
 
-        multiTypeAdapter = new MultiTypeAdapter(mViewModel.getFeedJsons());
-        multiTypeAdapter.register(FeedJson.class, new FeedItemViewBinder());
+      mViewModel = new ViewModelProvider(this).get(FeedViewModel.class);
 
-        mViewModel.getDataChangeMutableLiveData().observe(getViewLifecycleOwner(), dataChange -> dataChange.notifyDataSetChanged(multiTypeAdapter));
+      multiTypeAdapter = new MultiTypeAdapter(mViewModel.getFeedJsons());
+      multiTypeAdapter.register(FeedJson.class, new FeedItemViewBinder());
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.setAdapter(multiTypeAdapter);
-        refreshLayout.setEnableAutoLoadMore(false);
-        refreshLayout.setOnLoadMoreListener(refreshLayout -> {
-            mViewModel.loadNextPage();
-            refreshLayout.finishLoadMore();
-        });
-        refreshLayout.setOnRefreshListener(refreshLayout1 -> refreshLayout1.finishRefresh(0));
-        mViewModel.getFirstPage();
+      mViewModel.getInsertPosMutableLiveData().observe(getViewLifecycleOwner(),
+          pos ->  multiTypeAdapter.notifyItemInserted(pos) );
+
+      recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+      recyclerView.setAdapter(multiTypeAdapter);
+      refreshLayout.setEnableAutoLoadMore(false);
+      refreshLayout.setOnLoadMoreListener(refreshLayout -> {
+        mViewModel.loadNextPage();
+        refreshLayout.finishLoadMore();
+      });
+      refreshLayout.setOnRefreshListener(refreshLayout1 -> refreshLayout1.finishRefresh(0));
+
     }
 
     @Override
