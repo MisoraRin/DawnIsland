@@ -52,8 +52,9 @@ public class FeedFragment extends Fragment {
         refreshLayout.setEnableAutoLoadMore(false);
         refreshLayout.setOnLoadMoreListener(refreshLayout -> {
             mViewModel.loadNextPage();
+            refreshLayout.finishLoadMore();
         });
-
+        refreshLayout.setOnRefreshListener(refreshLayout1 -> refreshLayout1.finishRefresh(0));
         mViewModel.getFirstPage();
     }
 

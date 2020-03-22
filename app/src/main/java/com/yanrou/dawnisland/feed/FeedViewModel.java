@@ -5,7 +5,6 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.drakeet.multitype.MultiTypeAdapter;
 import com.google.gson.Gson;
@@ -57,12 +56,12 @@ public class FeedViewModel extends AndroidViewModel {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String string = response.body().string();
-                if ("".equals(string)) {
+                if (!"".equals(string)) {
                     List<FeedJson> list = new Gson().fromJson(string, new TypeToken<List<FeedJson>>() {
                     }.getType());
 
                     feedJsons.addAll(list);
-                    dataChangeMutableLiveData.postValue(RecyclerView.Adapter::notifyDataSetChanged);
+                    dataChangeMutableLiveData.postValue(adapter -> adapter.notifyDataSetChanged());
                     page++;
                 } else {
                     //没有下一页了
