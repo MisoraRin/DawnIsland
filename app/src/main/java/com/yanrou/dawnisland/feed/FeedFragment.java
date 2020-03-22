@@ -12,14 +12,17 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.drakeet.multitype.MultiTypeAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.yanrou.dawnisland.R;
+import com.yanrou.dawnisland.json2class.FeedJson;
 
 public class FeedFragment extends Fragment {
 
     private FeedViewModel mViewModel;
     private RecyclerView recyclerView;
     private SmartRefreshLayout refreshLayout;
+    private MultiTypeAdapter multiTypeAdapter;
 
     public static FeedFragment newInstance() {
         return new FeedFragment();
@@ -39,10 +42,17 @@ public class FeedFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(FeedViewModel.class);
 
-        mViewModel.getDataChangeMutableLiveData().observe(getViewLifecycleOwner(), FeedViewModel.DataChange::notifyDataSetChanged);
+        multiTypeAdapter = new MultiTypeAdapter(mViewModel.getFeedJsons());
+        multiTypeAdapter.register(FeedJson.class, new FeedItemViewBinder());
+
+        mViewModel.getDataChangeMutableLiveData().observe(getViewLifecycleOwner(), dataChange -> dataChange.notifyDataSetChanged(multiTypeAdapter));
+
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.setAdapter(mViewModel.getMultiTypeAdapter());
+        recyclerView.setAdapter(multiTypeAdapter);
         refreshLayout.setEnableAutoLoadMore(false);
+        refreshLayout.setOnLoadMoreListener(refreshLayout -> {
+            mViewModel.loadNextPage();
+        });
 
         mViewModel.getFirstPage();
     }
@@ -51,5 +61,6 @@ public class FeedFragment extends Fragment {
     public void onStop() {
         super.onStop();
         refreshLayout = null;
+        multiTypeAdapter = null;
     }
 }

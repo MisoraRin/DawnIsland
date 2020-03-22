@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.drakeet.multitype.MultiTypeAdapter;
 import com.google.gson.Gson;
@@ -27,7 +28,7 @@ public class FeedViewModel extends AndroidViewModel {
 
 
     private MutableLiveData<DataChange> dataChangeMutableLiveData = new MutableLiveData<>();
-    private MultiTypeAdapter multiTypeAdapter;
+
     private List<FeedJson> feedJsons;
     private String subscriberId;
     private int page = 1;
@@ -35,8 +36,7 @@ public class FeedViewModel extends AndroidViewModel {
     public FeedViewModel(Application application) {
         super(application);
         feedJsons = new ArrayList<>();
-        multiTypeAdapter = new MultiTypeAdapter(feedJsons);
-        multiTypeAdapter.register(FeedJson.class, new FeedItemViewBinder());
+
         subscriberId = PreferenceManager.getDefaultSharedPreferences(getApplication()).getString("subscriber_id", "666");
     }
 
@@ -45,9 +45,6 @@ public class FeedViewModel extends AndroidViewModel {
         return dataChangeMutableLiveData;
     }
 
-    public MultiTypeAdapter getMultiTypeAdapter() {
-        return multiTypeAdapter;
-    }
 
     private void getFeed() {
         HttpUtil.sendOkHttpRequest("https://nmb.fastmirror.org/Api/feed?uuid=" + subscriberId + "&page=" + page, new Callback() {
@@ -59,18 +56,21 @@ public class FeedViewModel extends AndroidViewModel {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                List<FeedJson> list = new Gson().fromJson(response.body().string(), new TypeToken<List<FeedJson>>() {
-                }.getType());
-                feedJsons.addAll(list);
-                dataChangeMutableLiveData.postValue(FeedViewModel.this::notifyDataSetChanged);
-                page++;
+                final String string = response.body().string();
+                if ("".equals(string)) {
+                    List<FeedJson> list = new Gson().fromJson(string, new TypeToken<List<FeedJson>>() {
+                    }.getType());
+
+                    feedJsons.addAll(list);
+                    dataChangeMutableLiveData.postValue(RecyclerView.Adapter::notifyDataSetChanged);
+                    page++;
+                } else {
+                    //没有下一页了
+                }
             }
         });
     }
 
-    private void notifyDataSetChanged() {
-        multiTypeAdapter.notifyDataSetChanged();
-    }
 
     void getFirstPage() {
         if (page == 1) {
@@ -78,12 +78,20 @@ public class FeedViewModel extends AndroidViewModel {
         }
     }
 
+    void loadNextPage() {
+        getFeed();
+    }
+
+    public List<FeedJson> getFeedJsons() {
+        return feedJsons;
+    }
+
     interface DataChange {
         /**
          * 用来更新recyclerview数据
          */
 
-        void notifyDataSetChanged();
+        void notifyDataSetChanged(MultiTypeAdapter adapter);
     }
 
 
