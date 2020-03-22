@@ -62,6 +62,7 @@
             android:id="@+id/main_page_viewer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#F8F8F9"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         </com.yanrou.dawnisland.DawnViewPager>
