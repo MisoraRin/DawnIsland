@@ -200,13 +200,15 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onPageSelected: " + position);
                 if (position == 0) {
                     subtitleCollapsingToolbarLayout.setTitle(forumName);
-
                 }
                 if (position == 1) {
                     appBarLayout.setExpanded(false);
                     forumName = subtitleCollapsingToolbarLayout.getTitle().toString();
                     subtitleCollapsingToolbarLayout.setTitle("A岛热榜");
-
+                }
+                if (position == 2) {
+                    //appBarLayout.setExpanded(false);
+                    //subtitleCollapsingToolbarLayout.setTitle("订阅");
                 }
             }
 
