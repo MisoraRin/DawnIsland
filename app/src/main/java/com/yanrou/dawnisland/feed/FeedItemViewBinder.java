@@ -3,7 +3,9 @@ package com.yanrou.dawnisland.feed;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.drakeet.multitype.ViewDelegate;
 import com.yanrou.dawnisland.content.SeriesContentActivity;
 import com.yanrou.dawnisland.json2class.FeedJson;
@@ -22,6 +24,16 @@ public class FeedItemViewBinder extends ViewDelegate<FeedJson, CardViewFactory.M
         myCardView.forum = "收藏夹";
         myCardView.id = feedJson.getId();
         myCardView.getContentView().setText(feedJson.getContent());
+        myCardView.getCookieView().setText(feedJson.getUserid());
+        if (feedJson.getExt() != null && !feedJson.getExt().equals("")) {
+            myCardView.getImageContent().setVisibility(View.VISIBLE);
+            Glide.with(myCardView.getContext())
+                    .load("https://nmbimg.fastmirror.org/thumb/" + feedJson.getImg() + feedJson.getImg())
+                    .override(250, 250)
+                    .into(myCardView.getImageContent());
+        } else {
+            myCardView.getImageContent().setVisibility(View.GONE);
+        }
     }
 
     @NotNull

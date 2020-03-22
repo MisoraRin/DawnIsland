@@ -42,7 +42,14 @@ public class FeedFragment extends Fragment {
         mViewModel.getDataChangeMutableLiveData().observe(getViewLifecycleOwner(), FeedViewModel.DataChange::notifyDataSetChanged);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.setAdapter(mViewModel.getMultiTypeAdapter());
-        mViewModel.getFeed();
+        refreshLayout.setEnableAutoLoadMore(false);
 
+        mViewModel.getFirstPage();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        refreshLayout = null;
     }
 }
