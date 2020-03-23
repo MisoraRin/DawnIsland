@@ -54,4 +54,8 @@ public class SeriesContentPresenter {
     public void jumpSuccess() {
         view.jumpSuccess();
     }
+
+    public int getReplyCount() {
+        return model.getReplyCount();
+    }
 }

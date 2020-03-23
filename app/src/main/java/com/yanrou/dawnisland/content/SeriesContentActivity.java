@@ -1,15 +1,16 @@
 package com.yanrou.dawnisland.content;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -30,6 +31,7 @@ import com.yanrou.dawnisland.database.SeriesData;
 import com.yanrou.dawnisland.util.ReadableTime;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author suche
@@ -46,6 +48,8 @@ public class SeriesContentActivity extends AppCompatActivity implements SeriesCo
     SmartRefreshLayout smartRefreshLayout;
 
     ReplyDialog replyDialog = null;
+
+    //JumpPageDialog jumpPageDialog=null;
 
     SeriesData seriesData;
 
@@ -133,19 +137,31 @@ public class SeriesContentActivity extends AppCompatActivity implements SeriesCo
 
                 break;
             case R.id.jump_page:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                /*
+                if (jumpPageDialog == null) {
+                    jumpPageDialog=new JumpPageDialog();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("seriesId", id);
+                    jumpPageDialog.setArguments(bundle);
+
+                }
+                jumpPageDialog.show(getSupportFragmentManager(), "reply");
+
+                 */
+                int pageCount = (int) Math.ceil((presenter.getReplyCount() * 1.0f) / 19);
+                AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(this));
+
+                LayoutInflater inflater = LayoutInflater.from(this);
+                View view = inflater.inflate(R.layout.jump_page_dialog, null);
+                TextView textView = view.findViewById(R.id.total_page_count);
+                textView.setText(String.valueOf(pageCount));
+                EditText editText = view.findViewById(R.id.editText);
                 builder.setTitle("跳页");
-                EditText editText = new EditText(this);
-                editText.setText("101");
-                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                builder.setView(editText);
-                builder.setPositiveButton("跳页", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        int page = Integer.parseInt(editText.getText().toString());
-                        presenter.jumpPage(page);
-                        dialog.dismiss();
-                    }
+                builder.setView(view);
+                builder.setPositiveButton("跳页", (dialog, which) -> {
+                    int page = Integer.parseInt(editText.getText().toString());
+                    presenter.jumpPage(page);
+                    dialog.dismiss();
                 });
                 builder.create().show();
                 break;

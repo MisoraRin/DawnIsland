@@ -94,6 +94,9 @@ class SeriesContentModel {
         this.presenter = presenter;
     }
 
+    int getReplyCount() {
+        return seriesData.getLastReplyCount();
+    }
 
     private void getPageFromNet(final int page) {
         Log.d(TAG, "getNextPage: " + "开始请求下一页");
