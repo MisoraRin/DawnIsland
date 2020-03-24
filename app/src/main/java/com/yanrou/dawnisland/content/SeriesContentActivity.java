@@ -146,7 +146,6 @@ public class SeriesContentActivity extends AppCompatActivity implements SeriesCo
 
                 }
                 jumpPageDialog.show(getSupportFragmentManager(), "reply");
-
                  */
                 int pageCount = (int) Math.ceil((presenter.getReplyCount() * 1.0f) / 19);
                 AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(this));
