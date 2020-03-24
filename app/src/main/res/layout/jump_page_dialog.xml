@@ -6,42 +6,44 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/jump_to_first_page"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toStartOf="@+id/editText"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="首页"
+        app:layout_constraintBottom_toBottomOf="@+id/jump_to_page"
+        app:layout_constraintEnd_toStartOf="@+id/jump_to_page"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/jump_to_page" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/jump_to_page"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="1dp"
-        android:layout_marginRight="1dp"
         android:ems="10"
         android:inputType="number"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView6"
-        app:layout_constraintEnd_toStartOf="@+id/textView9"
-        app:layout_constraintStart_toEndOf="@+id/textView6" />
+        app:layout_constraintEnd_toStartOf="@+id/jump_to_end_page"
+        app:layout_constraintStart_toEndOf="@+id/jump_to_first_page"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/jump_to_end_page"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editText"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="尾页"
+        app:layout_constraintBottom_toBottomOf="@+id/jump_to_page"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editText" />
+        app:layout_constraintStart_toEndOf="@+id/jump_to_page"
+        app:layout_constraintTop_toTopOf="@+id/jump_to_page" />
 
     <TextView
         android:id="@+id/total_page_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/jump_to_page" />
 </androidx.constraintlayout.widget.ConstraintLayout>

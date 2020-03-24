@@ -27,7 +27,7 @@ public class JumpPageDialog extends DialogFragment {
         LayoutInflater inflater = LayoutInflater.from(this.getContext());
         View view = inflater.inflate(R.layout.jump_page_dialog, null);
 
-        EditText editText = view.findViewById(R.id.editText);
+        EditText editText = view.findViewById(R.id.jump_to_page);
         builder.setTitle("跳页");
         builder.setView(view);
         builder.setPositiveButton("跳页", (dialog, which) -> {

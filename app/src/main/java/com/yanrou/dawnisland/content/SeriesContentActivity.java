@@ -155,7 +155,7 @@ public class SeriesContentActivity extends AppCompatActivity implements SeriesCo
                 View view = inflater.inflate(R.layout.jump_page_dialog, null);
                 TextView textView = view.findViewById(R.id.total_page_count);
                 textView.setText(String.valueOf(pageCount));
-                EditText editText = view.findViewById(R.id.editText);
+                EditText editText = view.findViewById(R.id.jump_to_page);
                 builder.setTitle("跳页");
                 builder.setView(view);
                 builder.setPositiveButton("跳页", (dialog, which) -> {
