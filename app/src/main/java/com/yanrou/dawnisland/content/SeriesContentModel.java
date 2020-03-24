@@ -42,6 +42,9 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+/**
+ * 这个类负责获取原始数据、存储数据、读取数据
+ */
 class SeriesContentModel {
     private static final String TAG = "SeriesContentModel";
 
@@ -50,8 +53,6 @@ class SeriesContentModel {
 
     private SeriesData seriesData;
 
-    private List<String> po = new ArrayList<>();
-    private List<Object> items = new ArrayList<>();
 
     /**
      * 标记是否有缓存
@@ -87,11 +88,10 @@ class SeriesContentModel {
     private int state = 1000;
 
     private FooterView footerView = new FooterView();
-    private SeriesContentPresenter presenter;
 
-    SeriesContentModel(String id, SeriesContentPresenter presenter) {
+
+    SeriesContentModel(String id) {
         this.id = id;
-        this.presenter = presenter;
     }
 
     int getReplyCount() {
@@ -160,11 +160,11 @@ class SeriesContentModel {
     }
 
     /**
-     * 如果采用https://adnmb2.com/Api/ref?id=23294468形式的话， 这个function就没有意义了
+     *
      * 用来获取引用内容
      * 引用内容分为串内引用和串外引用，这个是用来获取串外引用的跳转原帖链接的
      *
-     * @param html
+     * @param html 获取到的html文本
      * @return
      */
     private Reference decodeHtml(String html) {
@@ -351,41 +351,41 @@ class SeriesContentModel {
                         Log.d(TAG, "onResponse: 起" + start + " 末" + end + contentSpan.subSequence(start, end).toString().substring(5));
                         String seriesId = contentSpan.subSequence(start, end).toString().substring(5);
                         CharSequence originalText = contentSpan.subSequence(end, contentSpan.length());
-                          Log.d(TAG, "onResponse: seriesID" + seriesId + " ");
-                          ReplysBean quote = null;
-                          for (ReplysBean d : replysBeans) {
-                              if (seriesId.equals(d.getSeriesId())){
-                                  quote = d;
-                                  break;
-                              }
-                          }
-                          if (quote != null){
-                              ReplysBean finalQuote = quote;
-                              ClickableSpan clickableSpan = new ClickableSpan() {
-                                  @Override
-                                  public void onClick(@NonNull View widget) {
-                                      if (widget instanceof TextView) {
-                                          Log.d(TAG,"Clicked on quote " + finalQuote.getSeriesId());
-                                          CharSequence charSequence = ((TextView) widget).getText();
-                                          if (charSequence instanceof Spannable) {
-                                              charSequence = charSequence.subSequence(start,end) + "\n"
-                                                  + finalQuote.getUserid() +" " + finalQuote.getNow() + "\n"
-                                                  + finalQuote.getContent();
-                                              int divider = charSequence.length();
-                                              Spannable s = new SpannableString(charSequence+ "\n" + Html.fromHtml(originalText.toString()));
-                                              s.setSpan(quoteColor, start, divider,Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                                              ((TextView) widget).setText(s);
-                                          }
-                                      }
-                                  }
+                        Log.d(TAG, "onResponse: seriesID" + seriesId + " ");
+                        ReplysBean quote = null;
+                        for (ReplysBean d : replysBeans) {
+                            if (seriesId.equals(d.getSeriesId())){
+                                quote = d;
+                                break;
+                            }
+                        }
+                        if (quote != null){
+                            ReplysBean finalQuote = quote;
+                            ClickableSpan clickableSpan = new ClickableSpan() {
+                                @Override
+                                public void onClick(@NonNull View widget) {
+                                    if (widget instanceof TextView) {
+                                        Log.d(TAG,"Clicked on quote " + finalQuote.getSeriesId());
+                                        CharSequence charSequence = ((TextView) widget).getText();
+                                        if (charSequence instanceof Spannable) {
+                                            charSequence = charSequence.subSequence(start,end) + "\n"
+                                                    + finalQuote.getUserid() +" " + finalQuote.getNow() + "\n"
+                                                    + finalQuote.getContent();
+                                            int divider = charSequence.length();
+                                            Spannable s = new SpannableString(charSequence+ "\n" + Html.fromHtml(originalText.toString()));
+                                            s.setSpan(quoteColor, start, divider,Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                                            ((TextView) widget).setText(s);
+                                        }
+                                    }
+                                }
 
-                                  @Override
-                                  public void updateDrawState(@NonNull TextPaint ds) {
-                                      super.updateDrawState(ds);
-                                  }
-                              };
-                              contentSpan.setSpan(clickableSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                          }
+                                @Override
+                                public void updateDrawState(@NonNull TextPaint ds) {
+                                    super.updateDrawState(ds);
+                                }
+                            };
+                            contentSpan.setSpan(clickableSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        }
 
                     }
                 }
@@ -566,7 +566,6 @@ class SeriesContentModel {
 
         state = GET_NEXT_PAGE;
         if (!wholePage) {
-            //TODO 恶性bug注意：由于a岛的机制，可能会插一条广告进来，导致实际回复条数突然间多出一条，下一次没有广告即会导致参数错误+下标越界
             Log.d(TAG, "loadPage: 因为是最后一页并且不齐全，所以要从网络加载");
             getPageFromNet(backpage);
         } else {
