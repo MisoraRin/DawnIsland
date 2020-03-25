@@ -2,9 +2,26 @@ package com.yanrou.dawnisland.json2class;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.litepal.crud.LitePalSupport;
 
+@Entity
 public class ReplysBean extends LitePalSupport {
+    /**
+     * 该回复所在的页数
+     */
+    private int page;
+
+    /**
+     * 该回复所在的页面的位置
+     */
+    private int posInPage;
+
+    /**
+     * 该回复所属的串
+     */
+    private String parentId;
     /**
      * id : 9999999
      * userid : 芦苇
@@ -62,6 +79,26 @@ public class ReplysBean extends LitePalSupport {
         this.name = name;
         this.sage = sage;
         this.status = "n";
+    }
+
+    @Generated(hash = 456867965)
+    public ReplysBean(int page, int posInPage, String parentId, String seriesId, String userid, int admin, String title, String email, String now, String content,
+                      String img, String ext, String name, int sage, String status) {
+        this.page = page;
+        this.posInPage = posInPage;
+        this.parentId = parentId;
+        this.seriesId = seriesId;
+        this.userid = userid;
+        this.admin = admin;
+        this.title = title;
+        this.email = email;
+        this.now = now;
+        this.content = content;
+        this.img = img;
+        this.ext = ext;
+        this.name = name;
+        this.sage = sage;
+        this.status = status;
     }
 
     public String getSeriesId() {
@@ -158,5 +195,29 @@ public class ReplysBean extends LitePalSupport {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getPage() {
+        return this.page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getPosInPage() {
+        return this.posInPage;
+    }
+
+    public void setPosInPage(int posInPage) {
+        this.posInPage = posInPage;
+    }
+
+    public String getParentId() {
+        return this.parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 }

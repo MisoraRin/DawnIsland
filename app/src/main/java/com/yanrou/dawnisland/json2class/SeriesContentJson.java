@@ -1,15 +1,61 @@
 package com.yanrou.dawnisland.json2class;
 
 import com.google.gson.annotations.SerializedName;
+import com.yanrou.dawnisland.database.List2String;
 
+import org.greenrobot.greendao.annotation.Convert;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.Transient;
 import org.litepal.crud.LitePalSupport;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
+@Entity
 public class SeriesContentJson extends LitePalSupport {
+    /**
+     * 未启用回复
+     */
+    private final static int NONE = 0;
+    /**
+     * 订阅po更新数量
+     */
+    private final static int NEW_PO = 1;
+    /**
+     * 订阅po更新字数
+     */
+    private final static int NEW_PO_WORD_COUNT = 2;
+    /**
+     * 订阅有新回复
+     */
+    private final static int NEW_REPLY = 3;
+    /**
+     * 支持重设po的饼干，用来追更、只看po
+     * 第一个位置是串首的饼干
+     */
+    @NotNull
+    @Convert(converter = List2String.class, columnType = String.class)
+    private List<String> po;
+    /**
+     * 上次阅读位置
+     */
+    private int lastPage;
 
+    /**
+     * 上次的回复数量，用来简单的判断有无新回复
+     */
+    private int lastReplyCount;
+    /**
+     * 指明订阅类型
+     */
+    private int substate = NONE;
+    /**
+     * 板块id
+     */
+    private int forumId;
 
     /**
      * id : 18308337
@@ -60,7 +106,34 @@ public class SeriesContentJson extends LitePalSupport {
     @SerializedName("replyCount")
     private int replyCount;
     @SerializedName("replys")
+    @Transient
     private List<ReplysBean> replys = new ArrayList<>();
+
+    @Generated(hash = 1067596231)
+    public SeriesContentJson(@NotNull List<String> po, int lastPage, int lastReplyCount, int substate, int forumId, String seriesId, String fid, String img, String ext, String now, String userid, String name, String email, String title, String content, int sage, int admin, int replyCount) {
+        this.po = po;
+        this.lastPage = lastPage;
+        this.lastReplyCount = lastReplyCount;
+        this.substate = substate;
+        this.forumId = forumId;
+        this.seriesId = seriesId;
+        this.fid = fid;
+        this.img = img;
+        this.ext = ext;
+        this.now = now;
+        this.userid = userid;
+        this.name = name;
+        this.email = email;
+        this.title = title;
+        this.content = content;
+        this.sage = sage;
+        this.admin = admin;
+        this.replyCount = replyCount;
+    }
+
+    @Generated(hash = 1367723520)
+    public SeriesContentJson() {
+    }
 
     public String getSeriesId() {
         return seriesId;
@@ -172,6 +245,46 @@ public class SeriesContentJson extends LitePalSupport {
 
     public void setReplys(List<ReplysBean> replys) {
         this.replys = replys;
+    }
+
+    public List<String> getPo() {
+        return this.po;
+    }
+
+    public void setPo(List<String> po) {
+        this.po = po;
+    }
+
+    public int getLastPage() {
+        return this.lastPage;
+    }
+
+    public void setLastPage(int lastPage) {
+        this.lastPage = lastPage;
+    }
+
+    public int getLastReplyCount() {
+        return this.lastReplyCount;
+    }
+
+    public void setLastReplyCount(int lastReplyCount) {
+        this.lastReplyCount = lastReplyCount;
+    }
+
+    public int getSubstate() {
+        return this.substate;
+    }
+
+    public void setSubstate(int substate) {
+        this.substate = substate;
+    }
+
+    public int getForumId() {
+        return this.forumId;
+    }
+
+    public void setForumId(int forumId) {
+        this.forumId = forumId;
     }
 
 
