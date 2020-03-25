@@ -4,9 +4,9 @@ import android.app.Application;
 
 import com.susion.rabbit.Rabbit;
 import com.susion.rabbit.base.config.RabbitConfig;
-import com.susion.rabbit.base.greendao.DaoMaster;
-import com.susion.rabbit.base.greendao.DaoSession;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.yanrou.dawnisland.gen.DaoMaster;
+import com.yanrou.dawnisland.gen.DaoSession;
 
 import org.greenrobot.greendao.database.Database;
 import org.litepal.LitePal;
@@ -28,6 +28,7 @@ public class MyApplication extends Application {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "DawnDB");
         Database db = helper.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
+
     }
 
     static public DaoSession getDaoSession() {
