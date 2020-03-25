@@ -21,6 +21,7 @@ buildscript {
         classpath 'com.tencent.bugly:symtabfileuploader:latest.release'
         classpath 'com.susion:rabbit-gradle-transform:1.0.1'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61"
 
         
         // NOTE: Do not place your application dependencies here; they belong

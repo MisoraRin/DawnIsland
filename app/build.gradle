@@ -7,6 +7,11 @@ apply from: 'rabbit-plugin.gradle'
 apply plugin: 'org.greenrobot.greendao'
 
 
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+
 bugly {
     appId = '65043f91b1' // 注册时分配的App ID
     appKey = '51c8d927-9fcf-4b58-8574-f5a434babc90' // 注册时分配的App Key
@@ -33,7 +38,6 @@ android {
         versionCode 7
         versionName "1.0.1-rc3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
 
     }
     buildTypes {
