@@ -4,11 +4,22 @@ apply plugin: 'bugly'
 
 apply from: 'rabbit-plugin.gradle'
 
+apply plugin: 'org.greenrobot.greendao'
+
 
 bugly {
     appId = '65043f91b1' // 注册时分配的App ID
     appKey = '51c8d927-9fcf-4b58-8574-f5a434babc90' // 注册时分配的App Key
     //debug = true
+}
+
+greendao {
+    //指定数据库schema版本号，迁移等操作会用到;
+    schemaVersion 1
+    //dao的包名，包名默认是entity所在的包；
+    daoPackage 'com.yanrou.dawnisland.gen'
+    //生成数据库文件的目录;
+    targetGenDir 'src/main/java'
 }
 
 
@@ -74,6 +85,8 @@ dependencies {
 
 
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.1'
+
+    implementation 'org.greenrobot:greendao:3.2.2'
 
     implementation rootProject.ext.rabbitDependence
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.0-beta-5"
