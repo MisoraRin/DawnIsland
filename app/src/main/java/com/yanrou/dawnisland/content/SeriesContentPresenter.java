@@ -1,7 +1,8 @@
 package com.yanrou.dawnisland.content;
 
-/*
+
 public class SeriesContentPresenter {
+    /*
     private SeriesContentModel model;
     private SeriesContentView view;
 
@@ -56,8 +57,7 @@ public class SeriesContentPresenter {
 
     public int getReplyCount() {
         return model.getReplyCount();
-    }
+    }*/
 }
 
 
- */
