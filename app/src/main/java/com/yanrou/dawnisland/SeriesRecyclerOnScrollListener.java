@@ -13,6 +13,16 @@ public abstract class SeriesRecyclerOnScrollListener extends RecyclerView.OnScro
     @Override
     public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
+
+
+    }
+
+    @Override
+    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+        super.onScrolled(recyclerView, dx, dy);
+        Log.d(TAG, "onScrolled: ");
+        isSlidingUpward = (dy > 0);
+
         LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
         int lastItemPosition = manager.findLastVisibleItemPosition();
 
@@ -23,14 +33,6 @@ public abstract class SeriesRecyclerOnScrollListener extends RecyclerView.OnScro
             //加载更多
             onLoadMore();
         }
-
-    }
-
-    @Override
-    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-        super.onScrolled(recyclerView, dx, dy);
-
-        isSlidingUpward = (dy > 0);
     }
 
     /**
