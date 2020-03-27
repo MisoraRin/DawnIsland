@@ -60,7 +60,7 @@ public class SeriesContentJsonDao extends AbstractDao<SeriesContentJson, Void> {
      * Creates the underlying database table.
      */
     public static void createTable(Database db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"SERIES_CONTENT_JSON\" (" + //
                 "\"PO\" TEXT NOT NULL ," + // 0: po
                 "\"LAST_PAGE\" INTEGER NOT NULL ," + // 1: lastPage
@@ -82,9 +82,7 @@ public class SeriesContentJsonDao extends AbstractDao<SeriesContentJson, Void> {
                 "\"REPLY_COUNT\" INTEGER NOT NULL );"); // 17: replyCount
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(Database db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"SERIES_CONTENT_JSON\"";
         db.execSQL(sql);
@@ -98,52 +96,52 @@ public class SeriesContentJsonDao extends AbstractDao<SeriesContentJson, Void> {
         stmt.bindLong(3, entity.getLastReplyCount());
         stmt.bindLong(4, entity.getSubstate());
         stmt.bindLong(5, entity.getForumId());
-
+ 
         String seriesId = entity.getSeriesId();
         if (seriesId != null) {
             stmt.bindString(6, seriesId);
         }
-
+ 
         String fid = entity.getFid();
         if (fid != null) {
             stmt.bindString(7, fid);
         }
-
+ 
         String img = entity.getImg();
         if (img != null) {
             stmt.bindString(8, img);
         }
-
+ 
         String ext = entity.getExt();
         if (ext != null) {
             stmt.bindString(9, ext);
         }
-
+ 
         String now = entity.getNow();
         if (now != null) {
             stmt.bindString(10, now);
         }
-
+ 
         String userid = entity.getUserid();
         if (userid != null) {
             stmt.bindString(11, userid);
         }
-
+ 
         String name = entity.getName();
         if (name != null) {
             stmt.bindString(12, name);
         }
-
+ 
         String email = entity.getEmail();
         if (email != null) {
             stmt.bindString(13, email);
         }
-
+ 
         String title = entity.getTitle();
         if (title != null) {
             stmt.bindString(14, title);
         }
-
+ 
         String content = entity.getContent();
         if (content != null) {
             stmt.bindString(15, content);
@@ -161,52 +159,52 @@ public class SeriesContentJsonDao extends AbstractDao<SeriesContentJson, Void> {
         stmt.bindLong(3, entity.getLastReplyCount());
         stmt.bindLong(4, entity.getSubstate());
         stmt.bindLong(5, entity.getForumId());
-
+ 
         String seriesId = entity.getSeriesId();
         if (seriesId != null) {
             stmt.bindString(6, seriesId);
         }
-
+ 
         String fid = entity.getFid();
         if (fid != null) {
             stmt.bindString(7, fid);
         }
-
+ 
         String img = entity.getImg();
         if (img != null) {
             stmt.bindString(8, img);
         }
-
+ 
         String ext = entity.getExt();
         if (ext != null) {
             stmt.bindString(9, ext);
         }
-
+ 
         String now = entity.getNow();
         if (now != null) {
             stmt.bindString(10, now);
         }
-
+ 
         String userid = entity.getUserid();
         if (userid != null) {
             stmt.bindString(11, userid);
         }
-
+ 
         String name = entity.getName();
         if (name != null) {
             stmt.bindString(12, name);
         }
-
+ 
         String email = entity.getEmail();
         if (email != null) {
             stmt.bindString(13, email);
         }
-
+ 
         String title = entity.getTitle();
         if (title != null) {
             stmt.bindString(14, title);
         }
-
+ 
         String content = entity.getContent();
         if (content != null) {
             stmt.bindString(15, content);
@@ -219,7 +217,7 @@ public class SeriesContentJsonDao extends AbstractDao<SeriesContentJson, Void> {
     @Override
     public Void readKey(Cursor cursor, int offset) {
         return null;
-    }
+    }    
 
     @Override
     public SeriesContentJson readEntity(Cursor cursor, int offset) {
@@ -245,7 +243,7 @@ public class SeriesContentJsonDao extends AbstractDao<SeriesContentJson, Void> {
         );
         return entity;
     }
-
+     
     @Override
     public void readEntity(Cursor cursor, SeriesContentJson entity, int offset) {
         entity.setPo(poConverter.convertToEntityProperty(cursor.getString(offset + 0)));
@@ -266,14 +264,14 @@ public class SeriesContentJsonDao extends AbstractDao<SeriesContentJson, Void> {
         entity.setSage(cursor.getInt(offset + 15));
         entity.setAdmin(cursor.getInt(offset + 16));
         entity.setReplyCount(cursor.getInt(offset + 17));
-    }
-
+     }
+    
     @Override
     protected final Void updateKeyAfterInsert(SeriesContentJson entity, long rowId) {
         // Unsupported or missing PK type
         return null;
     }
-
+    
     @Override
     public Void getKey(SeriesContentJson entity) {
         return null;
@@ -289,5 +287,5 @@ public class SeriesContentJsonDao extends AbstractDao<SeriesContentJson, Void> {
     protected final boolean isEntityUpdateable() {
         return true;
     }
-
+    
 }

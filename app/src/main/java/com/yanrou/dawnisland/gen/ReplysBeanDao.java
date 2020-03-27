@@ -55,7 +55,7 @@ public class ReplysBeanDao extends AbstractDao<ReplysBean, Void> {
      * Creates the underlying database table.
      */
     public static void createTable(Database db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"REPLYS_BEAN\" (" + //
                 "\"PAGE\" INTEGER NOT NULL ," + // 0: page
                 "\"POS_IN_PAGE\" INTEGER NOT NULL ," + // 1: posInPage
@@ -74,9 +74,7 @@ public class ReplysBeanDao extends AbstractDao<ReplysBean, Void> {
                 "\"STATUS\" TEXT);"); // 14: status
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(Database db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"REPLYS_BEAN\"";
         db.execSQL(sql);
@@ -87,59 +85,59 @@ public class ReplysBeanDao extends AbstractDao<ReplysBean, Void> {
         stmt.clearBindings();
         stmt.bindLong(1, entity.getPage());
         stmt.bindLong(2, entity.getPosInPage());
-
+ 
         String parentId = entity.getParentId();
         if (parentId != null) {
             stmt.bindString(3, parentId);
         }
-
+ 
         String seriesId = entity.getSeriesId();
         if (seriesId != null) {
             stmt.bindString(4, seriesId);
         }
-
+ 
         String userid = entity.getUserid();
         if (userid != null) {
             stmt.bindString(5, userid);
         }
         stmt.bindLong(6, entity.getAdmin());
-
+ 
         String title = entity.getTitle();
         if (title != null) {
             stmt.bindString(7, title);
         }
-
+ 
         String email = entity.getEmail();
         if (email != null) {
             stmt.bindString(8, email);
         }
-
+ 
         String now = entity.getNow();
         if (now != null) {
             stmt.bindString(9, now);
         }
-
+ 
         String content = entity.getContent();
         if (content != null) {
             stmt.bindString(10, content);
         }
-
+ 
         String img = entity.getImg();
         if (img != null) {
             stmt.bindString(11, img);
         }
-
+ 
         String ext = entity.getExt();
         if (ext != null) {
             stmt.bindString(12, ext);
         }
-
+ 
         String name = entity.getName();
         if (name != null) {
             stmt.bindString(13, name);
         }
         stmt.bindLong(14, entity.getSage());
-
+ 
         String status = entity.getStatus();
         if (status != null) {
             stmt.bindString(15, status);
@@ -151,59 +149,59 @@ public class ReplysBeanDao extends AbstractDao<ReplysBean, Void> {
         stmt.clearBindings();
         stmt.bindLong(1, entity.getPage());
         stmt.bindLong(2, entity.getPosInPage());
-
+ 
         String parentId = entity.getParentId();
         if (parentId != null) {
             stmt.bindString(3, parentId);
         }
-
+ 
         String seriesId = entity.getSeriesId();
         if (seriesId != null) {
             stmt.bindString(4, seriesId);
         }
-
+ 
         String userid = entity.getUserid();
         if (userid != null) {
             stmt.bindString(5, userid);
         }
         stmt.bindLong(6, entity.getAdmin());
-
+ 
         String title = entity.getTitle();
         if (title != null) {
             stmt.bindString(7, title);
         }
-
+ 
         String email = entity.getEmail();
         if (email != null) {
             stmt.bindString(8, email);
         }
-
+ 
         String now = entity.getNow();
         if (now != null) {
             stmt.bindString(9, now);
         }
-
+ 
         String content = entity.getContent();
         if (content != null) {
             stmt.bindString(10, content);
         }
-
+ 
         String img = entity.getImg();
         if (img != null) {
             stmt.bindString(11, img);
         }
-
+ 
         String ext = entity.getExt();
         if (ext != null) {
             stmt.bindString(12, ext);
         }
-
+ 
         String name = entity.getName();
         if (name != null) {
             stmt.bindString(13, name);
         }
         stmt.bindLong(14, entity.getSage());
-
+ 
         String status = entity.getStatus();
         if (status != null) {
             stmt.bindString(15, status);
@@ -213,7 +211,7 @@ public class ReplysBeanDao extends AbstractDao<ReplysBean, Void> {
     @Override
     public Void readKey(Cursor cursor, int offset) {
         return null;
-    }
+    }    
 
     @Override
     public ReplysBean readEntity(Cursor cursor, int offset) {
@@ -236,7 +234,7 @@ public class ReplysBeanDao extends AbstractDao<ReplysBean, Void> {
         );
         return entity;
     }
-
+     
     @Override
     public void readEntity(Cursor cursor, ReplysBean entity, int offset) {
         entity.setPage(cursor.getInt(offset + 0));
@@ -254,14 +252,14 @@ public class ReplysBeanDao extends AbstractDao<ReplysBean, Void> {
         entity.setName(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setSage(cursor.getInt(offset + 13));
         entity.setStatus(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-    }
-
+     }
+    
     @Override
     protected final Void updateKeyAfterInsert(ReplysBean entity, long rowId) {
         // Unsupported or missing PK type
         return null;
     }
-
+    
     @Override
     public Void getKey(ReplysBean entity) {
         return null;
@@ -277,5 +275,5 @@ public class ReplysBeanDao extends AbstractDao<ReplysBean, Void> {
     protected final boolean isEntityUpdateable() {
         return true;
     }
-
+    
 }

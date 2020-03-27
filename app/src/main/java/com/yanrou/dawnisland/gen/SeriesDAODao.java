@@ -146,7 +146,7 @@ public class SeriesDAODao extends AbstractDao<SeriesDAO, Void> {
         if (content != null) {
             stmt.bindString(15, content);
         }
-        stmt.bindLong(16, entity.getSage() ? 1L : 0L);
+        stmt.bindLong(16, entity.getSage() ? 1L: 0L);
         stmt.bindLong(17, entity.getAdmin() ? 1L: 0L);
         stmt.bindLong(18, entity.getReplyCount());
     }
@@ -209,7 +209,7 @@ public class SeriesDAODao extends AbstractDao<SeriesDAO, Void> {
         if (content != null) {
             stmt.bindString(15, content);
         }
-        stmt.bindLong(16, entity.getSage() ? 1L : 0L);
+        stmt.bindLong(16, entity.getSage() ? 1L: 0L);
         stmt.bindLong(17, entity.getAdmin() ? 1L: 0L);
         stmt.bindLong(18, entity.getReplyCount());
     }
