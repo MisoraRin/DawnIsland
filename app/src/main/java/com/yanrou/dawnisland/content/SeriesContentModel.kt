@@ -16,8 +16,9 @@ import retrofit2.Retrofit
 
 class SeriesContentModel(private val id: String) {
     private var seriesData: SeriesData? = null
-    private var po: MutableList<String> = ArrayList()
-    private val items: MutableList<Any> = ArrayList()
+    private var po = ArrayList<String>()
+    //持有一个Map,用来查询数据、去重
+    private var replyMap = HashMap<String, ReplysBean>()
     private var seriesId: String = id
     /**
      * 标记是否有缓存
@@ -119,12 +120,20 @@ class SeriesContentModel(private val id: String) {
                     seriesContentJson.sage
             ))
         }
-
+        //一页就是20条，直接初始化,避免无意义的扩容
+        val resultList = ArrayList<ReplysBean>(20)
+        //赋值方便以后处理
         for (i in seriesContentJson.replys.indices) {
             val temp = seriesContentJson.replys[i]
-            temp.page = page
-            temp.parentId = seriesId
-            temp.posInPage = i
+            //判断是否已存在，为了避免加载最后一页的新增内容时内存溢出
+            if (!replyMap.containsKey(temp.seriesId)) {
+                temp.page = page
+                temp.parentId = seriesId
+                temp.posInPage = i
+
+                replyMap.put(temp.seriesId, temp)
+                resultList.add(temp)
+            }
         }
         /**
          * 保存页面数据用于下次加载
