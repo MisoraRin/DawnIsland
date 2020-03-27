@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import com.yanrou.dawnisland.json2class.ReplysBean
 import com.yanrou.dawnisland.span.SegmentSpacingSpan
 import com.yanrou.dawnisland.util.ReadableTime
@@ -30,33 +31,42 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
     private lateinit var model: SeriesContentModel
     val listLiveData = MutableLiveData<List<ContentItem>>()
     private val contentList = ArrayList<ContentItem>()
-    var onlyPoList = emptyList<ContentItem>()
+    private var onlyPoList = ArrayList<ContentItem>()
     var nowIndex = 0
     lateinit var seriesId: String
-    var loading = false;
+    var loading = false
+    var OnlyPo = false
     /**
      * activity onCreate完成以后调用这个方法
      */
     fun firstStart() {
         model = SeriesContentModel(seriesId)
         getContent(1, NEXT_PAGE)
+        val preferenceManager = PreferenceManager.getDefaultSharedPreferences(getApplication())
+
     }
 
     /**
      * 加载更多
      */
     fun loadMore(index: Int) {
-        Log.d(TAG, "loadMore" + getNowPage())
-        getNowPage()?.let { getContent(it, NEXT_PAGE) }
+        getNowPage(contentList.lastIndex)?.let { getContent(it, NEXT_PAGE) }
     }
 
     /**
      * 下拉逻辑
      */
     fun refresh(index: Int) {
-        getNowPage()?.let { getContent(it, FRONT_PAGE) }
+        getNowPage(0)?.let { getContent(it, FRONT_PAGE) }
     }
 
+    /**
+     * 只看po
+     */
+    fun switchToOnlyPo() {
+        listLiveData.value = onlyPoList
+        OnlyPo = true
+    }
     /**
      * 处理跳页逻辑
      *
@@ -68,8 +78,8 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
      * 在这里返回当前看到的页数,实现方式是通过获取当前可见的最后一个item的pos，然后找到对应的串号，再问model这个串在第几页
      * @return 当前看到的页数
      */
-    fun getNowPage(): Int? {
-        return model.getPageBySeries(contentList[nowIndex].seriesId)
+    fun getNowPage(index: Int): Int? {
+        return model.getPageBySeries(contentList[index].seriesId)
     }
 
     /**
@@ -95,13 +105,13 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
             val result = model.getSeriesContent(page, isNext)
             if (result is List<*>) {
                 if (result.size > 0) {
-
                     // 表示有数据
                     withContext(Dispatchers.Default) {
-                        contentList.addAll(formatContent(result as List<ReplysBean>))
+                        val rawlist = formatContent(result as List<ReplysBean>)
+                        contentList.addAll(rawlist)
+                        onlyPoList.addAll(getOnlyPoList(rawlist))
                     }
                 } else {
-
                     //没数据，到最后一页了
                     Log.d(TAG, "已到最后一页")
                 }
@@ -111,7 +121,11 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
             }
             //在主线程中执行，用于刷新view,由于已经在Mian中了所以使用setValue就好
             withContext(Dispatchers.Main) {
-                listLiveData.value = contentList
+                if (OnlyPo) {
+                    listLiveData.value = onlyPoList
+                } else {
+                    listLiveData.value = contentList
+                }
             }
             Log.d(TAG, "在此，表示lodaing完成")
             loading = false
@@ -122,8 +136,8 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
     /**
      * 获取一个只有po的列表
      */
-    private fun getOnlyPoList() {
-        onlyPoList = contentList.filter { model.isPo(it.seriesId) }
+    private fun getOnlyPoList(rawlist: List<ContentItem>): List<ContentItem> {
+        return rawlist.filter { model.isPo(it.cookie.toString()) }
     }
 
     /**

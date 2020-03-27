@@ -97,6 +97,7 @@ class SeriesContentModel(private val id: String) {
         Log.d(TAG, "$page")
         //为真则表示是第一页
         if (page == 1) {
+            po.add(seriesContentJson.userid)
             seriesContentJson.replys.add(0, ReplysBean(
                     seriesContentJson.seriesId,
                     seriesContentJson.userid,
