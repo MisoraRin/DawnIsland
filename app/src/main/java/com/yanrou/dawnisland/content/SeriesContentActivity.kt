@@ -47,13 +47,9 @@ class SeriesContentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_series_content)
-
-        //ReadableTime.initialize(this)
         //获取控件
         initView()
         actionBar.setDisplayHomeAsUpEnabled(true)
-        //状态栏透明
-        //makeStatusBarTran(window)
         val intent = intent
         id = intent.getStringExtra("id")
         //TODO 这里应该传入fid，然后通过DB类获取到板块名称，而不是直接传入板块名称
