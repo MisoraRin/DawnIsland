@@ -10,12 +10,6 @@ public abstract class SeriesRecyclerOnScrollListener extends RecyclerView.OnScro
     private static final String TAG = "SeriesRecyclerOnScrollL";
     private boolean isSlidingUpward = false;
 
-    @Override
-    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-        super.onScrollStateChanged(recyclerView, newState);
-
-
-    }
 
     @Override
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
