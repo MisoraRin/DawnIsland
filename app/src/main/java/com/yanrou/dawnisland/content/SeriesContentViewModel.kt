@@ -13,33 +13,49 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.yanrou.dawnisland.json2class.ReplysBean
-import com.yanrou.dawnisland.json2class.SeriesContentJson
 import com.yanrou.dawnisland.span.SegmentSpacingSpan
 import com.yanrou.dawnisland.util.ReadableTime
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
 
 class SeriesContentViewModel(application: Application) : AndroidViewModel(application) {
     val TAG = "SeriesContentViewModel"
-    lateinit var seriesData: SeriesContentJson
-    lateinit var po: MutableList<String>
-    private val model = SeriesContentModel("")
-
-    fun init(seriesId: String?) {}
+    private val NEXT_PAGE = true
+    private val FRONT_PAGE = false
+    private lateinit var model: SeriesContentModel
+    val listLiveData = MutableLiveData<List<ContentItem>>()
+    private val contentList = ArrayList<ContentItem>()
+    var onlyPoList = emptyList<ContentItem>()
+    var nowIndex = 0
+    lateinit var seriesId: String
+    var loading = false;
+    /**
+     * activity onCreate完成以后调用这个方法
+     */
+    fun firstStart() {
+        model = SeriesContentModel(seriesId)
+        getContent(1, NEXT_PAGE)
+    }
 
     /**
-     * 处理加载更多逻辑
+     * 加载更多
      */
-    fun loadMore() {}
+    fun loadMore(index: Int) {
+        Log.d(TAG, "loadMore" + getNowPage())
+        getNowPage()?.let { getContent(it, NEXT_PAGE) }
+    }
 
     /**
-     * 处理下拉逻辑
+     * 下拉逻辑
      */
-    fun refresh() {}
+    fun refresh(index: Int) {
+        getNowPage()?.let { getContent(it, FRONT_PAGE) }
+    }
 
     /**
      * 处理跳页逻辑
@@ -49,12 +65,12 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
     fun jumpPage(page: Int) {}
 
     /**
-     * 在这里返回当前看到的页数
-     *
+     * 在这里返回当前看到的页数,实现方式是通过获取当前可见的最后一个item的pos，然后找到对应的串号，再问model这个串在第几页
      * @return 当前看到的页数
      */
-    val nowPage: Int
-        get() = 0
+    fun getNowPage(): Int? {
+        return model.getPageBySeries(contentList[nowIndex].seriesId)
+    }
 
     /**
      * 在这里返回总页数
@@ -64,61 +80,83 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
     val totalPage: Int
         get() = 0
 
-    private fun getContent() {
-        viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) { model.getSeriesContent(1) }
+    /**
+     * 不需要考虑具体能得到什么数据，只需要告诉model需要新的数据就可以
+     * 传入的参数是获取前一页还是获取后一页,true是获取后一页
+     */
+    @Suppress("UNCHECKED_CAST")
+    private fun getContent(page: Int, isNext: Boolean) {
+        val handle = CoroutineExceptionHandler { _, throwable -> Log.e(TAG, "Caught $throwable") }
+        if (loading) {
+            return
+        }
+        loading = true
+        viewModelScope.launch(handle) {
+            val result = model.getSeriesContent(page, isNext)
             if (result is List<*>) {
-                //表示有数据
+                if (result.size > 0) {
+
+                    // 表示有数据
+                    withContext(Dispatchers.Default) {
+                        contentList.addAll(formatContent(result as List<ReplysBean>))
+                    }
+                } else {
+
+                    //没数据，到最后一页了
+                    Log.d(TAG, "已到最后一页")
+                }
             } else if (result is String) {
                 //串已被删除
+                Log.d(TAG, "串已被删除")
             }
-            //用于执行CPU密集型任务
-            withContext(Dispatchers.Default) {
-
-            }
-            //在主线程中执行
+            //在主线程中执行，用于刷新view,由于已经在Mian中了所以使用setValue就好
             withContext(Dispatchers.Main) {
-
+                listLiveData.value = contentList
             }
+            Log.d(TAG, "在此，表示lodaing完成")
+            loading = false
         }
 
     }
 
     /**
-     * 用于处理获取到的json数据
-     *
-     * @param seriesContentJson gson格式化json后产生的类
+     * 获取一个只有po的列表
      */
-    private fun formatContent(replysBeans: List<ReplysBean>, page: Int) {
+    private fun getOnlyPoList() {
+        onlyPoList = contentList.filter { model.isPo(it.seriesId) }
+    }
 
-        val contentItems: MutableList<ContentItem> = ArrayList()
+    /**
+     * 用于处理Reply数据以显示到view层
+     */
+    private fun formatContent(replysBeans: List<ReplysBean>): List<ContentItem> {
+
+        val contentItems = ArrayList<ContentItem>()
 
         var temp: ReplysBean
-        /*
-          在这里预处理内容，保证显示时可以直接显示
-         */for (i in replysBeans.indices) {
+        //在这里预处理内容，保证显示时可以直接显示
+        for (i in replysBeans.indices) {
             temp = replysBeans[i]
             val contentItem = ContentItem()
             /*
               处理时间
-             */contentItem.time = ReadableTime.getDisplayTime(temp.now)
+             */
+            contentItem.time = ReadableTime.getDisplayTime(temp.now)
             /*
               处理饼干
               PO需要加粗
               普通饼干是灰色，po是黑色，红名是红色
              */
             val cookie = SpannableStringBuilder(temp.userid)
-            val normalColor = ForegroundColorSpan(Color.parseColor("#B0B0B0"))
-            val quoteColor = ForegroundColorSpan(Color.parseColor("#19A8A8")) // primary color
-            val adminColor = ForegroundColorSpan(Color.parseColor("#FF0F0F"))
-            val poColor = ForegroundColorSpan(Color.parseColor("#000000"))
-            val styleSpanBold = StyleSpan(Typeface.BOLD)
             if (temp.admin == 1) {
+                val adminColor = ForegroundColorSpan(Color.parseColor("#FF0F0F"))
                 cookie.setSpan(adminColor, 0, cookie.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-            } else if (po.contains(temp.userid)) {
+            } else if (model.isPo(temp.userid)) {
+                val poColor = ForegroundColorSpan(Color.parseColor("#000000"))
                 cookie.setSpan(poColor, 0, cookie.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             }
-            if (po.contains(temp.userid)) {
+            if (model.isPo(temp.userid)) {
+                val styleSpanBold = StyleSpan(Typeface.BOLD)
                 cookie.setSpan(styleSpanBold, 0, cookie.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             }
             contentItem.cookie = cookie
@@ -130,7 +168,9 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
             /*
               这一句是添加段间距
               if用来判断作者有没有自己加空行，加了的话就不加段间距
-             */if (!contentSpan.toString().contains("\n\n")) {
+              TODO 但是依然要添加行间距和字间距
+             */
+            if (!contentSpan.toString().contains("\n\n")) {
                 contentSpan.setSpan(SegmentSpacingSpan(0, 20), 0, contentSpan.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             }
             var index = -1
@@ -164,12 +204,13 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
                 hideEnd = contentSpan.toString().indexOf("[/h]", index)
             }
             /*****************************************************************8
-             * temporary solution for quotation, needs rework after restructuring
+             * TODO temporary solution for quotation, needs rework after restructuring
              * 支持点击展开
              * 暂时先取消掉这一段
              * TODO 读取设置选择这里是打开对话框还是直接展开
              * TODO **目前仅支持串内引用**
              */
+            val quoteColor = ForegroundColorSpan(Color.parseColor("#19A8A8")) // primary color
             val foregroundColorSpans = contentSpan.getSpans(0, contentSpan.length, ForegroundColorSpan::class.java)
             Log.d(TAG, "onResponse: " + foregroundColorSpans.size)
             if (foregroundColorSpans.size != 0) {
@@ -218,19 +259,24 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
                     }
                 }
             }
+
             contentItem.content = contentSpan
+
             if (temp.sage == 1) {
                 contentItem.sega = View.VISIBLE
             } else {
                 contentItem.sega = View.GONE
             }
+
             contentItem.seriesId = temp.seriesId
+
             if (temp.ext != null && "" != temp.ext) {
                 contentItem.hasImage = true
                 contentItem.imgurl = temp.img + temp.ext
             } else {
                 contentItem.hasImage = false
             }
+
             val nametitleBulider = StringBuilder()
             if (temp.title != null && temp.title != "无标题") {
                 nametitleBulider.append("标题：").append(temp.title)
@@ -244,9 +290,9 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
                 contentItem.hasTitleOrName = true
             }
             contentItem.titleAndName = nametitleBulider.toString()
+
             contentItems.add(contentItem)
         }
-        seriesData.lastPage = page
-        seriesData.save()
+        return contentItems
     }
 }
