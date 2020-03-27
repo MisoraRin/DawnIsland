@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -57,15 +56,14 @@ public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBi
                     .override(250, 250)
                     .into(holder.imageView);
 
-            holder.imageView.setOnTouchListener(new View.OnTouchListener() {
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onTouch(View v, MotionEvent event) {
+                public void onClick(View view) {
 
                     Intent fullScreenImageViewer = new Intent(callerActivity, ImageViewerView.class);
                     fullScreenImageViewer.putExtra("imgurl", "https://nmbimg.fastmirror.org/image/" + content.imgurl);
                     callerActivity.startActivity(fullScreenImageViewer);
 
-                    return false;
                 }
             });
         } else {
