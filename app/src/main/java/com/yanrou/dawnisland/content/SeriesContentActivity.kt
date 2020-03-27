@@ -131,6 +131,9 @@ class SeriesContentActivity : AppCompatActivity() {
                 }
                 replyDialog!!.show(supportFragmentManager, "reply")
             }
+            R.id.only_po_switch -> {
+                viewModel.switchToOnlyPo()
+            }
             else -> {
             }
         }
