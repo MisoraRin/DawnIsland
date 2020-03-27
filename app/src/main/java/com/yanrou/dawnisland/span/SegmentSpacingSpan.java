@@ -2,7 +2,6 @@ package com.yanrou.dawnisland.span;
 
 import android.graphics.Paint;
 import android.text.style.LineHeightSpan;
-import android.util.Log;
 
 public class SegmentSpacingSpan implements LineHeightSpan {
     private static final String TAG = "SegmentSpacingSpan";
@@ -30,7 +29,7 @@ public class SegmentSpacingSpan implements LineHeightSpan {
 
     private int lineH = 0;
     private int segH = 0;
-    boolean seg = false, line = false;
+    private boolean seg = false, line = false;
 
     @Override
     public void chooseHeight(CharSequence text, int start, int end, int spanstartv, int lineHeight, Paint.FontMetricsInt fm) {
@@ -42,14 +41,14 @@ public class SegmentSpacingSpan implements LineHeightSpan {
         if (text.subSequence(start, end).toString().contains("\n")) {
             if (seg) {
                 fm.descent = segH;
-                Log.d(TAG, "chooseHeight: 换行段非第一次");
+
             } else {
                 fm.descent += segmentGap;
                 segH = fm.descent;
                 seg = true;
-                Log.d(TAG, "chooseHeight: 换行段第一次");
+
             }
-            Log.d(TAG, "chooseHeight: 这是换行段" + fm.descent);
+
         }
         if (!text.subSequence(start, end).toString().contains("\n")) {
             if (line) {
@@ -60,8 +59,6 @@ public class SegmentSpacingSpan implements LineHeightSpan {
                 lineH = fm.descent;
                 line = true;
             }
-
-            Log.d(TAG, "chooseHeight: 这是非换行段" + fm.descent);
         }
     }
 }
