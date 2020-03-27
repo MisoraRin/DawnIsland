@@ -12,16 +12,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.drakeet.multitype.ItemViewBinder;
 import com.yanrou.dawnisland.R;
 import com.yanrou.dawnisland.imageviewer.ImageViewerView;
+import com.yanrou.dawnisland.serieslist.CardViewFactory;
 
 public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBinder.ViewHolder> {
 
     private Activity callerActivity;
+
+    public ContentViewBinder() {
+    }
 
     public ContentViewBinder(Activity callerActivity){
         this.callerActivity = callerActivity;
@@ -29,8 +34,11 @@ public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
+        float letterSpace = PreferenceManager.getDefaultSharedPreferences(parent.getContext()).getInt(CardViewFactory.LETTER_SPACE, 0) * 1.0f / 50;
         View root = inflater.inflate(R.layout.series_content_card, parent, false);
-        return new ViewHolder(root);
+        final ViewHolder viewHolder = new ViewHolder(root);
+        viewHolder.content.setLetterSpacing(letterSpace);
+        return viewHolder;
     }
 
     @SuppressLint("ClickableViewAccessibility")
