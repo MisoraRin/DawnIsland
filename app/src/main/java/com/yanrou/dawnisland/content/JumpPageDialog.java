@@ -46,7 +46,7 @@ public class JumpPageDialog extends DialogFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel = new ViewModelProvider(Objects.requireNonNull(this.getActivity())).get(SeriesContentViewModel.class);
-        String page = viewModel.getNowPage() + "/" + viewModel.getTotalPage();
-        pageTextView.setText(page);
+        //String page = viewModel.getNowPage() + "/" + viewModel.getTotalPage();
+        //pageTextView.setText(page);
     }
 }
