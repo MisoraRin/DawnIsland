@@ -2,8 +2,6 @@ package com.yanrou.dawnisland.content
 
 import android.util.Log
 import com.google.gson.Gson
-import com.yanrou.dawnisland.FooterView
-import com.yanrou.dawnisland.MyApplication
 import com.yanrou.dawnisland.Reference
 import com.yanrou.dawnisland.database.SeriesData
 import com.yanrou.dawnisland.json2class.ReplysBean
@@ -28,8 +26,7 @@ class SeriesContentModel(private val id: String) {
      * 标记最后一页是否完整
      * 如果为false,则应该用获取到的页面替换当前页
      */
-    private var wholePage = true
-    private var lastPageCount = 0
+    private var wholePage = false
     /**
      * 标记最后一页是否有广告
      */
@@ -46,32 +43,33 @@ class SeriesContentModel(private val id: String) {
      */
     private val READY = 1000
     private var state = 1000
-    private val footerView = FooterView()
+
 
     val replyCount: Int
         get() = seriesData!!.lastReplyCount
 
     /**
      * 用于给ViewModel调用
+     * next用于控制是上一页还是下一页，true则下一页，false则上一页
+     * 由model处理最后一页是翻页还是刷新当前页
      * 返回一个ReplysBean的List或者一个String
      * 由于A岛的APi设计问题，不得不很不优雅的写一个Any在这里
      * 当串被删了，就返回一个String对象，如果没有更多数据，就返回一个空list，如果还有数据则返回一个正常的list
      */
-    suspend fun getSeriesContent(page: Int): Any {
-        val s = withContext(Dispatchers.IO) {
-            getSeriesContentFromNet(page)
+    suspend fun getSeriesContent(page: Int, next: Boolean): Any {
+        var mpage = page
+        if (next && wholePage) {
+            Log.d(TAG, "页数+1")
+            mpage++
         }
-        /*
-             先判断串是否存在
-             这里有堵的成分，如果不是第一页就不判断，可能会快一点
-             如果为真表示串已经被删了
-             TODO 这个地方仅仅考虑了没有缓存的情况，加上缓存功能后还需要改进
-             TODO 例如已缓存的串被删除，用户在下拉的时候会触发刷新，这里的就不适用了
-            */
-        if ("\"\\u8be5\\u4e3b\\u9898\\u4e0d\\u5b58\\u5728\"" == s) {
+        val s = withContext(Dispatchers.IO) {
+            getSeriesContentFromNet(mpage)
+        }
+        //先判断串是否存在，如果为真表示串已经被删
+        if ("\"\\u8be5\\u4e3b\\u9898\\u4e0d\\u5b58\\u5728\"" == s || "" == s) {
             return s
         }
-        return preFormatJson(page, s)
+        return withContext(Dispatchers.Default) { preFormatJson(mpage, s) }
     }
 
     private fun getSeriesContentFromNet(page: Int): String {
@@ -85,27 +83,20 @@ class SeriesContentModel(private val id: String) {
 
 
     private fun preFormatJson(page: Int, s: String): List<ReplysBean> {
-        /*
-          解析串
-         */
+        //解析串
         val seriesContentJson = Gson().fromJson(s, SeriesContentJson::class.java)
-        /**
-         * 防止翻页翻过，这一句表示已经翻到底了
-         */
-        Log.d(TAG, "onResponse: " + (page != 1) + page)
+
+        //判断是否是一整页
+        wholePage = (seriesContentJson.getReplys().size == 20 || (seriesContentJson.getReplys().size == 19 && !"9999999".equals(seriesContentJson.getReplys().get(0).getSeriesId())))
+
+
         //为真则表示空页
         if (page != 1 && (seriesContentJson.replys.size == 1 && "9999999" == seriesContentJson.replys[0].seriesId || seriesContentJson.replys.size == 0)) {
-            return ArrayList()
+            return emptyList()
         }
-
-
+        Log.d(TAG, "$page")
+        //为真则表示是第一页
         if (page == 1) {
-            Log.d(TAG, "onResponse: 第一页")
-            seriesData!!.lastPage = 1
-            seriesData!!.lastReplyCount = seriesContentJson.replyCount
-            seriesData!!.po.add(seriesContentJson.userid)
-            seriesData!!.save()
-            po.add(seriesContentJson.userid)
             seriesContentJson.replys.add(0, ReplysBean(
                     seriesContentJson.seriesId,
                     seriesContentJson.userid,
@@ -137,16 +128,30 @@ class SeriesContentModel(private val id: String) {
         }
         /**
          * 保存页面数据用于下次加载
+         * TODO 先确认网络请求没问题，稍后补上缓存
          */
+        /**
         val replysBeanDao = MyApplication.getDaoSession().replysBeanDao
         replysBeanDao.insertInTx(seriesContentJson.replys)
+         */
 
-        return seriesContentJson.replys
+        return resultList
         //上面这一步做完我们获得了一个处理好的列表
     }
 
     /**
-     * 如果采用https://adnmb2.com/Api/ref?id=23294468形式的话， 这个function就没有意义了
+     * 判断是否为po
+     */
+    fun isPo(userId: String): Boolean {
+        return po.contains(userId)
+    }
+
+    fun getPageBySeries(seriesId: String): Int? {
+        Log.d(TAG, "getPage$seriesId")
+        return replyMap[seriesId]?.page
+    }
+
+    /**
      * 用来获取引用内容
      * 引用内容分为串内引用和串外引用，这个是用来获取串外引用的跳转原帖链接的
      *
