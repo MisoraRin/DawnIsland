@@ -9,6 +9,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -17,11 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.MultiTypeAdapter
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
-import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.yanrou.dawnisland.R
 import com.yanrou.dawnisland.ReplyDialog
 import com.yanrou.dawnisland.SeriesRecyclerOnScrollListener
-import com.yanrou.dawnisland.util.ReadableTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,15 +30,15 @@ import java.util.*
  * @author suche
  */
 class SeriesContentActivity : AppCompatActivity() {
-    var recyclerView: RecyclerView? = null
-    var toolbar: Toolbar? = null
-    var actionBar: ActionBar? = null
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var toolbar: Toolbar
+    private lateinit var actionBar: ActionBar
     var id: String? = null
-    var forumName: String? = null
-    var smartRefreshLayout: SmartRefreshLayout? = null
-    var replyDialog: ReplyDialog? = null
+    private var forumName: String? = null
+    private lateinit var smartRefreshLayout: SmartRefreshLayout
+    private var replyDialog: ReplyDialog? = null
     private var multiTypeAdapter: MultiTypeAdapter? = null
-    private var viewModel: SeriesContentViewModel? = null
+    private lateinit var viewModel: SeriesContentViewModel
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.series_content_menu, menu)
         return true
@@ -48,43 +47,43 @@ class SeriesContentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_series_content)
-        //TODO 应该更早初始化该类
-        ReadableTime.initialize(this)
+
+        //ReadableTime.initialize(this)
         //获取控件
         initView()
-        actionBar!!.setDisplayHomeAsUpEnabled(true)
+        actionBar.setDisplayHomeAsUpEnabled(true)
         //状态栏透明
-        makeStatusBarTran(window)
+        //makeStatusBarTran(window)
         val intent = intent
         id = intent.getStringExtra("id")
         //TODO 这里应该传入fid，然后通过DB类获取到板块名称，而不是直接传入板块名称
         forumName = intent.getStringExtra("forumTextView")
         Log.d(TAG, "onCreate: $id")
-        toolbar!!.title = "A岛 · $forumName"
-        toolbar!!.subtitle = ">>No.$id · adnmb.com"
+        toolbar.title = "A岛 · $forumName"
+        toolbar.subtitle = ">>No.$id · adnmb.com"
         viewModel = ViewModelProvider(this).get(SeriesContentViewModel::class.java)
-        viewModel!!.seriesId = (id as String?).toString()
+        viewModel.seriesId = id.toString()
         multiTypeAdapter = MultiTypeAdapter()
         multiTypeAdapter!!.register(ContentItem::class.java, ContentViewBinder(this@SeriesContentActivity))
         val layoutManager = LinearLayoutManager(this)
-        recyclerView!!.layoutManager = layoutManager
+        recyclerView.layoutManager = layoutManager
         //用于刷新的监听器
-        recyclerView!!.addOnScrollListener(object : SeriesRecyclerOnScrollListener() {
+        recyclerView.addOnScrollListener(object : SeriesRecyclerOnScrollListener() {
             override fun onLoadMore() {
-                viewModel!!.loadMore(layoutManager.findLastVisibleItemPosition())
+                viewModel.loadMore(layoutManager.findLastVisibleItemPosition())
             }
         })
         //用于报告页数的监听器
-        recyclerView!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                viewModel!!.nowIndex = layoutManager.findLastVisibleItemPosition()
+                viewModel.nowIndex = layoutManager.findLastVisibleItemPosition()
             }
         })
-        recyclerView!!.adapter = multiTypeAdapter
-        smartRefreshLayout!!.setEnableAutoLoadMore(false)
-        smartRefreshLayout!!.setOnRefreshListener { refreshLayout: RefreshLayout? -> viewModel!!.refresh(layoutManager.findLastVisibleItemPosition()) }
-        viewModel!!.listLiveData.observe(this, Observer { contentItems: List<ContentItem>? ->
+        recyclerView.adapter = multiTypeAdapter
+        smartRefreshLayout.setEnableAutoLoadMore(false)
+        smartRefreshLayout.setOnRefreshListener { viewModel.refresh(layoutManager.findLastVisibleItemPosition()) }
+        viewModel.listLiveData.observe(this, Observer { contentItems: List<ContentItem>? ->
             lifecycleScope.launch(Dispatchers.Default) {
                 val oldList = multiTypeAdapter!!.items
                 //创建一个新的表
@@ -93,30 +92,31 @@ class SeriesContentActivity : AppCompatActivity() {
                 multiTypeAdapter!!.items = newList
                 withContext(Dispatchers.Main) {
                     diffResult.dispatchUpdatesTo(multiTypeAdapter!!)
-                    smartRefreshLayout!!.finishRefresh()
-                    smartRefreshLayout!!.finishLoadMore()
+                    smartRefreshLayout.finishRefresh()
+                    smartRefreshLayout.finishLoadMore()
                 }
             }
         })
         //告诉view model可以开始读取数据了
-        viewModel!!.firstStart()
+        viewModel.firstStart()
     }
 
+    @Suppress("unused")
     private fun makeStatusBarTran(window: Window) { //这一步要做，因为如果这两个flag没有清除的话下面没有生效
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         //设置布局能够延伸到状态栏(StatusBar)和导航栏(NavigationBar)里面
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         //设置状态栏(StatusBar)颜色透明
-        window.statusBarColor = resources.getColor(R.color.colorPrimary)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimary)
         //设置导航栏(NavigationBar)颜色透明
 //window.setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
     }
 
-    fun initView() {
+    private fun initView() {
         recyclerView = findViewById(R.id.series_content_recycleview)
         toolbar = findViewById(R.id.cotent_toolbar)
         setSupportActionBar(toolbar)
-        actionBar = supportActionBar
+        actionBar = this.supportActionBar!!
         smartRefreshLayout = findViewById(R.id.smart_refresh)
     }
 
