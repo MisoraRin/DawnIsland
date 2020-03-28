@@ -1,8 +1,8 @@
 package com.yanrou.dawnisland.content;
 
-import java.util.List;
 
 public class SeriesContentPresenter {
+    /*
     private SeriesContentModel model;
     private SeriesContentView view;
 
@@ -54,4 +54,10 @@ public class SeriesContentPresenter {
     public void jumpSuccess() {
         view.jumpSuccess();
     }
+
+    public int getReplyCount() {
+        return model.getReplyCount();
+    }*/
 }
+
+

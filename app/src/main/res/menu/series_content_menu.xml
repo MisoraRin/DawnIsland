@@ -10,6 +10,11 @@
         android:title="跳页"
         app:showAsAction="always" />
     <item android:title="复制串号"></item>
+    <item
+        android:id="@+id/only_po_switch"
+
+        android:title="只看po" />
+    <!--
     <item android:title="订阅">
         <menu>
             <item android:title="加入订阅" />
@@ -28,4 +33,5 @@
                 android:title="取消所有提醒" />
         </menu>
     </item>
+    -->
 </menu>

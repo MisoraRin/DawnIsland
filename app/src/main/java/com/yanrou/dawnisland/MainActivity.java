@@ -176,12 +176,7 @@ public class MainActivity extends AppCompatActivity {
             feedFragment = new FeedFragment();
             myViewPagerAdapter.addFragment(feedFragment);
         } else {
-            seriesFragment = (SeriesFragment) getSupportFragmentManager().getFragments().get(0);
-            myViewPagerAdapter.addFragment(seriesFragment);
-            trandFragment = (TrandFragment) getSupportFragmentManager().getFragments().get(1);
-            myViewPagerAdapter.addFragment(trandFragment);
-            feedFragment = (FeedFragment) getSupportFragmentManager().getFragments().get(2);
-            myViewPagerAdapter.addFragment(feedFragment);
+            myViewPagerAdapter.addFragments(getSupportFragmentManager().getFragments());
         }
 
         toolbar.setOnClickListener(v -> {
