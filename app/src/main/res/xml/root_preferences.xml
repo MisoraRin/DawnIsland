@@ -20,7 +20,7 @@
 
     <PreferenceCategory app:title="显示">
         <Preference app:title="设置串卡片布局">
-            <intent android:action="com.yanrou.dawnisland.settings.CustomizeActivity"/>
+            <intent android:action="com.yanrou.dawnisland.settings.CustomizeSizeActivity" />
         </Preference>
 
     </PreferenceCategory>
