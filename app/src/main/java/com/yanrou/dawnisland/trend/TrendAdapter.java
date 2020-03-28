@@ -44,12 +44,10 @@ public class TrendAdapter extends RecyclerView.Adapter<TrendAdapter.ViewHolder> 
         holder.trend.setText(trendItem.getTrend());
         holder.id.setText(trendItem.getId());
         holder.rank.setText(trendItem.getRank());
-        Log.d(TAG, "onBindViewHolder: 我真的有在更新啊");
     }
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "getItemCount: " + trendItems.size());
         return trendItems.size();
     }
 
