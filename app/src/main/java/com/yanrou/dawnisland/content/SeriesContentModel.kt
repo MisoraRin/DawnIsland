@@ -5,14 +5,12 @@ import com.google.gson.Gson
 import com.yanrou.dawnisland.MyApplication
 import com.yanrou.dawnisland.Reference
 import com.yanrou.dawnisland.database.SeriesData
-import com.yanrou.dawnisland.gen.ReplysBeanDao
 import com.yanrou.dawnisland.json2class.ReplysBean
 import com.yanrou.dawnisland.json2class.SeriesContentJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
-import retrofit2.Retrofit
 
 class SeriesContentModel(private val id: String) {
     private var seriesData: SeriesData? = null
@@ -77,10 +75,7 @@ class SeriesContentModel(private val id: String) {
     }
 
     private fun getSeriesContentFromNet(page: Int): String {
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://nmb.fastmirror.org/")
-                .build()
-                .create(SeriesContentService::class.java)
+        val retrofit = MyApplication.getRetrofit()
         val result = retrofit.getSeriesContent(seriesId, page)
         return result!!.execute().body()!!.string()
     }
