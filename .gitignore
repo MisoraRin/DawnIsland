@@ -8,3 +8,4 @@
 .externalNativeBuild
 .cxx
 /app/bugly
+/app/src/main/java/com/yanrou/dawnisland/gen/
