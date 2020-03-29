@@ -9,7 +9,9 @@
         android:id="@+id/jump_page"
         android:title="跳页"
         app:showAsAction="always" />
-    <item android:title="复制串号"></item>
+    <item
+        android:id="@+id/copy_series_id"
+        android:title="复制串号"></item>
     <item
         android:id="@+id/only_po_switch"
 
