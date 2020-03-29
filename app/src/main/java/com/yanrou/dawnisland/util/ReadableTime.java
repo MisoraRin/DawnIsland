@@ -108,6 +108,10 @@ public final class ReadableTime {
 
         long now = System.currentTimeMillis();
 
+        long timeZoneShift = TimeZone.getTimeZone("GMT+08:00").getOffset(now)
+                - TimeZone.getDefault().getOffset(now);
+
+        now = System.currentTimeMillis() + timeZoneShift;
         if (time > now + (2 * MINUTE_MILLIS) || time <= 0) {
             return resources.getString(R.string.from_the_future);
         }
