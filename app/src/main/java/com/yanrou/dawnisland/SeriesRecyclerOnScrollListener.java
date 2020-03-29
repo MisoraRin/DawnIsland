@@ -1,7 +1,5 @@
 package com.yanrou.dawnisland;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,7 +11,6 @@ public abstract class SeriesRecyclerOnScrollListener extends RecyclerView.OnScro
     @Override
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
-        Log.d(TAG, "onScrolled: ");
         boolean isSlidingUpward = (dy > 0);
 
         LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -21,8 +18,7 @@ public abstract class SeriesRecyclerOnScrollListener extends RecyclerView.OnScro
 
         int itemCount = manager.getItemCount();
         // 判断是否滑动到了倒数第5个item，并且是向上滑动
-        Log.d(TAG, "onScrollStateChanged: " + itemCount + " " + lastItemPosition);
-        if (lastItemPosition >= (itemCount - 5) && isSlidingUpward) {
+        if (lastItemPosition >= (itemCount - 12) && isSlidingUpward) {
             //加载更多
             onLoadMore();
         }
