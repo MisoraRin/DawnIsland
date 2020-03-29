@@ -17,6 +17,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.yanrou.dawnisland.json2class.ReplysBean
+import com.yanrou.dawnisland.serieslist.CardViewFactory
 import com.yanrou.dawnisland.span.SegmentSpacingSpan
 import com.yanrou.dawnisland.util.ReadableTime
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -35,7 +36,11 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
     var nowIndex = 0
     lateinit var seriesId: String
     var loading = false
-    var OnlyPo = false
+    var OnlyPoLiveData = MutableLiveData<Boolean>()
+
+    init {
+        OnlyPoLiveData.value = false
+    }
     /**
      * activity onCreate完成以后调用这个方法
      */
@@ -65,8 +70,14 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
      * 只看po
      */
     fun switchToOnlyPo() {
-        listLiveData.value = onlyPoList
-        OnlyPo = true
+        if (OnlyPoLiveData.value!!) {
+            listLiveData.value = contentList
+            OnlyPoLiveData.value = false
+        } else {
+            listLiveData.value = onlyPoList
+            OnlyPoLiveData.value = true
+        }
+
     }
     /**
      * 处理跳页逻辑
@@ -122,7 +133,7 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
             }
             //在主线程中执行，用于刷新view,由于已经在Mian中了所以使用setValue就好
             withContext(Dispatchers.Main) {
-                if (OnlyPo) {
+                if (OnlyPoLiveData.value!!) {
                     listLiveData.value = onlyPoList
                 } else {
                     listLiveData.value = contentList
@@ -181,12 +192,12 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
              */
             val contentSpan = SpannableStringBuilder(Html.fromHtml(temp.content))
             /*
-              这一句是添加段间距
-              if用来判断作者有没有自己加空行，加了的话就不加段间距
-              TODO 但是依然要添加行间距和字间距
              */
-            if (!contentSpan.toString().contains("\n\n")) {
-                contentSpan.setSpan(SegmentSpacingSpan(0, 20), 0, contentSpan.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
+            if (contentSpan.toString().contains("\n\n")) {
+                contentSpan.setSpan(SegmentSpacingSpan(sharedPreferences.getInt(CardViewFactory.LINE_HEIGHT, 0), sharedPreferences.getInt(CardViewFactory.LINE_HEIGHT, 0)), 0, contentSpan.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+            } else {
+                contentSpan.setSpan(SegmentSpacingSpan(sharedPreferences.getInt(CardViewFactory.LINE_HEIGHT, 0), sharedPreferences.getInt(CardViewFactory.SEG_GAP, 0)), 0, contentSpan.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             }
             var index = -1
             var hideStart: Int
