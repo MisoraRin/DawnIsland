@@ -1,7 +1,5 @@
 package com.yanrou.dawnisland;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +18,7 @@ public abstract class SeriesRecyclerOnScrollListener extends RecyclerView.OnScro
 
         int itemCount = manager.getItemCount();
         // 判断是否滑动到了倒数第5个item，并且是向上滑动
-        if (lastItemPosition >= (itemCount - 5) && isSlidingUpward) {
+        if (lastItemPosition >= (itemCount - 12) && isSlidingUpward) {
             //加载更多
             onLoadMore();
         }
