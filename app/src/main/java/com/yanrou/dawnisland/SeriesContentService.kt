@@ -1,4 +1,4 @@
-package com.yanrou.dawnisland.content
+package com.yanrou.dawnisland
 
 import okhttp3.ResponseBody
 import retrofit2.Call
