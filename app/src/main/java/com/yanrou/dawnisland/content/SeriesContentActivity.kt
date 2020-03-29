@@ -1,5 +1,8 @@
 package com.yanrou.dawnisland.content
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -26,6 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
+
 /**
  * @author suche
  */
@@ -41,6 +45,14 @@ class SeriesContentActivity : AppCompatActivity() {
     private lateinit var viewModel: SeriesContentViewModel
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.series_content_menu, menu)
+        val onlyPoSwitch = menu.findItem(R.id.only_po_switch)
+        viewModel.OnlyPoLiveData.observe(this, Observer { t ->
+            if (t) {
+                onlyPoSwitch.title = "查看所有"
+            } else {
+                onlyPoSwitch.title = "只看po"
+            }
+        })
         return true
     }
 
@@ -79,7 +91,7 @@ class SeriesContentActivity : AppCompatActivity() {
         recyclerView.adapter = multiTypeAdapter
         smartRefreshLayout.setEnableAutoLoadMore(false)
         smartRefreshLayout.setOnRefreshListener { viewModel.refresh(layoutManager.findLastVisibleItemPosition()) }
-        viewModel.listLiveData.observe(this, Observer { contentItems: List<ContentItem>? ->
+        viewModel.listLiveData.observe(this, Observer { contentItems ->
             lifecycleScope.launch(Dispatchers.Default) {
                 val oldList = multiTypeAdapter!!.items
                 //创建一个新的表
@@ -119,6 +131,9 @@ class SeriesContentActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> finish()
+            R.id.copy_series_id -> {
+                copyToClipboard(this, ">>No." + viewModel.seriesId)
+            }
             R.id.jump_page -> {
             }
             R.id.reply -> {
@@ -138,6 +153,11 @@ class SeriesContentActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun copyToClipboard(context: Context, content: CharSequence?) {
+        val clipboard: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboard.setPrimaryClip(ClipData.newPlainText(null, content)) //参数一：标签，可为空，参数二：要复制到剪贴板的文本
     }
 
     companion object {
