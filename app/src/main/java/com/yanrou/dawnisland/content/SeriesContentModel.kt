@@ -2,6 +2,7 @@ package com.yanrou.dawnisland.content
 
 import android.util.Log
 import com.google.gson.Gson
+import com.yanrou.dawnisland.MyApplication
 import com.yanrou.dawnisland.Reference
 import com.yanrou.dawnisland.database.SeriesData
 import com.yanrou.dawnisland.json2class.ReplysBean
@@ -83,7 +84,7 @@ class SeriesContentModel(private val id: String) {
         val seriesContentJson = Gson().fromJson(s, SeriesContentJson::class.java)
 
         //判断是否是一整页
-        wholePage = (seriesContentJson.getReplys().size == 20 || (seriesContentJson.getReplys().size == 19 && !"9999999".equals(seriesContentJson.getReplys().get(0).getSeriesId())))
+        wholePage = (seriesContentJson.replys.size == 20 || (seriesContentJson.replys.size == 19 && !"9999999".equals(seriesContentJson.replys.get(0).seriesId)))
 
 
         //为真则表示空页
