@@ -3,7 +3,6 @@ package com.yanrou.dawnisland;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -48,11 +47,14 @@ import androidx.transition.TransitionManager;
 
 import com.yanrou.dawnisland.database.CookieData;
 
+import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -64,37 +66,37 @@ import okhttp3.Response;
 import static android.app.Activity.RESULT_OK;
 
 public class ReplyDialog extends DialogFragment {
-    ImageView chosedImage;
-    ImageView expandMore;
-    File image_will_send;
-    EditText contentText, nameText, titleText, emailText;
-    String seriesId;
-    TextView seriesIdTextView, cookie;
+    private ImageView chosedImage;
+    private ImageView expandMore;
+    private File imageWillSend;
+    private EditText contentText, nameText, titleText, emailText;
+    private String seriesId;
+    private TextView seriesIdTextView, cookie;
 
-    Rect prerect;
+    private Rect prerect;
 
-    ImageView chooseImage;
+    private ImageView chooseImage;
 
-    View partLine;
+    private View partLine;
 
-    Context mContext;
+    private Context mContext;
 
-    ConstraintLayout constraintLayout;
+    private ConstraintLayout constraintLayout;
 
-    private ConstraintSet applyConstraintSet = new ConstraintSet();
-    private ConstraintSet resetConstraintSet = new ConstraintSet();
+    private ConstraintSet firstConstraintSet = new ConstraintSet();
+    private ConstraintSet fullScreenConstraintSet = new ConstraintSet();
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE};
-    public static final int CHOOSE_PHOTO = 2;
+    private static final int CHOOSE_PHOTO = 2;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static final String TAG = "ReplyDialog";
     /**
      * 用来标记邮件面板是否展开、是否全屏
      */
-    boolean isNameExpand = false, isFullScreen = false;
+    private boolean isNameExpand = false, isFullScreen = false;
     private List<CookieData> cookies;
 
     @Override
@@ -115,67 +117,74 @@ public class ReplyDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_reply, container, false);
+        View view = inflater.inflate(R.layout.dialog_reply_first, container, false);
 
         Dialog dialog = getDialog();
 
         ImageView imageView = view.findViewById(R.id.send_reply);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendReply();
-            }
-        });
-
         constraintLayout = view.findViewById(R.id.constrainLayout);
-        applyConstraintSet.clone(constraintLayout);
-        resetConstraintSet.clone(constraintLayout);
-
         contentText = view.findViewById(R.id.edit_content);
         nameText = view.findViewById(R.id.name_text);
         titleText = view.findViewById(R.id.title_text);
         emailText = view.findViewById(R.id.email_text);
 
+        firstConstraintSet.clone(constraintLayout);
+        fullScreenConstraintSet.clone(this.getActivity(), R.layout.reply_dialog_full_screen);
+
+        imageView.setOnClickListener(view14 -> sendReply());
+
+
+
         cookie = view.findViewById(R.id.cookie);
-        cookie.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow();
-            }
-        });
+        cookie.setOnClickListener(v -> popupWindow());
 
 
         Bundle bundle = getArguments();
+        assert bundle != null;
         seriesId = bundle.getString("seriesId");
         seriesIdTextView = view.findViewById(R.id.series_number);
         seriesIdTextView.setText(seriesId);
 
         chosedImage = view.findViewById(R.id.will_send_image);
         chosedImage.setOnClickListener(view1 -> {
-            image_will_send = null;
+            imageWillSend = null;
 
             TransitionManager.beginDelayedTransition(constraintLayout);
-            applyConstraintSet.clone(constraintLayout);
+            firstConstraintSet.clone(constraintLayout);
             if (enpandKeyFlag == KEYBOARD_IMAGE) {
                 int height = ((ConstraintLayout.LayoutParams) chosedImage.getLayoutParams()).bottomMargin;
-                applyConstraintSet.setMargin(R.id.will_send_image, ConstraintSet.BOTTOM, dip2px(getContext(), 8));
+                firstConstraintSet.setMargin(R.id.will_send_image, ConstraintSet.BOTTOM, dip2px(Objects.requireNonNull(getContext()), 8));
                 if (partLine.getVisibility() == View.VISIBLE) {
-                    applyConstraintSet.setMargin(R.id.spart_line_4, ConstraintSet.BOTTOM, height);
+                    firstConstraintSet.setMargin(R.id.spart_line_4, ConstraintSet.BOTTOM, height);
                     enpandKeyFlag = KEYBOARD_NAME;
                 } else {
-                    applyConstraintSet.setMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, height - dip2px(getContext(), 8));
+                    firstConstraintSet.setMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, height - dip2px(getContext(), 8));
                     enpandKeyFlag = KEYBOARD_BUTTON;
                 }
             }
-            applyConstraintSet.setVisibility(R.id.will_send_image, ConstraintSet.GONE);
-            applyConstraintSet.applyTo(constraintLayout);
+            firstConstraintSet.setVisibility(R.id.will_send_image, ConstraintSet.GONE);
+            firstConstraintSet.applyTo(constraintLayout);
 
         });
 
         expandMore = view.findViewById(R.id.expand_more_button);
-        expandMore.setOnClickListener(view12 -> showMoreOrLess());
+        expandMore.setOnClickListener(view12 -> {
+            TransitionManager.beginDelayedTransition(constraintLayout);
+            showMoreOrLess();
+            if (isFullScreen) {
+                fullScreenConstraintSet.applyTo(constraintLayout);
+            } else {
+                firstConstraintSet.applyTo(constraintLayout);
+            }
+            if (isNameExpand) {
+                nameText.requestFocus();
+            } else {
+                contentText.requestFocus();
+            }
+        });
 
 
+        assert dialog != null;
         Window win = dialog.getWindow();
 
 
@@ -183,8 +192,7 @@ public class ReplyDialog extends DialogFragment {
 
         chooseImage = view.findViewById(R.id.choose_image_button);
         chooseImage.setOnClickListener(view13 -> {
-            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                //requestPermissions( new String[]{ Manifest.permission. READ_EXTERNAL_STORAGE }, 1);
+            if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
             } else {
                 openAlbum();
@@ -194,34 +202,12 @@ public class ReplyDialog extends DialogFragment {
 
         ImageView fullScreen = view.findViewById(R.id.full_screen);
         fullScreen.setOnClickListener(view1 -> {
+            TransitionManager.beginDelayedTransition(constraintLayout);
             if (!isFullScreen) {
-
-                contentText.setMaxLines(1000);
-                TransitionManager.beginDelayedTransition(constraintLayout);
-
-                applyConstraintSet.clone(constraintLayout);
-                applyConstraintSet.constrainHeight(R.id.edit_content, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT);
-                applyConstraintSet.clear(R.id.textView3, ConstraintSet.BOTTOM);
-                applyConstraintSet.clear(R.id.space_view, ConstraintSet.BOTTOM);
-                applyConstraintSet.connect(R.id.edit_content, ConstraintSet.TOP, R.id.textView3, ConstraintSet.BOTTOM, dip2px(getContext(), 8));
-                applyConstraintSet.connect(R.id.textView3, ConstraintSet.TOP, R.id.space_view, ConstraintSet.BOTTOM, 0);
-                applyConstraintSet.connect(R.id.space_view, ConstraintSet.TOP, R.id.constrainLayout, ConstraintSet.TOP, 0);
-                applyConstraintSet.applyTo(constraintLayout);
+                fullScreenConstraintSet.applyTo(constraintLayout);
                 isFullScreen = true;
             } else {
-
-                contentText.setMaxLines(10);
-
-                TransitionManager.beginDelayedTransition(constraintLayout);
-
-                applyConstraintSet.clone(constraintLayout);
-                applyConstraintSet.constrainHeight(R.id.edit_content, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-                applyConstraintSet.clear(R.id.edit_content, ConstraintSet.TOP);
-                applyConstraintSet.clear(R.id.textView3, ConstraintSet.TOP);
-                applyConstraintSet.clear(R.id.space_view, ConstraintSet.TOP);
-                applyConstraintSet.connect(R.id.textView3, ConstraintSet.BOTTOM, R.id.edit_content, ConstraintSet.TOP, dip2px(getContext(), 8));
-                applyConstraintSet.connect(R.id.space_view, ConstraintSet.BOTTOM, R.id.textView3, ConstraintSet.TOP, 0);
-                applyConstraintSet.applyTo(constraintLayout);
+                firstConstraintSet.applyTo(constraintLayout);
                 isFullScreen = false;
             }
         });
@@ -235,20 +221,10 @@ public class ReplyDialog extends DialogFragment {
             lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
             lp.windowAnimations = R.style.Animation_Bottom;
             win.setAttributes(lp);
-            // dialog 布局位于底部
-            //win.setGravity(Gravity.BOTTOM);
-            // 设置进出场动画
-            //win.setWindowAnimations(R.style.Animation_Bottom);
 
-            //这一步最好要做，因为如果这两个flag没有清除的话下面没有生效
-            win.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            //设置布局能够延伸到状态栏(StatusBar)和导航栏(NavigationBar)里面
+            win.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             win.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            //设置状态栏(StatusBar)颜色透明
             win.setStatusBarColor(Color.TRANSPARENT);
-            //设置导航栏(NavigationBar)颜色透明
-            //win.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
 
         }
         cookies = LitePal.findAll(CookieData.class);
@@ -261,19 +237,29 @@ public class ReplyDialog extends DialogFragment {
         }
 
         //TODO 当点击输入框时将其他元素隐藏
-        contentText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-
+        contentText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (isNameExpand && hasFocus) {
+                TransitionManager.beginDelayedTransition(constraintLayout);
+                showMoreOrLess();
+                if (isFullScreen) {
+                    fullScreenConstraintSet.applyTo(constraintLayout);
+                } else {
+                    firstConstraintSet.applyTo(constraintLayout);
+                }
+                if (isNameExpand) {
+                    nameText.requestFocus();
+                } else {
+                    contentText.requestFocus();
+                }
             }
         });
         contentText.requestFocus();
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        Objects.requireNonNull(Objects.requireNonNull(getDialog()).getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
         return view;
     }
 
-    AlertDialog alertDialog;
+    private AlertDialog alertDialog;
     private final int KEYBOARD_NONE = 0;
     private final int KEYBOARD_IMAGE = 1;
     private final int KEYBOARD_NAME = 2;
@@ -283,8 +269,7 @@ public class ReplyDialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        int eight = dip2px(getContext(), 8);
-        Activity activity = getActivity();
+        int eight = dip2px(Objects.requireNonNull(getContext()), 8);
         if (alertDialog == null) {
 
             alertDialog = new AlertDialog.Builder(getContext(), R.style.MyTransparent).create();
@@ -292,6 +277,7 @@ public class ReplyDialog extends DialogFragment {
             alertDialog.setView(textView);
             Window window = alertDialog.getWindow();
             //这一步最好要做，因为如果这两个flag没有清除的话下面没有生效
+            assert window != null;
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
                     | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             //设置布局能够延伸到状态栏(StatusBar)和导航栏(NavigationBar)里面
@@ -319,38 +305,24 @@ public class ReplyDialog extends DialogFragment {
                     change = rect.bottom - prerect.bottom;
                 }
 
-                applyConstraintSet.clone(constraintLayout);
+                firstConstraintSet.clone(constraintLayout);
                 Log.d(TAG, "onGlobalLayout: " + change);
                 if (change < 0) {
-                    if (chosedImage.getVisibility() == View.VISIBLE) {
-                        applyConstraintSet.setMargin(R.id.will_send_image, ConstraintSet.BOTTOM, -change + eight);
-                        enpandKeyFlag = KEYBOARD_IMAGE;
-                    } else if (nameText.getVisibility() == View.VISIBLE) {
-                        applyConstraintSet.setMargin(R.id.spart_line_4, ConstraintSet.BOTTOM, -change + eight);
-                        enpandKeyFlag = KEYBOARD_NAME;
-                    } else {
-                        applyConstraintSet.setMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, -change);
-                        enpandKeyFlag = KEYBOARD_BUTTON;
-                    }
-                    //applyConstraintSet.setMargin(R.id.choose_image_button,ConstraintSet.BOTTOM,741);
+                    firstConstraintSet.setMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, -change);
+                    fullScreenConstraintSet.setMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, -change);
+
                 } else if (change > 0) {
-                    switch (enpandKeyFlag) {
-                        case KEYBOARD_BUTTON:
-                            applyConstraintSet.setMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, 0);
-                            break;
-                        case KEYBOARD_IMAGE:
-                            applyConstraintSet.setMargin(R.id.will_send_image, ConstraintSet.BOTTOM, eight);
-                            break;
-                        case KEYBOARD_NAME:
-                            applyConstraintSet.setMargin(R.id.spart_line_4, ConstraintSet.BOTTOM, eight);
-                            break;
-                        default:
-                            break;
-                    }
+                    firstConstraintSet.setMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, 0);
+                    fullScreenConstraintSet.setMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, 0);
+
                     enpandKeyFlag = KEYBOARD_NONE;
-                    //applyConstraintSet.setGoneMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, dip2px(getContext(), 8));
+
                 }
-                applyConstraintSet.applyTo(constraintLayout);
+                if (isFullScreen) {
+                    fullScreenConstraintSet.applyTo(constraintLayout);
+                } else {
+                    firstConstraintSet.applyTo(constraintLayout);
+                }
                 prerect = new Rect(rect);
             });
         }
@@ -368,11 +340,11 @@ public class ReplyDialog extends DialogFragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         switch (requestCode) {
             case 1:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG, "onRequestPermissionsResult: " + grantResults.toString());
+                    Log.d(TAG, "onRequestPermissionsResult: " + Arrays.toString(grantResults));
                     openAlbum();
                 } else {
                     Toast.makeText(getContext(), "You denied the permission", Toast.LENGTH_SHORT).show();
@@ -392,9 +364,9 @@ public class ReplyDialog extends DialogFragment {
                 .addFormDataPart("email", emailText.getText().toString())
                 .addFormDataPart("content", contentText.getText().toString())
                 .addFormDataPart("water", "true");
-        if (image_will_send != null) {
-            RequestBody image = RequestBody.create(image_will_send, MediaType.parse("image/" + image_will_send.getName().substring(image_will_send.getName().lastIndexOf(".") + 1)));
-            builder.addFormDataPart("image", image_will_send.getName(), image);
+        if (imageWillSend != null) {
+            RequestBody image = RequestBody.create(imageWillSend, MediaType.parse("image/" + imageWillSend.getName().substring(imageWillSend.getName().lastIndexOf(".") + 1)));
+            builder.addFormDataPart("image", imageWillSend.getName(), image);
         }
 
         RequestBody formBody = builder.build();
@@ -511,7 +483,7 @@ public class ReplyDialog extends DialogFragment {
 
     private void displayImage(String imagePath) {
         if (imagePath != null) {
-            image_will_send = new File(imagePath);
+            imageWillSend = new File(imagePath);
             chosedImage.setVisibility(View.VISIBLE);
             chosedImage.setImageBitmap(BitmapFactory.decodeFile(imagePath));
         } else {
@@ -521,50 +493,39 @@ public class ReplyDialog extends DialogFragment {
 
     private void showMoreOrLess() {
         if (!isNameExpand) {
-            TransitionManager.beginDelayedTransition(constraintLayout);
+            firstConstraintSet.setVisibility(R.id.spart_line_1, View.VISIBLE);
+            firstConstraintSet.setVisibility(R.id.name_text, View.VISIBLE);
+            firstConstraintSet.setVisibility(R.id.spart_line_2, View.VISIBLE);
+            firstConstraintSet.setVisibility(R.id.title_text, View.VISIBLE);
+            firstConstraintSet.setVisibility(R.id.spart_line_3, View.VISIBLE);
+            firstConstraintSet.setVisibility(R.id.email_text, View.VISIBLE);
+            firstConstraintSet.setVisibility(R.id.spart_line_4, View.VISIBLE);
 
-            applyConstraintSet.clone(constraintLayout);
+            fullScreenConstraintSet.setVisibility(R.id.spart_line_1, View.VISIBLE);
+            fullScreenConstraintSet.setVisibility(R.id.name_text, View.VISIBLE);
+            fullScreenConstraintSet.setVisibility(R.id.spart_line_2, View.VISIBLE);
+            fullScreenConstraintSet.setVisibility(R.id.title_text, View.VISIBLE);
+            fullScreenConstraintSet.setVisibility(R.id.spart_line_3, View.VISIBLE);
+            fullScreenConstraintSet.setVisibility(R.id.email_text, View.VISIBLE);
+            fullScreenConstraintSet.setVisibility(R.id.spart_line_4, View.VISIBLE);
 
-            applyConstraintSet.setVisibility(R.id.spart_line_1, View.VISIBLE);
-            applyConstraintSet.setVisibility(R.id.name_text, View.VISIBLE);
-            applyConstraintSet.setVisibility(R.id.spart_line_2, View.VISIBLE);
-            applyConstraintSet.setVisibility(R.id.title_text, View.VISIBLE);
-            applyConstraintSet.setVisibility(R.id.spart_line_3, View.VISIBLE);
-            applyConstraintSet.setVisibility(R.id.email_text, View.VISIBLE);
-            applyConstraintSet.setVisibility(R.id.spart_line_4, View.VISIBLE);
-
-            //需要把操作栏下面的margin去掉改到name下面
-            if (enpandKeyFlag == KEYBOARD_BUTTON) {
-                int height = ((ConstraintLayout.LayoutParams) chooseImage.getLayoutParams()).bottomMargin;
-                applyConstraintSet.setMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, 0);
-                applyConstraintSet.setMargin(R.id.spart_line_4, ConstraintSet.BOTTOM, height + dip2px(getContext(), 8));
-                enpandKeyFlag = KEYBOARD_NAME;
-            }
-            applyConstraintSet.applyTo(constraintLayout);
-            nameText.requestFocus();
             isNameExpand = true;
         } else {
-            TransitionManager.beginDelayedTransition(constraintLayout);
+            firstConstraintSet.setVisibility(R.id.spart_line_1, View.GONE);
+            firstConstraintSet.setVisibility(R.id.name_text, View.GONE);
+            firstConstraintSet.setVisibility(R.id.spart_line_2, View.GONE);
+            firstConstraintSet.setVisibility(R.id.title_text, View.GONE);
+            firstConstraintSet.setVisibility(R.id.spart_line_3, View.GONE);
+            firstConstraintSet.setVisibility(R.id.email_text, View.GONE);
+            firstConstraintSet.setVisibility(R.id.spart_line_4, View.GONE);
 
-            applyConstraintSet.clone(constraintLayout);
-
-            applyConstraintSet.setVisibility(R.id.spart_line_1, View.GONE);
-            applyConstraintSet.setVisibility(R.id.name_text, View.GONE);
-            applyConstraintSet.setVisibility(R.id.spart_line_2, View.GONE);
-            applyConstraintSet.setVisibility(R.id.title_text, View.GONE);
-            applyConstraintSet.setVisibility(R.id.spart_line_3, View.GONE);
-            applyConstraintSet.setVisibility(R.id.email_text, View.GONE);
-            applyConstraintSet.setVisibility(R.id.spart_line_4, View.GONE);
-
-            //逆向操作一波
-            if (enpandKeyFlag == KEYBOARD_NAME) {
-                int height = ((ConstraintLayout.LayoutParams) partLine.getLayoutParams()).bottomMargin;
-                applyConstraintSet.setMargin(R.id.spart_line_4, ConstraintSet.BOTTOM, 0);
-                applyConstraintSet.setMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, height - dip2px(getContext(), 8));
-                enpandKeyFlag = KEYBOARD_BUTTON;
-            }
-
-            applyConstraintSet.applyTo(constraintLayout);
+            fullScreenConstraintSet.setVisibility(R.id.spart_line_1, View.GONE);
+            fullScreenConstraintSet.setVisibility(R.id.name_text, View.GONE);
+            fullScreenConstraintSet.setVisibility(R.id.spart_line_2, View.GONE);
+            fullScreenConstraintSet.setVisibility(R.id.title_text, View.GONE);
+            fullScreenConstraintSet.setVisibility(R.id.spart_line_3, View.GONE);
+            fullScreenConstraintSet.setVisibility(R.id.email_text, View.GONE);
+            fullScreenConstraintSet.setVisibility(R.id.spart_line_4, View.GONE);
             isNameExpand = false;
         }
     }
@@ -593,18 +554,15 @@ public class ReplyDialog extends DialogFragment {
 
     private int cookieIndex;
 
+    @SuppressLint("ResourceType")
     private TextView genCookieView(String s, int id) {
         TextView textView = new TextView(this.getContext());
         textView.setId(id + 1000);
         textView.setText(s);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceType")
-            @Override
-            public void onClick(View v) {
-                cookieIndex = v.getId() - 1000;
-                cookie.setText(textView.getText());
-                popup.dismiss();
-            }
+        textView.setOnClickListener(v -> {
+            cookieIndex = v.getId() - 1000;
+            cookie.setText(textView.getText());
+            popup.dismiss();
         });
         return textView;
     }
