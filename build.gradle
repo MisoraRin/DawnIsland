@@ -13,8 +13,6 @@ buildscript {
         maven { url 'https://dl.bintray.com/richzjc/maven' }
         maven { url 'http://maven.google.com' }
         maven { url 'http://jcenter.bintray.com'}
-
-        
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
