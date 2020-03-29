@@ -4,6 +4,7 @@ package com.yanrou.dawnisland.content;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +26,6 @@ public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBi
 
     private Activity callerActivity;
 
-    public ContentViewBinder() {
-    }
 
     public ContentViewBinder(Activity callerActivity){
         this.callerActivity = callerActivity;
@@ -34,10 +33,13 @@ public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
-        float letterSpace = PreferenceManager.getDefaultSharedPreferences(parent.getContext()).getInt(CardViewFactory.LETTER_SPACE, 0) * 1.0f / 50;
+        final SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(parent.getContext());
+        float letterSpace = defaultSharedPreferences.getInt(CardViewFactory.LETTER_SPACE, 0) * 1.0f / 50;
+        int mainTextSize = defaultSharedPreferences.getInt(CardViewFactory.MAIN_TEXT_SIZE, 15);
         View root = inflater.inflate(R.layout.series_content_card, parent, false);
         final ViewHolder viewHolder = new ViewHolder(root);
         viewHolder.content.setLetterSpacing(letterSpace);
+        viewHolder.content.setTextSize(mainTextSize);
         return viewHolder;
     }
 
