@@ -16,7 +16,9 @@ import com.yanrou.dawnisland.util.extractQuote
 import com.yanrou.dawnisland.util.removeQuote
 import com.yanrou.dawnisland.util.transformContent
 import com.yanrou.dawnisland.util.transformTime
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SeriesViewModel : ViewModel() {
 
@@ -71,65 +73,67 @@ class SeriesViewModel : ViewModel() {
                 _loadingState.postValue(COMPLETE)
                 return@launch
             }
-            val seriesCardViews = mutableListOf<SeriesCardView>()
-            list.map {
+            withContext(Dispatchers.Default) {
+                val seriesCardViews = mutableListOf<SeriesCardView>()
+                list.map {
 
-                seriesIds.add(it.id)
+                    seriesIds.add(it.id)
 
-                val seriesCardView = SeriesCardView()
-                /**
-                 * 处理数据
-                 */
-                seriesCardView.id = it.id
-                seriesCardView.forum = model.getForumName(it.fid.toString())
+                    val seriesCardView = SeriesCardView()
+                    /**
+                     * 处理数据
+                     */
+                    seriesCardView.id = it.id
+                    seriesCardView.forum = model.getForumName(it.fid.toString())
 
-                //格式化时间
-                // TODO: 这里要检测用户设置，目前在model里不能获取，重构后再增加此功能，暂时先使用默认时间
-                seriesCardView.time = transformTime(it.now)
+                    //格式化时间
+                    // TODO: 这里要检测用户设置，目前在model里不能获取，重构后再增加此功能，暂时先使用默认时间
+                    seriesCardView.time = transformTime(it.now)
 
-                //处理内容
-                // TODO: add quotes
-                val quotes = extractQuote(it.content)
+                    //处理内容
+                    // TODO: add quotes
+                    val quotes = extractQuote(it.content)
 
-                val noQuotesContent = removeQuote(it.content)
+                    val noQuotesContent = removeQuote(it.content)
 
-                // will also hide [h]
-                seriesCardView.content = transformContent(noQuotesContent)
+                    // will also hide [h]
+                    seriesCardView.content = transformContent(noQuotesContent)
 
-                val cookie = SpannableString(it.userid)
-                if (it.admin == 1) {
-                    cookie.setSpan(ForegroundColorSpan(Color.parseColor("#FF0F0F")), 0, cookie.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                    val cookie = SpannableString(it.userid)
+                    if (it.admin == 1) {
+                        cookie.setSpan(ForegroundColorSpan(Color.parseColor("#FF0F0F")), 0, cookie.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                    }
+                    seriesCardView.cookie = cookie
+
+                    if (fid == -1) {
+                        val spannableString = SpannableString(seriesCardView.forum + " · " + it.replyCount)
+                        spannableString.setSpan(RoundBackgroundColorSpan(Color.parseColor("#12DBD1"), Color.parseColor("#FFFFFF")), 0, spannableString.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                        spannableString.setSpan(RelativeSizeSpan(1.0f), 0, spannableString.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                        seriesCardView.forumAndReply = spannableString
+                    } else {
+                        seriesCardView.forumAndReply = SpannableString(it.replyCount.toString())
+                    }
+
+                    if (it.sage == 1) {
+                        seriesCardView.sage = View.VISIBLE
+                    } else {
+                        seriesCardView.sage = View.GONE
+                    }
+
+                    if (it.ext != null && "" != it.ext) {
+                        seriesCardView.haveImage = true
+                        seriesCardView.imageUri = it.img + it.ext
+                    } else {
+                        seriesCardView.haveImage = false
+                    }
+
+                    seriesCardViews.add(seriesCardView)
+
                 }
-                seriesCardView.cookie = cookie
-
-                if (fid == -1) {
-                    val spannableString = SpannableString(seriesCardView.forum + " · " + it.replyCount)
-                    spannableString.setSpan(RoundBackgroundColorSpan(Color.parseColor("#12DBD1"), Color.parseColor("#FFFFFF")), 0, spannableString.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-                    spannableString.setSpan(RelativeSizeSpan(1.0f), 0, spannableString.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-                    seriesCardView.forumAndReply = spannableString
-                } else {
-                    seriesCardView.forumAndReply = SpannableString(it.replyCount.toString())
-                }
-
-                if (it.sage == 1) {
-                    seriesCardView.sage = View.VISIBLE
-                } else {
-                    seriesCardView.sage = View.GONE
-                }
-
-                if (it.ext != null && "" != it.ext) {
-                    seriesCardView.haveImage = true
-                    seriesCardView.imageUri = it.img + it.ext
-                } else {
-                    seriesCardView.haveImage = false
-                }
-
-                seriesCardViews.add(seriesCardView)
-
+                page++
+                _nextPage.postValue(seriesCardViews)
+                _loadingState.postValue(COMPLETE)
             }
-            page++
-            _nextPage.postValue(seriesCardViews)
-            _loadingState.postValue(COMPLETE)
         }
     }
 
