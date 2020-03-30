@@ -23,7 +23,7 @@ class SeriesViewModel : ViewModel() {
     private val TAG = "SeriesViewModel"
     private var model: SeriesModel = SeriesModel()
 
-    var fid = "-1"
+    var fid = -1
     var page = 1
     val LOADING = 1001
     val COMPLETE = 1002
@@ -102,7 +102,7 @@ class SeriesViewModel : ViewModel() {
                 }
                 seriesCardView.cookie = cookie
 
-                if (fid == "-1") {
+                if (fid == -1) {
                     val spannableString = SpannableString(seriesCardView.forum + " · " + it.replyCount)
                     spannableString.setSpan(RoundBackgroundColorSpan(Color.parseColor("#12DBD1"), Color.parseColor("#FFFFFF")), 0, spannableString.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
                     spannableString.setSpan(RelativeSizeSpan(1.0f), 0, spannableString.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
@@ -142,10 +142,10 @@ class SeriesViewModel : ViewModel() {
     }
 
     fun changeForum(fid: Int) {
-        this.fid = fid.toString()
+        this.fid = fid
         viewModelScope.launch {
             seriesIds.clear()
-            model.changeForum(fid.toString())
+            model.changeForum(fid)
             getNextPage()
         }
     }

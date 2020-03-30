@@ -13,7 +13,7 @@ interface SeriesContentService {
 
 interface SeriesListService {
     @GET("Api/showf")
-    fun getSeriesList(@Query("id") id: String?, @Query("page") page: Int): Call<ResponseBody>?
+    fun getSeriesList(@Query("id") id: Int?, @Query("page") page: Int): Call<ResponseBody>?
 
     @GET("Api/timeline")
     fun getTimelineList(@Query("page") page: Int): Call<ResponseBody>?

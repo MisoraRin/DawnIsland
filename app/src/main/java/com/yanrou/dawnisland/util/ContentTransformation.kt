@@ -22,7 +22,7 @@ fun transformForumName(forumName: String): Spanned {
     }
 }
 
-fun transformCookie(userid: String, admin: Int, isPo: (po:String) -> Boolean): SpannableStringBuilder {
+fun transformCookie(userid: String, admin: Int, isPo: ((po: String) -> Boolean)): SpannableStringBuilder {
     /*
       处理饼干
       PO需要加粗

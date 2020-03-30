@@ -15,7 +15,7 @@ class SeriesModel {
     private var fid2Name: Map<Int, String>? = null
 
     // MIGHT NOT BE NEEDED
-    private var fid: String = "-1"
+    private var fid: Int = -1
 
     init {
         fid2Name = Fid2Name.getDb()
@@ -34,7 +34,7 @@ class SeriesModel {
     var page = 1
 
 
-    suspend fun getSeriesList(fid: String, page: Int): List<TimeLineJson> {
+    suspend fun getSeriesList(fid: Int, page: Int): List<TimeLineJson> {
 
         val res = withContext(Dispatchers.IO) {
             getSeriesListFromNet(fid, page)
@@ -45,14 +45,14 @@ class SeriesModel {
         return withContext(Dispatchers.Default) { formatSeriesList(res) }
     }
 
-    private fun getSeriesListFromNet(fid: String, page: Int): String {
+    private fun getSeriesListFromNet(fid: Int, page: Int): String {
         // TODO move to interface
         val retrofit = Retrofit.Builder()
                 .baseUrl("https://nmb.fastmirror.org/")
                 .build()
                 .create(SeriesListService::class.java)
         val result = when (fid) {
-            "-1" -> retrofit.getTimelineList(page)
+            -1 -> retrofit.getTimelineList(page)
             else -> retrofit.getSeriesList(fid, page)
         }
         return result!!.execute().body()!!.string()
@@ -84,7 +84,7 @@ class SeriesModel {
         clearData()
     }
 
-    fun changeForum(fid: String) {
+    fun changeForum(fid: Int) {
         clearData()
         this.fid = fid
     }
