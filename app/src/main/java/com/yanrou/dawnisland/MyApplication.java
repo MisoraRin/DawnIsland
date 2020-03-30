@@ -7,6 +7,7 @@ import com.susion.rabbit.base.config.RabbitConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.yanrou.dawnisland.gen.DaoMaster;
 import com.yanrou.dawnisland.gen.DaoSession;
+import com.yanrou.dawnisland.util.SeriesContentService;
 
 import org.greenrobot.greendao.database.Database;
 import org.litepal.LitePal;

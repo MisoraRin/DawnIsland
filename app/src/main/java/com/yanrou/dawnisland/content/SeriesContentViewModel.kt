@@ -2,24 +2,14 @@ package com.yanrou.dawnisland.content
 
 
 import android.app.Application
-import android.graphics.Color
-import android.graphics.Typeface
-import android.text.*
-import android.text.style.BackgroundColorSpan
-import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.yanrou.dawnisland.json2class.ReplysBean
-import com.yanrou.dawnisland.serieslist.CardViewFactory
-import com.yanrou.dawnisland.span.SegmentSpacingSpan
-import com.yanrou.dawnisland.util.ReadableTime
+import com.yanrou.dawnisland.util.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -166,126 +156,27 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
             /*
               处理时间
              */
-            contentItem.time = ReadableTime.getDisplayTime(temp.now)
+            contentItem.time = transformTime(temp.now)
             /*
               处理饼干
               PO需要加粗
               普通饼干是灰色，po是黑色，红名是红色
              */
-            val cookie = SpannableStringBuilder(temp.userid)
-            if (temp.admin == 1) {
-                val adminColor = ForegroundColorSpan(Color.parseColor("#FF0F0F"))
-                cookie.setSpan(adminColor, 0, cookie.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-            } else if (model.isPo(temp.userid)) {
-                val poColor = ForegroundColorSpan(Color.parseColor("#000000"))
-                cookie.setSpan(poColor, 0, cookie.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-            }
-            if (model.isPo(temp.userid)) {
-                val styleSpanBold = StyleSpan(Typeface.BOLD)
-                cookie.setSpan(styleSpanBold, 0, cookie.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-            }
-            contentItem.cookie = cookie
+
+            contentItem.cookie = transformCookie(temp.userid, temp.admin, model::isPo)
+
             /*
               处理内容
               主要是处理引用串号
              */
-            val contentSpan = SpannableStringBuilder(Html.fromHtml(temp.content))
-            /*
-             */
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
-            if (contentSpan.toString().contains("\n\n")) {
-                contentSpan.setSpan(SegmentSpacingSpan(sharedPreferences.getInt(CardViewFactory.LINE_HEIGHT, 0), sharedPreferences.getInt(CardViewFactory.LINE_HEIGHT, 0)), 0, contentSpan.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-            } else {
-                contentSpan.setSpan(SegmentSpacingSpan(sharedPreferences.getInt(CardViewFactory.LINE_HEIGHT, 0), sharedPreferences.getInt(CardViewFactory.SEG_GAP, 0)), 0, contentSpan.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-            }
-            var index = -1
-            var hideStart: Int
-            var hideEnd: Int
-            hideStart = contentSpan.toString().indexOf("[h]")
-            hideEnd = contentSpan.toString().indexOf("[/h]")
-            while (hideStart != -1 && hideEnd != -1 && hideStart < hideEnd) {
-                contentSpan.delete(hideStart, hideStart + 3)
-                Log.d(TAG, "onResponse: " + contentSpan.toString().substring(hideEnd))
-                contentSpan.delete(hideEnd - 3, hideEnd + 1)
-                val backgroundColorSpan = BackgroundColorSpan(Color.parseColor("#555555"))
-                val foregroundColorSpan = ForegroundColorSpan(Color.TRANSPARENT)
-                contentSpan.setSpan(backgroundColorSpan, hideStart, hideEnd - 3, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                contentSpan.setSpan(foregroundColorSpan, hideStart, hideEnd - 3, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                val clickableSpan: ClickableSpan = object : ClickableSpan() {
-                    override fun onClick(widget: View) {
-                        if (widget is TextView) {
-                            val charSequence = widget.text
-                            if (charSequence is Spannable) {
-                                charSequence.removeSpan(backgroundColorSpan)
-                                charSequence.removeSpan(foregroundColorSpan)
-                                widget.highlightColor = Color.TRANSPARENT
-                            }
-                        }
-                    }
-                }
-                contentSpan.setSpan(clickableSpan, hideStart, hideEnd - 3, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                index = hideEnd - 3
-                hideStart = contentSpan.toString().indexOf("[h]", index)
-                hideEnd = contentSpan.toString().indexOf("[/h]", index)
-            }
-            /*****************************************************************8
-             * TODO temporary solution for quotation, needs rework after restructuring
-             * 支持点击展开
-             * 暂时先取消掉这一段
-             * TODO 读取设置选择这里是打开对话框还是直接展开
-             * TODO **目前仅支持串内引用**
-             */
-            val quoteColor = ForegroundColorSpan(Color.parseColor("#19A8A8")) // primary color
-            val foregroundColorSpans = contentSpan.getSpans(0, contentSpan.length, ForegroundColorSpan::class.java)
-            Log.d(TAG, "onResponse: " + foregroundColorSpans.size)
-            if (foregroundColorSpans.size != 0) {
-                Log.d(TAG, "onResponse: 进入选字阶段！")
-                for (j in foregroundColorSpans.indices) {
-                    val start = contentSpan.getSpanStart(foregroundColorSpans[j])
-                    val end = contentSpan.getSpanEnd(foregroundColorSpans[j])
-                    val charSequence = contentSpan.subSequence(start, end)
-                    if (charSequence.toString().contains(">>No.")) {
-                        Log.d(TAG, "onResponse: 起" + start + " 末" + end + contentSpan.subSequence(start, end).toString().substring(5))
-                        val seriesId = contentSpan.subSequence(start, end).toString().substring(5)
-                        val originalText = contentSpan.subSequence(end, contentSpan.length)
-                        Log.d(TAG, "onResponse: seriesID$seriesId ")
-                        var quote: ReplysBean? = null
-                        for (d in replysBeans) {
-                            if (seriesId == d.seriesId) {
-                                quote = d
-                                break
-                            }
-                        }
-                        if (quote != null) {
-                            val finalQuote: ReplysBean = quote
-                            val clickableSpan: ClickableSpan = object : ClickableSpan() {
-                                override fun onClick(widget: View) {
-                                    if (widget is TextView) {
-                                        Log.d(TAG, "Clicked on quote " + finalQuote.seriesId)
-                                        var charSequence = widget.text
-                                        if (charSequence is Spannable) {
-                                            charSequence = (charSequence.subSequence(start, end).toString() + "\n"
-                                                    + finalQuote.userid + " " + finalQuote.now + "\n"
-                                                    + finalQuote.content)
-                                            val divider = charSequence.length
-                                            val s: Spannable = SpannableString(charSequence.toString() + "\n" + Html.fromHtml(originalText.toString()))
-                                            s.setSpan(quoteColor, start, divider, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                                            widget.text = s
-                                        }
-                                    }
-                                }
+            // TODO: add quotes
+            val quotes = extractQuote(temp.content)
 
-                                override fun updateDrawState(ds: TextPaint) {
-                                    super.updateDrawState(ds)
-                                }
-                            }
-                            contentSpan.setSpan(clickableSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                        }
-                    }
-                }
-            }
+            val noQuotesContent = removeQuote(temp.content)
 
-            contentItem.content = contentSpan
+            // will also hide [h]
+            contentItem.content = transformContent(noQuotesContent)
+
 
             if (temp.sage == 1) {
                 contentItem.sega = View.VISIBLE
@@ -302,20 +193,12 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
                 contentItem.hasImage = false
             }
 
-            val nametitleBulider = StringBuilder()
-            if (temp.title != null && temp.title != "无标题") {
-                nametitleBulider.append("标题：").append(temp.title)
+            val titleAndName = transformTitleAndName(temp.title, temp.name)
+            if (titleAndName != "") {
                 contentItem.hasTitleOrName = true
             }
-            if (temp.name != null && temp.name != "无名氏") {
-                if (nametitleBulider.length != 0) {
-                    nametitleBulider.append("\n")
-                }
-                nametitleBulider.append("作者：").append(temp.name)
-                contentItem.hasTitleOrName = true
-            }
-            contentItem.titleAndName = nametitleBulider.toString()
 
+            contentItem.titleAndName = titleAndName
             contentItems.add(contentItem)
         }
         return contentItems
