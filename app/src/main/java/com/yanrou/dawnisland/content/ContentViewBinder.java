@@ -6,10 +6,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -79,9 +81,27 @@ public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBi
         } else {
             holder.imageView.setVisibility(View.GONE);
         }
+
+
+      LinearLayout quotesContainer = holder.seriesQuotes;
+      if (content.quotes.size() > 0) {
+        quotesContainer.removeAllViews();
+        Log.d("BINDER", "there are " + content.quotes.size() + " quotes " + content.seriesId);
+        for (String q : content.quotes) {
+          View row = LayoutInflater.from(callerActivity)
+              .inflate(R.layout.quote_list_item, quotesContainer, false);
+          TextView t = row.findViewById(R.id.quoteId);
+          t.setText("No. " + q);
+          quotesContainer.addView(row);
+        }
+        quotesContainer.setVisibility(View.VISIBLE);
+      } else {
+        quotesContainer.setVisibility(View.GONE);
+      }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+      LinearLayout seriesQuotes;
         TextView sega;
         TextView number;
         TextView cookie;
@@ -98,9 +118,9 @@ public class ContentViewBinder extends ItemViewBinder<ContentItem, ContentViewBi
             cookie = itemView.findViewById(R.id.SeriesListCookie);
             content = itemView.findViewById(R.id.SeriesListContent);
             time = itemView.findViewById(R.id.SeriesListTime);
-            titleAndName = itemView.findViewById(R.id.title_and_name);
-            imageView = itemView.findViewById(R.id.series_content_imageView);
-
+          titleAndName = itemView.findViewById(R.id.titleAndName);
+          imageView = itemView.findViewById(R.id.seriesContentImageView);
+          seriesQuotes = itemView.findViewById(R.id.seriesQuotes);
 
             content.setMovementMethod(LinkMovementMethod.getInstance());
         }

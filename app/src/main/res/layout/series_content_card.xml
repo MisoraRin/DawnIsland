@@ -43,17 +43,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/SeriesListContent"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:text="测试测试测试"
-        android:textColor="@color/mainContentTextColor"
-        android:textIsSelectable="false"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/barrier" />
+      android:id="@+id/SeriesListContent"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="6dp"
+      android:text="测试测试测试"
+      android:textColor="@color/mainContentTextColor"
+      android:textIsSelectable="false"
+      android:textSize="16sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/seriesQuotes" />
 
     <TextView
         android:id="@+id/SeriesListTime"
@@ -67,7 +67,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/title_and_name"
+      android:id="@+id/titleAndName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="标题：哈哈哈\n作者：咩咩咩"
@@ -81,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="SeriesListCookie,sega,title_and_name"
+      app:constraint_referenced_ids="SeriesListCookie,sega,titleAndName"
         tools:layout_editor_absoluteX="5dp"
         tools:layout_editor_absoluteY="731dp" />
 
@@ -95,8 +95,17 @@
         app:layout_constraintEnd_toStartOf="@+id/number"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+      android:id="@+id/seriesQuotes"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="6dp"
+      android:orientation="vertical"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/barrier" />
+
     <ImageView
-        android:id="@+id/series_content_imageView"
+      android:id="@+id/seriesContentImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
@@ -111,7 +120,7 @@
         android:layout_height="1.2px"
         android:layout_marginTop="8dp"
         android:background="#E0E0E0"
-        app:layout_constraintTop_toBottomOf="@+id/series_content_imageView"
+      app:layout_constraintTop_toBottomOf="@+id/seriesContentImageView"
         tools:layout_editor_absoluteX="12dp" />
 
 
