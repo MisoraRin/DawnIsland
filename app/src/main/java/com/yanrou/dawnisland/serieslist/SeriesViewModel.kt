@@ -27,64 +27,74 @@ class SeriesViewModel : ViewModel() {
 
     var fid = -1
     var page = 1
-    val LOADING = 1001
-    val COMPLETE = 1002
-    val FAIL = 1003
-    private val _loadingState = MutableLiveData(COMPLETE)
+
+    enum class LoadingState {
+        LOADING,
+        COMPLETE,
+        FAIL
+    }
+
+
+    /**
+     * @param state 用来表示不同的加载情况，方便结束以后调用
+     */
+
+    private val _loadingState = MutableLiveData(LoadingState.COMPLETE)
     val loadingState get() = _loadingState
 
-    private val _nextPage = MutableLiveData<List<SeriesCardView>>()
-    val nextPage get() = _nextPage
+    private val _seriesCards = MutableLiveData<List<SeriesCardView>>()
+    val seriesCards get() = _seriesCards
 
 
     init {
         Log.d(TAG, "VM getting first page")
         getNextPage()
     }
-    /** MIGHT NOT BE NEEDED
-     * 当前所有列表
+
+    /**
+     * 当前所有串的view
      */
-//    var series = mutableListOf<TimeLineJson>()
+    var seriesCardList = mutableListOf<SeriesCardView>()
 
     /** MIGHT NOT BE NEEDED
      * 保存了当前所有串号，用于快速排查重复串
      */
-    var seriesIds = mutableSetOf<String>()
+//    var seriesIds = mutableSetOf<String>()
 
-    /**
-     * @param state 用来表示不同的加载情况，方便结束以后调用
-     */
+
     fun getNextPage() {
-        if (loadingState.value == LOADING) {
+        if (loadingState.value == LoadingState.LOADING) {
             return
         }
-//        loadingState = LOADING
+        loadingState.value = LoadingState.LOADING
         viewModelScope.launch {
             var list: List<TimeLineJson>
             try {
                 list = model.getSeriesList(fid, page)
             } catch (e: Exception) {
                 Log.e(TAG, "Get Series List error", e)
-                _loadingState.postValue(FAIL)
+                _loadingState.postValue(LoadingState.FAIL)
                 return@launch
             }
             // no new data
             if (list.isEmpty()) {
-                _loadingState.postValue(COMPLETE)
+                Log.d(TAG, "No new data for page $page")
+                _loadingState.postValue(LoadingState.COMPLETE)
                 return@launch
             }
+
             withContext(Dispatchers.Default) {
-                val seriesCardViews = mutableListOf<SeriesCardView>()
+                Log.d(TAG, "processing data for page $page..")
                 list.map {
 
-                    seriesIds.add(it.id)
+//                    seriesIds.add(it.id)
 
                     val seriesCardView = SeriesCardView()
                     /**
                      * 处理数据
                      */
                     seriesCardView.id = it.id
-                    seriesCardView.forum = model.getForumName(it.fid.toString())
+                    seriesCardView.forum = model.getForumName(it.fid)
 
                     //格式化时间
                     // TODO: 这里要检测用户设置，目前在model里不能获取，重构后再增加此功能，暂时先使用默认时间
@@ -127,19 +137,21 @@ class SeriesViewModel : ViewModel() {
                         seriesCardView.haveImage = false
                     }
 
-                    seriesCardViews.add(seriesCardView)
+                    seriesCardList.add(seriesCardView)
 
                 }
                 page++
-                _nextPage.postValue(seriesCardViews)
-                _loadingState.postValue(COMPLETE)
+                _seriesCards.postValue(seriesCardList)
+                _loadingState.postValue(LoadingState.COMPLETE)
             }
         }
     }
 
     fun refresh() {
         viewModelScope.launch {
-            seriesIds.clear()
+//            seriesIds.clear()
+            seriesCardList.clear()
+            page = 1
             model.refresh()
             getNextPage()
         }
@@ -148,7 +160,9 @@ class SeriesViewModel : ViewModel() {
     fun changeForum(fid: Int) {
         this.fid = fid
         viewModelScope.launch {
-            seriesIds.clear()
+//            seriesIds.clear()
+            seriesCardList.clear()
+            page = 1
             model.changeForum(fid)
             getNextPage()
         }

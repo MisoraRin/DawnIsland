@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.MultiTypeAdapter
@@ -17,6 +18,7 @@ import com.yanrou.dawnisland.FooterView
 import com.yanrou.dawnisland.FooterViewBinder
 import com.yanrou.dawnisland.R
 import com.yanrou.dawnisland.SeriesRecyclerOnScrollListener
+import com.yanrou.dawnisland.util.DiffCallback
 
 
 class SeriesFragment : Fragment() {
@@ -29,7 +31,7 @@ class SeriesFragment : Fragment() {
     private lateinit var seriesListAdapter: MultiTypeAdapter
 
     private lateinit var smartRefreshLayout: SmartRefreshLayout
-    private val adapterItems = mutableListOf<Any>()
+    private var adapterItems = listOf<SeriesCardView>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,8 @@ class SeriesFragment : Fragment() {
         viewModel = ViewModelProvider(getActivity()!!).get(SeriesViewModel::class.java)
         seriesListAdapter.register(SeriesCardView::class.java, SeriesCardViewBinder(activity))
         seriesListAdapter.register(FooterView::class.java, FooterViewBinder())
-        seriesListAdapter.items = adapterItems
+
+        seriesListAdapter.items = emptyList()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -73,10 +76,9 @@ class SeriesFragment : Fragment() {
          */
         seriesList.adapter = seriesListAdapter
         Log.d(TAG, "onActivityCreated: 到这里")
-        viewModel.nextPage.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "nextPage found, trying to add to page")
-            adapterItems.addAll(it)
-            seriesListAdapter.notifyDataSetChanged()
+        viewModel.seriesCards.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "new Data found, updating adapter...")
+            updateAdapter(it)
             smartRefreshLayout.finishLoadMore()
             smartRefreshLayout.closeHeaderOrFooter()
         })
@@ -98,19 +100,27 @@ class SeriesFragment : Fragment() {
     fun changeForum(fid: Int) {
         seriesList.scrollToPosition(0)
         //Log.d(TAG, "changeForum: 调用refresh前finish一遍");
-        //smartRefreshLayout.finishRefresh();
+        smartRefreshLayout.finishRefresh()
         Log.d(TAG, "changeForum: $fid 启动刷新动画")
         val d = smartRefreshLayout.autoRefreshAnimationOnly()
         Log.d(TAG, "changeForum: 启用动画的返回值 $d")
-        adapterItems.clear()
+        updateAdapter(emptyList())
         viewModel.changeForum(fid)
     }
 
     fun reFresh() {
+        updateAdapter(emptyList())
         seriesList.scrollToPosition(0)
         smartRefreshLayout.autoRefreshAnimationOnly()
-        adapterItems.clear()
         viewModel.refresh()
+    }
+
+    fun updateAdapter(newList: List<SeriesCardView>) {
+        adapterItems = newList
+        val diffResult = DiffUtil.calculateDiff(DiffCallback(seriesListAdapter.items, adapterItems))
+        seriesListAdapter.items = adapterItems
+        diffResult.dispatchUpdatesTo(seriesListAdapter)
+        seriesListAdapter.notifyDataSetChanged()
     }
 
 
