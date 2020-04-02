@@ -3,7 +3,6 @@ package com.yanrou.dawnisland.gen;
 import com.yanrou.dawnisland.database.ContentDAO;
 import com.yanrou.dawnisland.database.SeriesDAO;
 import com.yanrou.dawnisland.json2class.ReplysBean;
-import com.yanrou.dawnisland.json2class.SeriesContentJson;
 
 import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.AbstractDaoSession;
@@ -25,12 +24,10 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig contentDAODaoConfig;
     private final DaoConfig seriesDAODaoConfig;
     private final DaoConfig replysBeanDaoConfig;
-    private final DaoConfig seriesContentJsonDaoConfig;
 
     private final ContentDAODao contentDAODao;
     private final SeriesDAODao seriesDAODao;
     private final ReplysBeanDao replysBeanDao;
-    private final SeriesContentJsonDao seriesContentJsonDao;
 
     public DaoSession(Database db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -45,25 +42,19 @@ public class DaoSession extends AbstractDaoSession {
         replysBeanDaoConfig = daoConfigMap.get(ReplysBeanDao.class).clone();
         replysBeanDaoConfig.initIdentityScope(type);
 
-        seriesContentJsonDaoConfig = daoConfigMap.get(SeriesContentJsonDao.class).clone();
-        seriesContentJsonDaoConfig.initIdentityScope(type);
-
         contentDAODao = new ContentDAODao(contentDAODaoConfig, this);
         seriesDAODao = new SeriesDAODao(seriesDAODaoConfig, this);
         replysBeanDao = new ReplysBeanDao(replysBeanDaoConfig, this);
-        seriesContentJsonDao = new SeriesContentJsonDao(seriesContentJsonDaoConfig, this);
 
         registerDao(ContentDAO.class, contentDAODao);
         registerDao(SeriesDAO.class, seriesDAODao);
         registerDao(ReplysBean.class, replysBeanDao);
-        registerDao(SeriesContentJson.class, seriesContentJsonDao);
     }
 
     public void clear() {
         contentDAODaoConfig.clearIdentityScope();
         seriesDAODaoConfig.clearIdentityScope();
         replysBeanDaoConfig.clearIdentityScope();
-        seriesContentJsonDaoConfig.clearIdentityScope();
     }
 
     public ContentDAODao getContentDAODao() {
@@ -76,10 +67,6 @@ public class DaoSession extends AbstractDaoSession {
 
     public ReplysBeanDao getReplysBeanDao() {
         return replysBeanDao;
-    }
-
-    public SeriesContentJsonDao getSeriesContentJsonDao() {
-        return seriesContentJsonDao;
     }
 
 }
