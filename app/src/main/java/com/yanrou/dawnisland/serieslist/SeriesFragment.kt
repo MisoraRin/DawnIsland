@@ -117,7 +117,7 @@ class SeriesFragment : Fragment() {
     private fun updateAdapter(newList: List<SeriesCardView>) {
         lifecycleScope.launch {
             val diffResult = withContext(Dispatchers.Default) { DiffUtil.calculateDiff(DiffCallback(seriesListAdapter!!.items, newList)) }
-            seriesListAdapter!!.items = ArrayList(newList)
+            seriesListAdapter!!.items = newList.toList()
             diffResult.dispatchUpdatesTo(seriesListAdapter!!)
         }
     }
