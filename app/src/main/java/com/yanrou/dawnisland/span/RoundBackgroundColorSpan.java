@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.text.style.ReplacementSpan;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,12 +41,8 @@ public class RoundBackgroundColorSpan extends ReplacementSpan {
             first = false;
         }
         if (fm != null && fm.top != 0) {
-            Log.d(TAG, "getSize: " + fm);
             fm.top = top;
             fm.bottom = bottom;
-            Log.d(TAG, "getSize: " + fm);
-            Log.d(TAG, "getSize: returnSize" + size);
-
         }
         size = ((int) paint.measureText(text, start, end) + radiu * 2);
         return size;

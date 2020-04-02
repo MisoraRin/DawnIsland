@@ -82,7 +82,7 @@ public class SeriesContentJson extends LitePalSupport {
     @SerializedName("id")
     private String seriesId;
     @SerializedName("fid")
-    private String fid;
+    private int fid;
     @SerializedName("img")
     private String img;
     @SerializedName("ext")
@@ -109,8 +109,8 @@ public class SeriesContentJson extends LitePalSupport {
     @Transient
     private List<ReplysBean> replys = new ArrayList<>();
 
-    @Generated(hash = 1067596231)
-    public SeriesContentJson(@NotNull List<String> po, int lastPage, int lastReplyCount, int substate, int forumId, String seriesId, String fid, String img, String ext, String now, String userid, String name, String email, String title, String content, int sage, int admin, int replyCount) {
+    @Generated(hash = 2083512233)
+    public SeriesContentJson(@NotNull List<String> po, int lastPage, int lastReplyCount, int substate, int forumId, String seriesId, int fid, String img, String ext, String now, String userid, String name, String email, String title, String content, int sage, int admin, int replyCount) {
         this.po = po;
         this.lastPage = lastPage;
         this.lastReplyCount = lastReplyCount;
@@ -130,121 +130,8 @@ public class SeriesContentJson extends LitePalSupport {
         this.admin = admin;
         this.replyCount = replyCount;
     }
-
     @Generated(hash = 1367723520)
     public SeriesContentJson() {
-    }
-
-    public String getSeriesId() {
-        return seriesId;
-    }
-
-    public void setSeriesId(String seriesId) {
-        this.seriesId = seriesId;
-    }
-
-    public String getFid() {
-        return fid;
-    }
-
-    public void setFid(String fid) {
-        this.fid = fid;
-    }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    public String getExt() {
-        return ext;
-    }
-
-    public void setExt(String ext) {
-        this.ext = ext;
-    }
-
-    public String getNow() {
-        return now;
-    }
-
-    public void setNow(String now) {
-        this.now = now;
-    }
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public int getSage() {
-        return sage;
-    }
-
-    public void setSage(int sage) {
-        this.sage = sage;
-    }
-
-    public int getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(int admin) {
-        this.admin = admin;
-    }
-
-    public int getReplyCount() {
-        return replyCount;
-    }
-
-    public void setReplyCount(int replyCount) {
-        this.replyCount = replyCount;
-    }
-
-    public List<ReplysBean> getReplys() {
-        return replys;
-    }
-
-    public void setReplys(List<ReplysBean> replys) {
-        this.replys = replys;
     }
 
     public List<String> getPo() {
@@ -286,6 +173,88 @@ public class SeriesContentJson extends LitePalSupport {
     public void setForumId(int forumId) {
         this.forumId = forumId;
     }
+    public String getSeriesId() {
+        return this.seriesId;
+    }
+    public void setSeriesId(String seriesId) {
+        this.seriesId = seriesId;
+    }
 
+    public int getFid() {
+        return this.fid;
+    }
 
+    public void setFid(int fid) {
+        this.fid = fid;
+    }
+    public String getImg() {
+        return this.img;
+    }
+    public void setImg(String img) {
+        this.img = img;
+    }
+    public String getExt() {
+        return this.ext;
+    }
+    public void setExt(String ext) {
+        this.ext = ext;
+    }
+    public String getNow() {
+        return this.now;
+    }
+    public void setNow(String now) {
+        this.now = now;
+    }
+    public String getUserid() {
+        return this.userid;
+    }
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+    public String getName() {
+        return this.name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getEmail() {
+        return this.email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public String getTitle() {
+        return this.title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public String getContent() {
+        return this.content;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
+    public int getSage() {
+        return this.sage;
+    }
+    public void setSage(int sage) {
+        this.sage = sage;
+    }
+    public int getAdmin() {
+        return this.admin;
+    }
+    public void setAdmin(int admin) {
+        this.admin = admin;
+    }
+    public int getReplyCount() {
+        return this.replyCount;
+    }
+    public void setReplyCount(int replyCount) {
+        this.replyCount = replyCount;
+    }
+
+    public List<ReplysBean> getReplys() {
+        return replys;
+    }
 }

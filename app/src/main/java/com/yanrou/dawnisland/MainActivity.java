@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         toolbar.setOnClickListener(v -> {
-            seriesFragment.reFresh();
+            seriesFragment.refresh();
         });
 
         viewPager.setAdapter(myViewPagerAdapter);
