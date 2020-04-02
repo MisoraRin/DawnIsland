@@ -103,6 +103,7 @@ class SeriesFragment : Fragment() {
 
     fun changeForum(fid: Int) {
         seriesList!!.scrollToPosition(0)
+        updateAdapter(emptyList())
         smartRefreshLayout!!.finishRefresh()
         smartRefreshLayout!!.autoRefreshAnimationOnly()
         viewModel.changeForum(fid)
