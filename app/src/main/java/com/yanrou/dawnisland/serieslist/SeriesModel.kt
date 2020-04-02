@@ -3,11 +3,10 @@ package com.yanrou.dawnisland.serieslist
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.yanrou.dawnisland.Fid2Name
+import com.yanrou.dawnisland.MyApplication
 import com.yanrou.dawnisland.json2class.TimeLineJson
-import com.yanrou.dawnisland.util.SeriesListService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
 import java.io.IOException
 
 class SeriesModel {
@@ -47,10 +46,7 @@ class SeriesModel {
 
     private fun getSeriesListFromNet(fid: Int, page: Int): String {
         // TODO move to interface
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://nmb.fastmirror.org/")
-                .build()
-                .create(SeriesListService::class.java)
+        val retrofit = MyApplication.getRetrofit()
         val result = when (fid) {
             -1 -> retrofit.getTimelineList(page)
             else -> retrofit.getSeriesList(fid, page)
@@ -70,8 +66,11 @@ class SeriesModel {
         return noDuplicates
     }
 
-    fun getForumName(fid: Int): String {
-        return fid2Name?.get(fid) ?: ""
+    fun getForumName(fid1: Int): String {
+        return when {
+            fid == -1 -> fid2Name?.get(fid1) ?: ""
+            else -> fid2Name?.get(fid) ?: ""
+        }
     }
 
     fun clearData() {
