@@ -163,4 +163,9 @@ class SeriesContentActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "SeriesContentActivity"
     }
+
+    override fun onDestroy() {
+        replyDialog = null
+        super.onDestroy()
+    }
 }
