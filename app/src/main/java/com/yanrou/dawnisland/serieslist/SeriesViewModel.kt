@@ -24,6 +24,7 @@ class SeriesViewModel : ViewModel() {
 
     private val TAG = "SeriesViewModel"
     private var model: SeriesModel = SeriesModel()
+    private val roundBackgroundColorSpan = RoundBackgroundColorSpan(Color.parseColor("#12DBD1"), Color.parseColor("#FFFFFF"))
 
     var fid = -1
     var page = 1
@@ -55,12 +56,6 @@ class SeriesViewModel : ViewModel() {
      * 当前所有串的view
      */
     var seriesCardList = mutableListOf<SeriesCardView>()
-
-    /** MIGHT NOT BE NEEDED
-     * 保存了当前所有串号，用于快速排查重复串
-     */
-//    var seriesIds = mutableSetOf<String>()
-
 
     fun getNextPage() {
         if (loadingState.value == LoadingState.LOADING) {
@@ -117,7 +112,8 @@ class SeriesViewModel : ViewModel() {
 
                     if (fid == -1) {
                         val spannableString = SpannableString(seriesCardView.forum + " · " + it.replyCount)
-                        spannableString.setSpan(RoundBackgroundColorSpan(Color.parseColor("#12DBD1"), Color.parseColor("#FFFFFF")), 0, spannableString.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+
+                        spannableString.setSpan(roundBackgroundColorSpan, 0, spannableString.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
                         spannableString.setSpan(RelativeSizeSpan(1.0f), 0, spannableString.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
                         seriesCardView.forumAndReply = spannableString
                     } else {
@@ -149,7 +145,6 @@ class SeriesViewModel : ViewModel() {
 
     fun refresh() {
         viewModelScope.launch {
-//            seriesIds.clear()
             seriesCardList.clear()
             page = 1
             model.refresh()
@@ -160,7 +155,6 @@ class SeriesViewModel : ViewModel() {
     fun changeForum(fid: Int) {
         this.fid = fid
         viewModelScope.launch {
-//            seriesIds.clear()
             seriesCardList.clear()
             page = 1
             model.changeForum(fid)
