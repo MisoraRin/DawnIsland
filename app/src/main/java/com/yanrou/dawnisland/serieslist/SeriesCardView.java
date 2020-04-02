@@ -13,4 +13,8 @@ public class SeriesCardView {
     String imageUri;
     String id;
     String forum;
+
+    public String getId() {
+        return this.id;
+    }
 }

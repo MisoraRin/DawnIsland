@@ -70,8 +70,8 @@ class SeriesModel {
         return noDuplicates
     }
 
-    fun getForumName(fid: String): String {
-        return fid2Name?.get(fid.toInt()) ?: ""
+    fun getForumName(fid: Int): String {
+        return fid2Name?.get(fid) ?: ""
     }
 
     fun clearData() {
