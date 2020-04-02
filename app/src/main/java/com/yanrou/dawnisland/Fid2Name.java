@@ -23,4 +23,8 @@ public class Fid2Name {
     public static Map<Integer, String> getDb() {
         return db;
     }
+
+    public static String getForumByFid(int fid) {
+        return db.get(fid);
+    }
 }
