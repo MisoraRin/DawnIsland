@@ -169,8 +169,9 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
               处理内容
               主要是处理引用串号
              */
-            // TODO: add quotes
             val quotes = extractQuote(temp.content)
+
+            contentItem.quotes = quotes
 
             val noQuotesContent = removeQuote(temp.content)
 
