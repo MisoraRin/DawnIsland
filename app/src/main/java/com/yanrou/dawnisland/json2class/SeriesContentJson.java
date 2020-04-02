@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import com.yanrou.dawnisland.database.List2String;
 
 import org.greenrobot.greendao.annotation.Convert;
+import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Transient;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-
+@Entity
 public class SeriesContentJson extends LitePalSupport {
     /**
      * 未启用回复
