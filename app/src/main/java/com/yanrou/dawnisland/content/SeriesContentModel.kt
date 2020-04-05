@@ -2,11 +2,11 @@ package com.yanrou.dawnisland.content
 
 import android.util.Log
 import com.google.gson.Gson
-import com.yanrou.dawnisland.MyApplication
 import com.yanrou.dawnisland.Reference
 import com.yanrou.dawnisland.database.SeriesData
 import com.yanrou.dawnisland.json2class.ReplysBean
 import com.yanrou.dawnisland.json2class.SeriesContentJson
+import com.yanrou.dawnisland.util.Server
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -73,7 +73,7 @@ class SeriesContentModel(private val id: String) {
     }
 
     private fun getSeriesContentFromNet(page: Int): String {
-        val retrofit = MyApplication.getRetrofit()
+        val retrofit = Server.getService
         val result = retrofit.getSeriesContent(seriesId, page)
         return result!!.execute().body()!!.string()
     }
