@@ -3,8 +3,8 @@ package com.yanrou.dawnisland.serieslist
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.yanrou.dawnisland.Fid2Name
-import com.yanrou.dawnisland.MyApplication
 import com.yanrou.dawnisland.json2class.TimeLineJson
+import com.yanrou.dawnisland.util.Server
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -46,7 +46,7 @@ class SeriesModel {
 
     private fun getSeriesListFromNet(fid: Int, page: Int): String {
         // TODO move to interface
-        val retrofit = MyApplication.getRetrofit()
+        val retrofit = Server.getService
         val result = when (fid) {
             -1 -> retrofit.getTimelineList(page)
             else -> retrofit.getSeriesList(fid, page)
