@@ -412,6 +412,12 @@ public class ReplyDialog extends DialogFragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        popup = null;
+    }
+
+    @Override
     public void show(@NonNull FragmentManager manager, @Nullable String tag) {
         super.show(manager, tag);
     }
