@@ -39,7 +39,13 @@ public class TrendList {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String s = response.body().string();
-                SeriesContentJson seriesContentJson = new Gson().fromJson(s, SeriesContentJson.class);
+
+                SeriesContentJson seriesContentJson;
+                try {
+                    seriesContentJson = new Gson().fromJson(s, SeriesContentJson.class);
+                } catch (Exception e) {
+                    return;
+                }
                 int replycount = seriesContentJson.getReplyCount();
                 int page = replycount / 19;
                 if ((replycount % 19) > 0) {
