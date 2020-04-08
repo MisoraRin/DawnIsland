@@ -23,7 +23,7 @@ class KeyboardHeightProvider(var context: Context?) : LifecycleObserver {
     @SuppressLint("ResourceType")
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun onCreate() {
-        alertDialog = AlertDialog.Builder(context!!, R.style.MyTransparent).setTitle("测试").create()
+        alertDialog = AlertDialog.Builder(context!!, R.style.MyTransparent).create()
         val window: Window = alertDialog!!.window!!
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         //设置状态栏(StatusBar)颜色透明
