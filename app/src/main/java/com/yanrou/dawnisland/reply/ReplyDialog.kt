@@ -125,11 +125,6 @@ class ReplyDialog : DialogFragment() {
                 false
             }
         }
-        if (!isFullScreen) {
-            contentText!!.maxLines = 4
-        } else {
-            contentText!!.maxLines = 65535
-        }
         if (win != null) {
             win.decorView.setPadding(0, 0, 0, 0)
             val lp = win.attributes
@@ -167,13 +162,11 @@ class ReplyDialog : DialogFragment() {
         contentText!!.requestFocus()
         assert(win != null)
         win!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-        Log.d(TAG, "onCreateView的结尾")
         return view
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "destroy")
         chosedImage = null
         expandMore = null
         contentText = null
