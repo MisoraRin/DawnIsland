@@ -68,7 +68,7 @@
         android:gravity="clip_horizontal"
         android:hint="在这里输入文字"
         android:inputType="none"
-        android:maxLines="10"
+        android:maxLines="65535"
         android:minLines="4"
         android:padding="4dp"
         android:textSize="15sp"
