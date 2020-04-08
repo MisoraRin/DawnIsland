@@ -22,8 +22,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.MultiTypeAdapter
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.yanrou.dawnisland.R
-import com.yanrou.dawnisland.ReplyDialog
 import com.yanrou.dawnisland.SeriesRecyclerOnScrollListener
+import com.yanrou.dawnisland.reply.ReplyDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -40,7 +40,6 @@ class SeriesContentActivity : AppCompatActivity() {
     var id: String? = null
     private var forumName: String? = null
     private lateinit var smartRefreshLayout: SmartRefreshLayout
-    private var replyDialog: ReplyDialog? = null
     private var multiTypeAdapter: MultiTypeAdapter? = null
     private lateinit var viewModel: SeriesContentViewModel
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -137,14 +136,14 @@ class SeriesContentActivity : AppCompatActivity() {
             R.id.jump_page -> {
             }
             R.id.reply -> {
-                //防止启动多次
-                if (replyDialog == null) {
-                    replyDialog = ReplyDialog()
-                    val bundle = Bundle()
-                    bundle.putString("seriesId", id)
-                    replyDialog!!.arguments = bundle
+                val replyDialog = ReplyDialog()
+                val bundle = Bundle()
+                bundle.putString("seriesId", id)
+                replyDialog.arguments = bundle
+                supportFragmentManager.beginTransaction()
+                if (supportFragmentManager.findFragmentByTag("reply") == null) {
+                    replyDialog.show(supportFragmentManager, "reply")
                 }
-                replyDialog!!.show(supportFragmentManager, "reply")
             }
             R.id.only_po_switch -> {
                 viewModel.switchToOnlyPo()
@@ -165,7 +164,6 @@ class SeriesContentActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        replyDialog = null
         super.onDestroy()
     }
 }
