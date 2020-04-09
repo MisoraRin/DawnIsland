@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.SubtitleCollapsingToolbarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.susion.rabbit.Rabbit;
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.toolbar_home_as_up);
-        final SubtitleCollapsingToolbarLayout subtitleCollapsingToolbarLayout = findViewById(R.id.coolapsing_toolbar);
+        final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.coolapsing_toolbar);
 
 
         Log.d(TAG, "onCreate: 重新调用了onCreat方法" + getSupportFragmentManager().getFragments());
@@ -194,12 +194,12 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 Log.d(TAG, "onPageSelected: " + position);
                 if (position == 0) {
-                    subtitleCollapsingToolbarLayout.setTitle(forumName);
+                    collapsingToolbarLayout.setTitle(forumName);
                 }
                 if (position == 1) {
                     appBarLayout.setExpanded(false);
-                    forumName = subtitleCollapsingToolbarLayout.getTitle().toString();
-                    subtitleCollapsingToolbarLayout.setTitle("A岛热榜");
+                    forumName = collapsingToolbarLayout.getTitle().toString();
+                    collapsingToolbarLayout.setTitle("A岛热榜");
                 }
                 if (position == 2) {
                     //appBarLayout.setExpanded(false);
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         forumAdapter.setChangeForum((id, name) -> {
-            subtitleCollapsingToolbarLayout.setTitle(name);
+            collapsingToolbarLayout.setTitle(name);
             drawerLayout.closeDrawers();
             seriesFragment.changeForum(id);
             Log.d(TAG, "changeForum: " + seriesFragment);
@@ -277,11 +277,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setDrawerLeftEdgeSize(Activity activity, DrawerLayout drawerLayout, float displayWidthPercentage) {
-        if (activity == null || drawerLayout == null) return;
+        if (activity == null || drawerLayout == null) {
+            return;
+        }
         try {
             // 找到 ViewDragHelper 并设置 Accessible 为true
-            Field leftDraggerField =
-                    drawerLayout.getClass().getDeclaredField("mLeftDragger");//Right
+            //Right
+            Field leftDraggerField = drawerLayout.getClass().getDeclaredField("mLeftDragger");
             leftDraggerField.setAccessible(true);
             ViewDragHelper leftDragger = (ViewDragHelper) leftDraggerField.get(drawerLayout);
 
