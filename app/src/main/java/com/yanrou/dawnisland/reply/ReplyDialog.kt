@@ -24,10 +24,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.yanrou.dawnisland.R
 import com.yanrou.dawnisland.database.CookieData
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -51,6 +54,13 @@ class ReplyDialog : DialogFragment() {
     private val firstConstraintSet = ConstraintSet()
     private val fullScreenConstraintSet = ConstraintSet()
 
+    private lateinit var viewModel: ReplyViewModel
+
+    init {
+        lifecycleScope.launchWhenCreated {
+            viewModel = ViewModelProvider(this@ReplyDialog).get(ReplyViewModel::class.java)
+        }
+    }
     /**
      * 用来标记邮件面板是否展开、是否全屏
      */
@@ -59,10 +69,15 @@ class ReplyDialog : DialogFragment() {
     private var cookies: List<CookieData>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setStyle(STYLE_NO_TITLE, R.style.BottomReplyDialog)
+
         val bundle = arguments!!
+
         seriesId = bundle.getString("seriesId")
+
         val provider = KeyboardHeightProvider(activity)
+
         provider.observer = object : KeyboardHeightObserver {
             override fun onKeyboardHeightChanged(height: Int) {
                 changeMarginBottom(height)
@@ -160,10 +175,10 @@ class ReplyDialog : DialogFragment() {
             }
         }
         contentText!!.requestFocus()
-        assert(win != null)
         win!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         return view
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -210,19 +225,22 @@ class ReplyDialog : DialogFragment() {
     }
 
     private fun sendReply() {
-        val builder = MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("resto", seriesId!!)
-                .addFormDataPart("name", nameText!!.text.toString())
-                .addFormDataPart("title", titleText!!.text.toString())
-                .addFormDataPart("email", emailText!!.text.toString())
-                .addFormDataPart("content", contentText!!.text.toString())
-                .addFormDataPart("water", "true")
-        if (imageWillSend != null) {
-            val image: RequestBody = imageWillSend!!.asRequestBody(("image/" + imageWillSend!!.name.substring(imageWillSend!!.name.lastIndexOf(".") + 1)).toMediaTypeOrNull())
-            builder.addFormDataPart("image", imageWillSend!!.name, image)
+        lifecycleScope.launch {
+            val builder = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("resto", seriesId!!)
+                    .addFormDataPart("name", nameText!!.text.toString())
+                    .addFormDataPart("title", titleText!!.text.toString())
+                    .addFormDataPart("email", emailText!!.text.toString())
+                    .addFormDataPart("content", contentText!!.text.toString())
+                    .addFormDataPart("water", "true")
+            if (imageWillSend != null) {
+                val image: RequestBody = imageWillSend!!.asRequestBody(("image/" + imageWillSend!!.name.substring(imageWillSend!!.name.lastIndexOf(".") + 1)).toMediaTypeOrNull())
+                builder.addFormDataPart("image", imageWillSend!!.name, image)
+            }
+            val requestBody = builder.build()
+            viewModel.sendReply(requestBody)
         }
-        val formBody: RequestBody = builder.build()
     }
 
     override fun onDestroyView() {

@@ -140,9 +140,10 @@ class SeriesContentActivity : AppCompatActivity() {
                 val bundle = Bundle()
                 bundle.putString("seriesId", id)
                 replyDialog.arguments = bundle
-                supportFragmentManager.beginTransaction()
+                val ft = supportFragmentManager.beginTransaction()
                 if (supportFragmentManager.findFragmentByTag("reply") == null) {
-                    replyDialog.show(supportFragmentManager, "reply")
+                    ft.add(replyDialog, "reply")
+                    ft.commit()
                 }
             }
             R.id.only_po_switch -> {
