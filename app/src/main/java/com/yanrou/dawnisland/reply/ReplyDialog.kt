@@ -152,12 +152,14 @@ class ReplyDialog : DialogFragment() {
             win.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             win.statusBarColor = Color.TRANSPARENT
         }
+        //TODO 这里是从本地读取饼干，首先要替换为ROOM ， 其次需要移动到model里面 ，最好还能放到协程里
         cookies = LitePal.findAll(CookieData::class.java)
         if (cookies!!.isNotEmpty()) {
             cookie!!.text = cookies!![0].cookieName
         } else {
             cookie!!.text = "没有饼干"
         }
+
         contentText!!.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (isNameExpand && hasFocus) {
                 TransitionManager.beginDelayedTransition(constraintLayout!!)
@@ -248,6 +250,7 @@ class ReplyDialog : DialogFragment() {
         popup = null
     }
 
+    //TODO 下面一堆方法都是选择图片相关，不知道能不能分到其他地方
     private fun openAlbum() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
@@ -351,6 +354,7 @@ class ReplyDialog : DialogFragment() {
         }
     }
 
+    //TODO 这里是选择饼干，替换成 Xpopup会比较好 ，并且把数据放到 VM 里 ，让 Model 从数据库中读取数据
     private var popup: PopupWindow? = null
     private fun popupWindow() {
         popup = PopupWindow(this.activity)

@@ -12,11 +12,13 @@ class ReplyViewModel(application: Application) : AndroidViewModel(application) {
     private val model = ReplyModel()
     fun sendReply(requestBody: RequestBody) {
         viewModelScope.launch {
-            //TODO 添加饼干
+            //TODO 需要在这里把“cookie”替换为用户的饼干，不需要加userhash，model里面已经加了
             val result = model.sendReply(requestBody, "cookie")
             if (result.contains("成功")) {
                 Toast.makeText(getApplication(), "回复成功", Toast.LENGTH_SHORT).show()
             } else {
+                //TODO 回传过来的信息是html，需要把html标签去除
+                //TODO 或者使用dialog展示错误信息，但是这里弹dialog有点麻烦
                 Toast.makeText(getApplication(), Html.fromHtml(result), Toast.LENGTH_SHORT).show()
                 //AlertDialog.Builder(getApplication()).setTitle("出了点问题").setMessage(Html.fromHtml(result)).create().show()
             }
