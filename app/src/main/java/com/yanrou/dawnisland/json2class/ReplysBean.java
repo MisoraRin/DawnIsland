@@ -1,13 +1,12 @@
 package com.yanrou.dawnisland.json2class;
 
 import com.google.gson.annotations.SerializedName;
+//
+//import org.greenrobot.greendao.annotation.Entity;
+//import org.greenrobot.greendao.annotation.Generated;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
-import org.litepal.crud.LitePalSupport;
-
-@Entity
-public class ReplysBean extends LitePalSupport {
+//@Entity
+public class ReplysBean {
     /**
      * 该回复所在的页数
      */
@@ -81,7 +80,7 @@ public class ReplysBean extends LitePalSupport {
         this.status = "n";
     }
 
-    @Generated(hash = 456867965)
+  //    @Generated(hash = 456867965)
     public ReplysBean(int page, int posInPage, String parentId, String seriesId, String userid, int admin, String title, String email, String now, String content,
                       String img, String ext, String name, int sage, String status) {
         this.page = page;

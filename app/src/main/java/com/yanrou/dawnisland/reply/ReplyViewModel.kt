@@ -4,12 +4,17 @@ import android.app.Application
 import android.text.Html
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.yanrou.dawnisland.entities.Cookie
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
 
 class ReplyViewModel(application: Application) : AndroidViewModel(application) {
     private val model = ReplyModel()
+    private val _cookies = MutableLiveData<List<Cookie>>()
+    val cookies: LiveData<List<Cookie>> get() = _cookies
     fun sendReply(requestBody: RequestBody) {
         viewModelScope.launch {
             //TODO 需要在这里把“cookie”替换为用户的饼干，不需要加userhash，model里面已经加了
@@ -23,5 +28,15 @@ class ReplyViewModel(application: Application) : AndroidViewModel(application) {
                 //AlertDialog.Builder(getApplication()).setTitle("出了点问题").setMessage(Html.fromHtml(result)).create().show()
             }
         }
+    }
+
+    fun getCookies() {
+        viewModelScope.launch {
+            _cookies.postValue(model.getCookies())
+        }
+    }
+
+    init {
+        getCookies()
     }
 }

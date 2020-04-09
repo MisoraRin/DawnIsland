@@ -31,7 +31,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.susion.rabbit.Rabbit;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.yanrou.dawnisland.database.CookieData;
 import com.yanrou.dawnisland.feed.FeedFragment;
 import com.yanrou.dawnisland.json2class.ForumJson;
 import com.yanrou.dawnisland.serieslist.SeriesFragment;
@@ -41,7 +40,6 @@ import com.yanrou.dawnisland.util.HttpUtil;
 import com.yanrou.dawnisland.util.ReadableTime;
 
 import org.jetbrains.annotations.NotNull;
-import org.litepal.LitePal;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -118,10 +116,11 @@ public class MainActivity extends AppCompatActivity {
         /**
          *读饼干
          */
-        List<CookieData> cookieData = LitePal.findAll(CookieData.class);
-        if (cookieData.size() > 0) {
-            HttpUtil.cookie = cookieData.get(0).getUserHash();
-        }
+// TODO
+//        List<Cookie> cookieData = MyApplication.getDaoSession().cookieDao().getAll();
+//        if (cookieData.size() > 0) {
+//            HttpUtil.cookie = cookieData.get(0).getUserHash();
+//        }
         /**
          * 初始化
          */
@@ -141,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         //设置导航栏(NavigationBar)颜色透明
         //window.setNavigationBarColor(Color.TRANSPARENT);
 
-        LitePal.getDatabase();
+//        LitePal.getDatabase();
         Log.d(TAG, "onCreate: " + Arrays.toString(getResources().getStringArray(R.array.face)));
 
         /**

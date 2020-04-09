@@ -1,7 +1,7 @@
 package com.yanrou.dawnisland.database;
 
-import org.litepal.annotation.Column;
-import org.litepal.crud.LitePalSupport;
+//import org.litepal.annotation.Column;
+//import org.litepal.crud.LitePalSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,8 @@ import java.util.List;
 /**
  * 用于存储串的数据，方便下次打开串的时候恢复上次的数据
  */
-public class SeriesData extends LitePalSupport {
+//public class SeriesData extends LitePalSupport {
+public class SeriesData {
     //未启用回复
     private final static int NONE = 0;
     //订阅po更新数量
@@ -22,17 +23,17 @@ public class SeriesData extends LitePalSupport {
      * 支持重设po的饼干，用来追更、只看po
      * 第一个位置是串首的饼干
      */
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private List<String> po = new ArrayList<>();
     /**
      * 上次阅读位置
      */
-    @Column(defaultValue = "1")
+//    @Column(defaultValue = "1")
     private int lastPage;
     /**
      * 串号
      */
-    @Column(unique = true, nullable = false)
+//    @Column(unique = true, nullable = false)
     private String seriesid;
     /**
      * 上次的回复数量，用来简单的判断有无新回复
@@ -106,7 +107,7 @@ public class SeriesData extends LitePalSupport {
     /**
      * 已经加载的所有信息
      */
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private List<String> seriesContentJsons = new ArrayList<>();
 
     long time;
@@ -116,9 +117,9 @@ public class SeriesData extends LitePalSupport {
      *
      * @return
      */
-    @Override
-    public boolean save() {
-        time = System.currentTimeMillis();
-        return super.save();
-    }
+//    @Override
+//    public boolean save() {
+//        time = System.currentTimeMillis();
+//        return super.save();
+//    }
 }

@@ -2,6 +2,7 @@ package com.yanrou.dawnisland.imageviewer;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -18,9 +19,9 @@ import com.github.chrisbanes.photoview.PhotoView;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutionException;
 
-import static org.litepal.LitePalApplication.getContext;
 
 /**
  * @author Rick
@@ -28,17 +29,26 @@ import static org.litepal.LitePalApplication.getContext;
 public class ImageViewerViewModel extends ViewModel {
   private String TAG = "ImageViewerViewModel";
 
+
   public ImageViewerViewModel(){}
 
-  public void loadImage(PhotoView photoView, String imgUrl){
+  public void loadImage(Context context, PhotoView photoView, String imgUrl) {
     Log.d(TAG, "Downloading image at " + imgUrl);
-    Glide.with(getContext()).load(imgUrl).into(photoView);
-  }
-  public void addPicToGallery(String imgUrl){
-    new ImageDownloaderTask().execute(imgUrl);
+    Glide.with(context).load(imgUrl).into(photoView);
   }
 
-  private class ImageDownloaderTask extends AsyncTask<String, Void, Void>{
+  public void addPicToGallery(Context context, String imgUrl) {
+    new ImageDownloaderTask(context).execute(imgUrl);
+  }
+
+  private static class ImageDownloaderTask extends AsyncTask<String, Void, Void> {
+    private String TAG = "ImageDownloaderTask";
+
+    private final WeakReference<Context> mContext;
+
+    ImageDownloaderTask(Context context) {
+      this.mContext = new WeakReference<>(context);
+    }
     @Override
     protected Void doInBackground(String... imgUrls) {
       String imgUrl = imgUrls[0];
@@ -49,7 +59,7 @@ public class ImageViewerViewModel extends ViewModel {
       OutputStream stream = null;
       Uri uri = null;
       try{
-        ContentResolver resolver = getContext().getContentResolver();
+        ContentResolver resolver = mContext.get().getContentResolver();
 
         ContentValues newImageDetails = new ContentValues();
         newImageDetails.put(MediaStore.MediaColumns.DISPLAY_NAME, name + '.' + ext);
@@ -57,7 +67,8 @@ public class ImageViewerViewModel extends ViewModel {
         newImageDetails.put(MediaStore.MediaColumns.RELATIVE_PATH, relativeLocation);
 
         final Uri contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        Bitmap image = Glide.with(getContext()).asBitmap().load(imgUrl).submit().get();
+        // TODO: use downloadOnly() and copy file instead of downloading again
+        Bitmap image = Glide.with(mContext.get()).asBitmap().load(imgUrl).submit().get();
         Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
 
         uri = resolver.insert(contentUri, newImageDetails);
@@ -80,8 +91,10 @@ public class ImageViewerViewModel extends ViewModel {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-      Toast.makeText(getContext(),"Image saved in Pictures/Dawn", Toast.LENGTH_SHORT).show();
+      Toast.makeText(mContext.get(), "Image saved in Pictures/Dawn", Toast.LENGTH_SHORT).show();
     }
+
+
   }
 
 }

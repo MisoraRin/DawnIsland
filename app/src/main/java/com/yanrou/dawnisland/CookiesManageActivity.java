@@ -12,18 +12,19 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
-import com.yanrou.dawnisland.database.CookieData;
+import com.yanrou.dawnisland.cookeis.CookiesManagerViewModel;
+import com.yanrou.dawnisland.entities.Cookie;
 import com.yanrou.dawnisland.json2class.ReplysBean;
 import com.yanrou.dawnisland.json2class.SeriesContentJson;
 import com.yanrou.dawnisland.util.HttpUtil;
 
-import org.litepal.LitePal;
-
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -48,11 +49,16 @@ public class CookiesManageActivity extends AppCompatActivity {
 
     TextView enter, cancel, test;
 
+    CookiesManagerViewModel viewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cookies_manage);
+
+        viewModel = new ViewModelProvider(this).get(CookiesManagerViewModel.class);
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view1 = View.inflate(this, R.layout.add_cookie_dialog, null);
@@ -86,10 +92,9 @@ public class CookiesManageActivity extends AppCompatActivity {
         enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CookieData cookieData = new CookieData();
-                cookieData.setUserHash(cookieHash.getText().toString());
-                cookieData.setCookieName(cookieName.getText().toString());
-                cookieData.save();
+                Cookie cookie = new Cookie(cookieHash.getText().toString(), cookieName.getText().toString());
+                viewModel.saveCookie(cookie);
+                viewModel.readCookie();
                 dialog.dismiss();
             }
         });
@@ -121,13 +126,21 @@ public class CookiesManageActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.cookies_list);
         addButton = findViewById(R.id.add_button);
 
-        List<CookieData> cookieDataList = LitePal.findAll(CookieData.class);
+        List<Cookie> cookieList = new ArrayList<Cookie>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        CookiesListAdapter cookiesListAdapter = new CookiesListAdapter(cookieDataList);
+        CookiesListAdapter cookiesListAdapter = new CookiesListAdapter(cookieList);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(cookiesListAdapter);
 
         addButton.setOnClickListener(view -> showCustomerDialog());
+
+        final androidx.lifecycle.Observer cookieObserver = (androidx.lifecycle.Observer<List<Cookie>>) cookies -> {
+            cookieList.clear();
+            cookieList.addAll(cookies);
+            cookiesListAdapter.notifyDataSetChanged();
+        };
+
+        viewModel.getCookie().observe(this, cookieObserver);
 
     }
 

@@ -1,13 +1,16 @@
 package com.yanrou.dawnisland.database;
 
-import org.greenrobot.greendao.annotation.Convert;
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.annotation.NotNull;
+//import org.greenrobot.greendao.annotation.Convert;
+//import org.greenrobot.greendao.annotation.Entity;
+//import org.greenrobot.greendao.annotation.Generated;
+//import org.greenrobot.greendao.annotation.NotNull;
+//
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-@Entity
+//@Entity
 public class SeriesDAO {
     /**
      * 未启用回复
@@ -29,8 +32,8 @@ public class SeriesDAO {
      * 支持重设po的饼干，用来追更、只看po
      * 第一个位置是串首的饼干
      */
-    @NotNull
-    @Convert(converter = List2String.class, columnType = String.class)
+//    @NotNull
+//    @Convert(converter = List2String.class, columnType = String.class)
     private List<String> po;
     /**
      * 上次阅读位置
@@ -77,7 +80,7 @@ public class SeriesDAO {
 
     private int replyCount;
 
-    @Generated(hash = 2103980481)
+  //    @Generated(hash = 2103980481)
     public SeriesDAO(@NotNull List<String> po, int lastPage, int lastReplyCount,
                      int substate, int forumId, String seriesId, String fid, String img,
                      String ext, String now, String userId, String name, String email,
@@ -103,7 +106,7 @@ public class SeriesDAO {
         this.replyCount = replyCount;
     }
 
-    @Generated(hash = 1048576983)
+  //    @Generated(hash = 1048576983)
     public SeriesDAO() {
     }
 

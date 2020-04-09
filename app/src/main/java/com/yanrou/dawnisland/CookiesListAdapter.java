@@ -8,16 +8,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.yanrou.dawnisland.database.CookieData;
+import com.yanrou.dawnisland.entities.Cookie;
 
 import java.util.List;
 
 public class CookiesListAdapter extends RecyclerView.Adapter<CookiesListAdapter.ViewHolder> {
-    public CookiesListAdapter(List<CookieData> cookieDataList) {
-        this.cookieDataList = cookieDataList;
+  public CookiesListAdapter(List<Cookie> cookieList) {
+    this.cookieList = cookieList;
     }
 
-    List<CookieData> cookieDataList;
+  List<Cookie> cookieList;
 
     @NonNull
     @Override
@@ -28,14 +28,14 @@ public class CookiesListAdapter extends RecyclerView.Adapter<CookiesListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.userHash.setText(cookieDataList.get(position).getUserHash());
-        holder.cookieName.setText(cookieDataList.get(position).getCookieName());
+      holder.userHash.setText(cookieList.get(position).getUserHash());
+      holder.cookieName.setText(cookieList.get(position).getCookieName());
 
     }
 
     @Override
     public int getItemCount() {
-        return cookieDataList.size();
+      return cookieList.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
