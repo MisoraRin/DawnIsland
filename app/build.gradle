@@ -60,7 +60,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    implementation "com.hendraanggrian.material:collapsingtoolbarlayout-subtitle:1.0.0"
 
 
     implementation 'com.github.bumptech.glide:glide:4.11.0'
@@ -90,7 +89,6 @@ dependencies {
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
 
     def lifecycle_version = "2.2.0"
-    def arch_version = "2.1.0"
 
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
