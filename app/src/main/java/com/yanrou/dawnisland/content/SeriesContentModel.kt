@@ -3,7 +3,6 @@ package com.yanrou.dawnisland.content
 import android.util.Log
 import com.google.gson.Gson
 import com.yanrou.dawnisland.Reference
-import com.yanrou.dawnisland.database.SeriesData
 import com.yanrou.dawnisland.json2class.ReplysBean
 import com.yanrou.dawnisland.json2class.SeriesContentJson
 import com.yanrou.dawnisland.util.Server
@@ -13,7 +12,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
 class SeriesContentModel(private val id: String) {
-    private var seriesData: SeriesData? = null
     private var po = ArrayList<String>()
     //持有一个Map,用来查询数据、去重
     private var replyMap = HashMap<String, ReplysBean>()
@@ -45,8 +43,6 @@ class SeriesContentModel(private val id: String) {
     private var state = 1000
 
 
-    val replyCount: Int
-        get() = seriesData!!.lastReplyCount
 
     /**
      * 用于给ViewModel调用
