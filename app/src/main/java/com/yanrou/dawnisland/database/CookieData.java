@@ -1,14 +1,11 @@
 package com.yanrou.dawnisland.database;
 
-import org.litepal.annotation.Column;
-import org.litepal.crud.LitePalSupport;
-
 /**
  * @author suche
  */
-public class CookieData extends LitePalSupport {
-
-    @Column(nullable = false, unique = true)
+//public class CookieData extends LitePalSupport {
+public class CookieData {
+  //    @Column(nullable = false, unique = true)
     private String userHash;
 
 

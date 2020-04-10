@@ -1,12 +1,12 @@
 package com.yanrou.dawnisland.database;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
+//import org.greenrobot.greendao.annotation.Entity;
+//import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author suche
  */
-@Entity
+//@Entity
 public class ContentDAO {
     /**
      * 该回复所在的页数
@@ -47,7 +47,7 @@ public class ContentDAO {
 
     private boolean sage;
 
-    @Generated(hash = 995619909)
+  //    @Generated(hash = 995619909)
     public ContentDAO(int page, int posInPage, String parentId, String seriesId,
                       String userid, boolean admin, String title, String email, String now,
                       String content, String img, String ext, String name, boolean sage) {
@@ -67,7 +67,7 @@ public class ContentDAO {
         this.sage = sage;
     }
 
-    @Generated(hash = 591922847)
+  //    @Generated(hash = 591922847)
     public ContentDAO() {
     }
 

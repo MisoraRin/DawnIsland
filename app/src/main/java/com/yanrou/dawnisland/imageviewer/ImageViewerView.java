@@ -31,7 +31,7 @@ public class ImageViewerView extends AppCompatActivity {
 
     // load image in Full Screen
     PhotoView photoView = findViewById(R.id.photo_view);
-    viewModel.loadImage(photoView, imgUrl);
+    viewModel.loadImage(this, photoView, imgUrl);
 
   }
 
@@ -54,7 +54,7 @@ public class ImageViewerView extends AppCompatActivity {
     saveButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        viewModel.addPicToGallery(imgUrl);
+        viewModel.addPicToGallery(getBaseContext(), imgUrl);
       }
     });
   }

@@ -24,18 +24,18 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.yanrou.dawnisland.R
-import com.yanrou.dawnisland.database.CookieData
+import com.yanrou.dawnisland.entities.Cookie
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import org.litepal.LitePal
 import java.io.File
 
 class ReplyDialog : DialogFragment() {
@@ -66,7 +66,7 @@ class ReplyDialog : DialogFragment() {
      */
     private var isNameExpand = false
     private var isFullScreen = false
-    private var cookies: List<CookieData>? = null
+    private var cookies: List<Cookie>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -152,13 +152,15 @@ class ReplyDialog : DialogFragment() {
             win.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             win.statusBarColor = Color.TRANSPARENT
         }
-        //TODO 这里是从本地读取饼干，首先要替换为ROOM ， 其次需要移动到model里面 ，最好还能放到协程里
-        cookies = LitePal.findAll(CookieData::class.java)
-        if (cookies!!.isNotEmpty()) {
+
+        viewModel.cookies.observe(viewLifecycleOwner, Observer {
+            cookies = it
+            if (cookies!!.isNotEmpty()) {
             cookie!!.text = cookies!![0].cookieName
-        } else {
-            cookie!!.text = "没有饼干"
-        }
+            } else {
+                cookie!!.text = "没有饼干"
+            }
+        })
 
         contentText!!.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (isNameExpand && hasFocus) {

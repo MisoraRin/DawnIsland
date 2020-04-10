@@ -1,21 +1,23 @@
 package com.yanrou.dawnisland.json2class;
 
 import com.google.gson.annotations.SerializedName;
-import com.yanrou.dawnisland.database.List2String;
 
-import org.greenrobot.greendao.annotation.Convert;
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.annotation.NotNull;
-import org.greenrobot.greendao.annotation.Transient;
-import org.litepal.crud.LitePalSupport;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+//import com.yanrou.dawnisland.database.List2String;
+//
+//import org.greenrobot.greendao.annotation.Convert;
+//import org.greenrobot.greendao.annotation.Entity;
+//import org.greenrobot.greendao.annotation.Generated;
+//import org.greenrobot.greendao.annotation.NotNull;
+//import org.greenrobot.greendao.annotation.Transient;
+
 @SuppressWarnings("unused")
-@Entity
-public class SeriesContentJson extends LitePalSupport {
+//@Entity
+public class SeriesContentJson {
     /**
      * 未启用回复
      */
@@ -36,8 +38,8 @@ public class SeriesContentJson extends LitePalSupport {
      * 支持重设po的饼干，用来追更、只看po
      * 第一个位置是串首的饼干
      */
-    @NotNull
-    @Convert(converter = List2String.class, columnType = String.class)
+//    @NotNull
+//    @Convert(converter = List2String.class, columnType = String.class)
     private List<String> po;
     /**
      * 上次阅读位置
@@ -106,10 +108,10 @@ public class SeriesContentJson extends LitePalSupport {
     @SerializedName("replyCount")
     private int replyCount;
     @SerializedName("replys")
-    @Transient
+//    @Transient
     private List<ReplysBean> replys = new ArrayList<>();
 
-    @Generated(hash = 2083512233)
+  //    @Generated(hash = 2083512233)
     public SeriesContentJson(@NotNull List<String> po, int lastPage, int lastReplyCount, int substate, int forumId, String seriesId, int fid, String img, String ext, String now, String userid, String name, String email, String title, String content, int sage, int admin, int replyCount) {
         this.po = po;
         this.lastPage = lastPage;
@@ -130,7 +132,8 @@ public class SeriesContentJson extends LitePalSupport {
         this.admin = admin;
         this.replyCount = replyCount;
     }
-    @Generated(hash = 1367723520)
+
+  //    @Generated(hash = 1367723520)
     public SeriesContentJson() {
     }
 
