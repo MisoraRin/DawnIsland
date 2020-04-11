@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -35,6 +36,14 @@ class KeyboardHeightProvider(var context: Context?) : LifecycleObserver {
         window.attributes = layoutParams
         window.setWindowAnimations(R.anim.bottom_up_in)
         val view: View? = alertDialog!!.findViewById(android.R.id.content)
+
+        Log.d("键盘高度", "创建")
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        alertDialog!!.show()
+        val view: View? = alertDialog!!.findViewById(android.R.id.content)
         view!!.viewTreeObserver.addOnGlobalLayoutListener {
             view.getWindowVisibleDisplayFrame(rect);
             var change = 0;
@@ -44,22 +53,20 @@ class KeyboardHeightProvider(var context: Context?) : LifecycleObserver {
             notifyKeyboardHeightChanged(change)
             prerect = Rect(rect)
         }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
-        alertDialog!!.show()
+        Log.d("键盘高度", "显示")
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
         alertDialog!!.dismiss()
+        Log.d("键盘高度", "隐藏")
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         alertDialog = null
         context = null
+        Log.d("键盘高度", "销毁")
     }
 
     private fun notifyKeyboardHeightChanged(height: Int) {
