@@ -2,6 +2,7 @@ package com.yanrou.dawnisland.content
 
 
 import android.app.Application
+import android.text.Spanned
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.AndroidViewModel
@@ -9,6 +10,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.yanrou.dawnisland.json2class.ReplysBean
+import com.yanrou.dawnisland.serieslist.CardViewFactory
+import com.yanrou.dawnisland.span.SegmentSpacingSpan
 import com.yanrou.dawnisland.util.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -173,10 +176,19 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
 
             contentItem.quotes = quotes
 
-            val noQuotesContent = removeQuote(temp.content)
+            //TODO 暂时使用 click able span
+            //val noQuotesContent = removeQuote(temp.content)
 
             // will also hide [h]
-            contentItem.content = transformContent(noQuotesContent)
+            contentItem.content = transformContent(temp.content)
+
+            //添加段间距和行间距，由于需要读取设置所以先放到这里
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
+            if (contentItem.content.toString().contains("\n\n")) {
+                contentItem.content.setSpan(SegmentSpacingSpan(sharedPreferences.getInt(CardViewFactory.LINE_HEIGHT, 0), sharedPreferences.getInt(CardViewFactory.LINE_HEIGHT, 0)), 0, contentItem.content.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+            } else {
+                contentItem.content.setSpan(SegmentSpacingSpan(sharedPreferences.getInt(CardViewFactory.LINE_HEIGHT, 0), sharedPreferences.getInt(CardViewFactory.SEG_GAP, 0)), 0, contentItem.content.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+            }
 
 
             if (temp.sage == 1) {
