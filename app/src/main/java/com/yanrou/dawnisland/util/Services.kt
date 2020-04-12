@@ -19,6 +19,9 @@ interface SeriesContentService {
 
     @POST("Home/Forum/doReplyThread.html")
     fun sendReply(@Body body: RequestBody, @Header("Cookie") cookie: String): Call<ResponseBody>?
+
+    @GET("Api/ref")
+    fun getQuote(@Query("id") id: String): Call<ResponseBody>?
 }
 
 object Server {
@@ -28,4 +31,6 @@ object Server {
                 .build()
                 .create(SeriesContentService::class.java)
     }
+
+
 }

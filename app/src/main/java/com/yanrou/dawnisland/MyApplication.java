@@ -9,6 +9,8 @@ import com.susion.rabbit.base.config.RabbitConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.yanrou.dawnisland.entities.DawnDatabase;
 
+import timber.log.Timber;
+
 
 /**
  * @author suche
@@ -27,8 +29,9 @@ public class MyApplication extends Application {
             .fallbackToDestructiveMigration()
             .build();
 
-
-
+      if (BuildConfig.DEBUG) {
+        Timber.plant(new Timber.DebugTree());
+      }
     }
 
     static public DawnDatabase getDaoSession() {
