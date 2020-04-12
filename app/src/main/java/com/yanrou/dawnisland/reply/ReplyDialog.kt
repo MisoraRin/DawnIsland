@@ -1,7 +1,6 @@
 package com.yanrou.dawnisland.reply
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.ContentUris
@@ -9,7 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
@@ -29,8 +28,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
+import com.yanrou.dawnisland.ListViewAdaptWidth
 import com.yanrou.dawnisland.R
-import com.yanrou.dawnisland.entities.Cookie
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -53,12 +52,15 @@ class ReplyDialog : DialogFragment() {
     private var constraintLayout: ConstraintLayout? = null
     private val firstConstraintSet = ConstraintSet()
     private val fullScreenConstraintSet = ConstraintSet()
+    private val autoTransition = AutoTransition()
+
 
     private lateinit var viewModel: ReplyViewModel
 
     init {
+        autoTransition.duration = 150
         lifecycleScope.launchWhenCreated {
-            viewModel = ViewModelProvider(this@ReplyDialog).get(ReplyViewModel::class.java)
+            viewModel = ViewModelProvider(this@ReplyDialog.activity!!).get(ReplyViewModel::class.java)
         }
     }
     /**
@@ -66,7 +68,6 @@ class ReplyDialog : DialogFragment() {
      */
     private var isNameExpand = false
     private var isFullScreen = false
-    private var cookies: List<Cookie>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -106,7 +107,7 @@ class ReplyDialog : DialogFragment() {
         chosedImage = view.findViewById(R.id.will_send_image)
         expandMore = view.findViewById(R.id.expand_more_button)
         expandMore!!.setOnClickListener {
-            TransitionManager.beginDelayedTransition(constraintLayout!!)
+            TransitionManager.beginDelayedTransition(constraintLayout!!, autoTransition)
             showMoreOrLess()
             if (isFullScreen) {
                 fullScreenConstraintSet.applyTo(constraintLayout)
@@ -129,7 +130,7 @@ class ReplyDialog : DialogFragment() {
         }
         val fullScreen = view.findViewById<ImageView>(R.id.full_screen)
         fullScreen.setOnClickListener {
-            TransitionManager.beginDelayedTransition(constraintLayout!!)
+            TransitionManager.beginDelayedTransition(constraintLayout!!, autoTransition)
             isFullScreen = if (!isFullScreen) {
                 fullScreenConstraintSet.applyTo(constraintLayout)
                 contentText!!.maxLines = 65535
@@ -153,18 +154,13 @@ class ReplyDialog : DialogFragment() {
             win.statusBarColor = Color.TRANSPARENT
         }
 
-        viewModel.cookies.observe(viewLifecycleOwner, Observer {
-            cookies = it
-            if (cookies!!.isNotEmpty()) {
-            cookie!!.text = cookies!![0].cookieName
-            } else {
-                cookie!!.text = "没有饼干"
-            }
+        viewModel.switchedCookie.observe(viewLifecycleOwner, Observer {
+            cookie!!.text = it
         })
 
         contentText!!.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (isNameExpand && hasFocus) {
-                TransitionManager.beginDelayedTransition(constraintLayout!!)
+                TransitionManager.beginDelayedTransition(constraintLayout!!, autoTransition)
                 showMoreOrLess()
                 if (isFullScreen) {
                     fullScreenConstraintSet.applyTo(constraintLayout)
@@ -178,11 +174,15 @@ class ReplyDialog : DialogFragment() {
                 }
             }
         }
+        constraintLayout!!.isClickable = true
+        getDialog()!!.window!!.decorView.setOnTouchListener { _, event ->
+            activity!!.dispatchTouchEvent(event)
+            false
+        }
         contentText!!.requestFocus()
         win!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         return view
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -198,8 +198,7 @@ class ReplyDialog : DialogFragment() {
     }
 
     private fun changeMarginBottom(change: Int) {
-        val autoTransition = AutoTransition()
-        autoTransition.duration = 150
+
         TransitionManager.beginDelayedTransition(constraintLayout!!, autoTransition)
         firstConstraintSet.clone(constraintLayout)
         Log.d(TAG, "onGlobalLayout: $change")
@@ -245,6 +244,7 @@ class ReplyDialog : DialogFragment() {
             val requestBody = builder.build()
             viewModel.sendReply(requestBody)
         }
+        dismiss()
     }
 
     override fun onDestroyView() {
@@ -356,38 +356,18 @@ class ReplyDialog : DialogFragment() {
         }
     }
 
-    //TODO 这里是选择饼干，替换成 Xpopup会比较好 ，并且把数据放到 VM 里 ，让 Model 从数据库中读取数据
     private var popup: PopupWindow? = null
     private fun popupWindow() {
-        popup = PopupWindow(this.activity)
-        popup!!.width = WindowManager.LayoutParams.WRAP_CONTENT
-        popup!!.height = WindowManager.LayoutParams.WRAP_CONTENT
-        val linearLayout = LinearLayout(this.context)
-        linearLayout.setBackgroundColor(Color.WHITE)
-        linearLayout.orientation = LinearLayout.VERTICAL
-        linearLayout.setPadding(20, 20, 20, 20)
-        for (i in cookies!!.indices) {
-            linearLayout.addView(genCookieView(cookies!![i].cookieName, i))
-        }
-        //设置显示内容
-        popup!!.contentView = linearLayout
-        //点击PopupWindow以外的区域自动关闭该窗口
+        val view: View = LayoutInflater.from(context).inflate(R.layout.switch_cookie_list, null)
+        val list: ListViewAdaptWidth = view.findViewById(R.id.cookie_list)
+        popup = PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        list.adapter = ArrayAdapter(context!!, R.layout.switch_cookie_in_popup, viewModel.getCookieNameList())
+        list.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ -> viewModel.switchCookie(position) }
+        list.emptyView = view.findViewById(android.R.id.empty);
+        popup!!.elevation = 20f
         popup!!.isOutsideTouchable = true
-        popup!!.setBackgroundDrawable(ColorDrawable(0))
-        //显示在edit控件的下面0,0代表偏移量
-        popup!!.showAsDropDown(cookie, 0, 0)
-    }
-
-    @SuppressLint("ResourceType")
-    private fun genCookieView(s: String, id: Int): TextView {
-        val textView = TextView(this.context)
-        textView.id = id + 1000
-        textView.text = s
-        textView.setOnClickListener {
-            cookie!!.text = textView.text
-            popup!!.dismiss()
-        }
-        return textView
+        popup!!.setBackgroundDrawable(BitmapDrawable())
+        popup!!.showAsDropDown(cookie)
     }
 
     companion object {

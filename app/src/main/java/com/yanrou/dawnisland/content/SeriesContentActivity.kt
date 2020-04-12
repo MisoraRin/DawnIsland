@@ -90,6 +90,7 @@ class SeriesContentActivity : AppCompatActivity() {
         recyclerView.adapter = multiTypeAdapter
         smartRefreshLayout.setEnableAutoLoadMore(false)
         smartRefreshLayout.setOnRefreshListener { viewModel.refresh(layoutManager.findLastVisibleItemPosition()) }
+        smartRefreshLayout.setOnLoadMoreListener { viewModel.loadMore(layoutManager.findLastVisibleItemPosition()) }
         viewModel.listLiveData.observe(this, Observer { contentItems ->
             lifecycleScope.launch(Dispatchers.Default) {
                 val oldList = multiTypeAdapter!!.items

@@ -10,7 +10,7 @@ public class ContentItem {
     SpannableStringBuilder cookie;
 
 
-    SpannableStringBuilder content;
+    public SpannableStringBuilder content;
     String seriesId;
     boolean hasImage = false;
     String imgurl;
