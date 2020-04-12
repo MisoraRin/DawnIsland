@@ -12,6 +12,8 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
+import com.yanrou.dawnisland.content.ContentItem
+import com.yanrou.dawnisland.span.SegmentSpacingSpan
 
 
 fun transformForumName(forumName: String): Spanned {
@@ -73,6 +75,14 @@ fun extractQuote(content: String): List<String> {
         it.value.substring(11)
     }
 
+}
+
+fun addLineHeightAndSegGap(contentItem: ContentItem, lineHeight: Int, segGap: Int) {
+    if (contentItem.content.toString().contains("\n\n")) {
+        contentItem.content.setSpan(SegmentSpacingSpan(lineHeight, lineHeight), 0, contentItem.content.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+    } else {
+        contentItem.content.setSpan(SegmentSpacingSpan(lineHeight, segGap), 0, contentItem.content.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+    }
 }
 
 fun removeQuote(content: String): String {
