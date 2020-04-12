@@ -134,7 +134,7 @@ class QuotePopup(private val caller: Activity) : CenterPopupView(caller) {
         try {
             val rawResponse = withContext(Dispatchers.IO) {
                 Timber.i("Downloading quote...")
-                Server.getService.getQuote(id)!!.execute().body()!!.string()
+                ServiceClient.getQuote(id)
             }
             return withContext(Dispatchers.Default) {
                 Timber.i("Parsing quote")

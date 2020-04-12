@@ -1,15 +1,13 @@
 package com.yanrou.dawnisland.content
 
-import android.util.Log
-import com.google.gson.Gson
 import com.yanrou.dawnisland.Reference
 import com.yanrou.dawnisland.json2class.ReplysBean
-import com.yanrou.dawnisland.json2class.SeriesContentJson
-import com.yanrou.dawnisland.util.Server
+import com.yanrou.dawnisland.util.ServiceClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import timber.log.Timber
 
 class SeriesContentModel(private val id: String) {
     private var po = ArrayList<String>()
@@ -43,7 +41,6 @@ class SeriesContentModel(private val id: String) {
     private var state = 1000
 
 
-
     /**
      * 用于给ViewModel调用
      * next用于控制是上一页还是下一页，true则下一页，false则上一页
@@ -52,42 +49,34 @@ class SeriesContentModel(private val id: String) {
      * 由于A岛的APi设计问题，不得不很不优雅的写一个Any在这里
      * 当串被删了，就返回一个String对象，如果没有更多数据，就返回一个空list，如果还有数据则返回一个正常的list
      */
+
     suspend fun getSeriesContent(page: Int, next: Boolean): Any {
         var mpage = page
         if (next && wholePage) {
-            Log.d(TAG, "页数+1")
+            Timber.d("页数+1")
             mpage++
         }
+
+
         val s = withContext(Dispatchers.IO) {
-            getSeriesContentFromNet(mpage)
+            ServiceClient.getSeriesContentFromNet(seriesId, page)
         }
         //先判断串是否存在，如果为真表示串已经被删
         if ("\"\\u8be5\\u4e3b\\u9898\\u4e0d\\u5b58\\u5728\"" == s || "" == s) {
             return s
         }
-        return withContext(Dispatchers.Default) { preFormatJson(mpage, s) }
-    }
 
-    private fun getSeriesContentFromNet(page: Int): String {
-        val retrofit = Server.getService
-        val result = retrofit.getSeriesContent(seriesId, page)
-        return result!!.execute().body()!!.string()
-    }
+        val seriesContentJson = withContext(Dispatchers.Default) { ServiceClient.preFormatJson(page, s) }
 
 
-    private fun preFormatJson(page: Int, s: String): List<ReplysBean> {
-        //解析串
-        val seriesContentJson = Gson().fromJson(s, SeriesContentJson::class.java)
-
-        //判断是否是一整页
         wholePage = (seriesContentJson.replys.size == 20 || (seriesContentJson.replys.size == 19 && !"9999999".equals(seriesContentJson.replys.get(0).seriesId)))
 
 
         //为真则表示空页
         if (page != 1 && (seriesContentJson.replys.size == 1 && "9999999" == seriesContentJson.replys[0].seriesId || seriesContentJson.replys.size == 0)) {
-            return emptyList()
+            return seriesContentJson.replys
         }
-        Log.d(TAG, "$page")
+        Timber.d("$page")
         //为真则表示是第一页
         if (page == 1) {
             po.add(seriesContentJson.userid)
@@ -130,7 +119,6 @@ class SeriesContentModel(private val id: String) {
          */
 
         return resultList
-        //上面这一步做完我们获得了一个处理好的列表
     }
 
     /**
@@ -141,7 +129,7 @@ class SeriesContentModel(private val id: String) {
     }
 
     fun getPageBySeries(seriesId: String): Int? {
-        Log.d(TAG, "getPage$seriesId")
+        Timber.d("getPage$seriesId")
         return replyMap[seriesId]?.page
     }
 
