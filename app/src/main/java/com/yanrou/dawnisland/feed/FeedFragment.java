@@ -68,5 +68,6 @@ public class FeedFragment extends Fragment {
         super.onStop();
         refreshLayout = null;
         multiTypeAdapter = null;
+        recyclerView = null;
     }
 }
