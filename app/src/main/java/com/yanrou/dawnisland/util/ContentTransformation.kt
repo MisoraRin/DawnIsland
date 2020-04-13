@@ -8,7 +8,6 @@ import android.text.style.BackgroundColorSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
@@ -124,7 +123,6 @@ fun transformHideContent(content:SpannableStringBuilder): SpannableStringBuilder
                 if (widget is TextView) {
                     val charSequence = widget.text
                     if (charSequence is Spannable) {
-                        Log.d("SPAN TEST", "CLICKEDDDD")
                         charSequence.removeSpan(backgroundColorSpan)
                         charSequence.removeSpan(foregroundColorSpan)
                         widget.highlightColor = Color.TRANSPARENT

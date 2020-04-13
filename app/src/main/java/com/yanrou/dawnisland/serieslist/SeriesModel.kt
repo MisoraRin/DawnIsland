@@ -1,10 +1,8 @@
 package com.yanrou.dawnisland.serieslist
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.yanrou.dawnisland.Fid2Name
 import com.yanrou.dawnisland.json2class.TimeLineJson
-import com.yanrou.dawnisland.util.Server
+import com.yanrou.dawnisland.util.ServiceClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -36,27 +34,15 @@ class SeriesModel {
     suspend fun getSeriesList(fid: Int, page: Int): List<TimeLineJson> {
 
         val res = withContext(Dispatchers.IO) {
-            getSeriesListFromNet(fid, page)
+            ServiceClient.getSeriesListFromNet(fid, page)
         }
         if ("\"\\u8be5\\u677f\\u5757\\u4e0d\\u5b58\\u5728\"" == res || "" == res) {
             throw IOException("Forum does not exist")
         }
-        return withContext(Dispatchers.Default) { formatSeriesList(res) }
+        return withContext(Dispatchers.Default) { filterDuplicates(ServiceClient.formatSeriesList(res)) }
     }
 
-    private fun getSeriesListFromNet(fid: Int, page: Int): String {
-        // TODO move to interface
-        val retrofit = Server.getService
-        val result = when (fid) {
-            -1 -> retrofit.getTimelineList(page)
-            else -> retrofit.getSeriesList(fid, page)
-        }
-        return result!!.execute().body()!!.string()
-    }
-
-    private fun formatSeriesList(response: String): List<TimeLineJson> {
-
-        val list: List<TimeLineJson> = Gson().fromJson(response, object : TypeToken<List<TimeLineJson>>() {}.type)
+    private fun filterDuplicates(list: List<TimeLineJson>): List<TimeLineJson> {
         val noDuplicates = list.filterNot { seriesId.contains(it.id) }
         noDuplicates.map {
             seriesId.add(it.id)
@@ -65,6 +51,7 @@ class SeriesModel {
         if (noDuplicates.isNotEmpty()) page += 1
         return noDuplicates
     }
+
 
     fun getForumName(fid1: Int): String {
         return when {

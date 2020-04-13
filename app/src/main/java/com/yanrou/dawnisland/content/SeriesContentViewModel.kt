@@ -174,11 +174,11 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
 
             contentItem.quotes = quotes
 
-            //TODO 暂时使用 click able span
-            //val noQuotesContent = removeQuote(temp.content)
+
+            val noQuotesContent = removeQuote(temp.content)
 
             // will also hide [h]
-            contentItem.content = transformContent(temp.content)
+            contentItem.content = transformContent(noQuotesContent)
 
             //添加段间距和行间距，由于需要读取设置所以先放到这里
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
