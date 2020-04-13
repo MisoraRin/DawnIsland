@@ -3,6 +3,8 @@ package com.yanrou.dawnisland.util;
 import android.content.Context;
 import android.content.res.Resources;
 
+import androidx.preference.PreferenceManager;
+
 import com.yanrou.dawnisland.R;
 
 import java.text.ParseException;
@@ -15,6 +17,8 @@ import java.util.TimeZone;
 public final class ReadableTime {
 
     private static Resources sResources;
+
+  private static String timeFormat;
 
     public static final long SECOND_MILLIS = 1000;
     public static final long MINUTE_MILLIS = 60 * SECOND_MILLIS;
@@ -67,7 +71,10 @@ public final class ReadableTime {
 
     public static void initialize(Context context) {
         sResources = context.getApplicationContext().getResources();
+      timeFormat = PreferenceManager.getDefaultSharedPreferences(context)
+          .getString("time_format", "simplified");
     }
+
 
     static long string2Time(String s) {
         if (s.contains("(")) {
@@ -89,11 +96,11 @@ public final class ReadableTime {
 
 
     public static String getDisplayTime(long time) {
-        //if (Settings.getPrettyTime()) {
+      if (timeFormat.equals("simplified")) {
         return getTimeAgo(time);
-        //} else {
-        //    return getPlainTime(time);
-        //}
+      } else {
+        return getPlainTime(time);
+      }
     }
 
     public static String getPlainTime(long time) {
