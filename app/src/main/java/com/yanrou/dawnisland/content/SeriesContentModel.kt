@@ -59,15 +59,14 @@ class SeriesContentModel(private val id: String) {
 
 
         val s = withContext(Dispatchers.IO) {
-            ServiceClient.getSeriesContentFromNet(seriesId, page)
+            ServiceClient.getSeriesContentFromNet(seriesId, mpage)
         }
         //先判断串是否存在，如果为真表示串已经被删
         if ("\"\\u8be5\\u4e3b\\u9898\\u4e0d\\u5b58\\u5728\"" == s || "" == s) {
             return s
         }
 
-        val seriesContentJson = withContext(Dispatchers.Default) { ServiceClient.preFormatJson(page, s) }
-
+        val seriesContentJson = withContext(Dispatchers.Default) { ServiceClient.preFormatJson(s) }
 
         wholePage = (seriesContentJson.replys.size == 20 || (seriesContentJson.replys.size == 19 && !"9999999".equals(seriesContentJson.replys.get(0).seriesId)))
 
@@ -101,7 +100,7 @@ class SeriesContentModel(private val id: String) {
             val temp = seriesContentJson.replys[i]
             //判断是否已存在，为了避免加载最后一页的新增内容时内存溢出
             if (!replyMap.containsKey(temp.seriesId)) {
-                temp.page = page
+                temp.page = mpage
                 temp.parentId = seriesId
                 temp.posInPage = i
 

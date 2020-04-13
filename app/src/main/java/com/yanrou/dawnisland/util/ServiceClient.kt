@@ -22,7 +22,7 @@ object ServiceClient {
     }
 
 
-    fun preFormatJson(page: Int, s: String): SeriesContentJson {
+    fun preFormatJson(s: String): SeriesContentJson {
         return gson.fromJson(s, SeriesContentJson::class.java)
     }
 
