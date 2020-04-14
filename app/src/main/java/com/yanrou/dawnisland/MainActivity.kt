@@ -179,9 +179,9 @@ class MainActivity : AppCompatActivity() {
 
     fun getForumList() {
         //本地已有，直接读取
-        Log.d(TAG, "getForumList: 开始读取")
+        Timber.d("getForumList: 开始读取")
         if (sharedPreferences!!.contains("ForumJson")) {
-            Log.d(TAG, "getForumList: 本地已有")
+            Timber.d("getForumList: 本地已有")
             val ForumJson = sharedPreferences!!.getString("ForumJson", "")
             val forumJsonList = Gson().fromJson<List<ForumJson>>(ForumJson, object : TypeToken<List<ForumJson?>?>() {}.type)
             val allForum: MutableList<ForumsBean> = ArrayList()
