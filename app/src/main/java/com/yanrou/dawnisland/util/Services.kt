@@ -30,4 +30,7 @@ interface SeriesContentService {
 
     @GET("Api/delFeed")
     fun delNMBFeed(@Query("uuid") fid: String, @Query("tid") id: String): Call<ResponseBody>
+
+    @GET("Api/getForumList")
+    fun getForumList(): Call<ResponseBody>
 }
