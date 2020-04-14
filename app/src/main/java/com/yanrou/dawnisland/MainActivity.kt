@@ -16,29 +16,27 @@ import androidx.core.view.GravityCompat
 import androidx.customview.widget.ViewDragHelper
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.susion.rabbit.Rabbit.open
 import com.tencent.bugly.crashreport.CrashReport
+import com.tencent.mmkv.MMKV
 import com.yanrou.dawnisland.feed.FeedFragment
-import com.yanrou.dawnisland.json2class.ForumJson
 import com.yanrou.dawnisland.json2class.ForumJson.ForumsBean
 import com.yanrou.dawnisland.serieslist.SeriesFragment
 import com.yanrou.dawnisland.settings.SettingsActivity
 import com.yanrou.dawnisland.trend.TrandFragment
-import com.yanrou.dawnisland.util.HttpUtil
-import com.yanrou.dawnisland.util.ReadableTime
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Response
+import com.yanrou.dawnisland.util.*
+import com.yanrou.dawnisland.util.ServiceClient.convertForumListFromJson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.io.IOException
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -173,11 +171,19 @@ class MainActivity : AppCompatActivity() {
             appBarLayout = findViewById(R.id.appbar_layout)
         }
 
-    fun getForumList() {
-        //本地已有，直接读取
-        if (sharedPreferences!!.contains("ForumJson")) {
-            val forumJson = sharedPreferences!!.getString("ForumJson", "")
-            val forumJsonList = Gson().fromJson<List<ForumJson>>(forumJson, object : TypeToken<List<ForumJson?>?>() {}.type)
+    private fun getForumList() {
+        lifecycleScope.launch {
+            //本地已有，直接读取
+            val forumJson =
+                    if (MMKV.defaultMMKV().hasForumList()) {
+                        MMKV.defaultMMKV().getForumList()
+                    } else {
+                        //否则从网络加载
+                        val json = withContext(Dispatchers.IO) { ServiceClient.getForumList() }
+                        MMKV.defaultMMKV().putForumList(json)
+                        json
+                    }
+            val forumJsonList = convertForumListFromJson(forumJson!!)
             val allForum: MutableList<ForumsBean> = ArrayList()
             for (i in forumJsonList.indices) {
                 allForum.addAll(forumJsonList[i].forums)
@@ -185,22 +191,9 @@ class MainActivity : AppCompatActivity() {
             Fid2Name.setDB(allForum)
             forumsList.addAll(allForum)
             runOnUiThread { forumAdapter!!.notifyDataSetChanged() }
-            //seriesFragment.getNewPage();
-            //trandFragment.startGetTrend();
-        } else { //否则从网络加载
-            HttpUtil.sendOkHttpRequest("https://nmb.fastmirror.org/Api/getForumList", object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                }
-
-                @Throws(IOException::class)
-                override fun onResponse(call: Call, response: Response) {
-                    val json = response.body!!.string()
-                    sharedPreferences!!.edit().putString("ForumJson", json).apply()
-                    getForumList()
-                }
-            })
         }
     }
+
 
     private fun setDrawerLeftEdgeSize(activity: Activity?, drawerLayout: DrawerLayout?, displayWidthPercentage: Float) {
         if (activity == null || drawerLayout == null) {

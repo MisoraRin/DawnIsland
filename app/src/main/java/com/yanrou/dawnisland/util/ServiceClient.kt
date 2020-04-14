@@ -2,6 +2,7 @@ package com.yanrou.dawnisland.util
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.yanrou.dawnisland.json2class.ForumJson
 import com.yanrou.dawnisland.json2class.SeriesContentJson
 import com.yanrou.dawnisland.json2class.TimeLineJson
 import okhttp3.RequestBody
@@ -35,7 +36,7 @@ object ServiceClient {
     }
 
     fun formatSeriesList(response: String): List<TimeLineJson> {
-        return Gson().fromJson(response, object : TypeToken<List<TimeLineJson>>() {}.type)
+        return gson.fromJson(response, object : TypeToken<List<TimeLineJson>>() {}.type)
     }
 
     fun sendReply(requestBody: RequestBody, cookie: String): String {
@@ -46,5 +47,10 @@ object ServiceClient {
         return service.getQuote(id)!!.execute().body()!!.string()
     }
 
+    fun getForumList(): String {
+        return service.getForumList().execute().body()!!.string()
+    }
 
+    fun convertForumListFromJson(forumJson: String): List<ForumJson> =
+            gson.fromJson(forumJson, object : TypeToken<List<ForumJson>>() {}.type)
 }

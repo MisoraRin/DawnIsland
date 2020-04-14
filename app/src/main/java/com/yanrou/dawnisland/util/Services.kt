@@ -21,4 +21,7 @@ interface SeriesContentService {
 
     @GET("Api/ref")
     fun getQuote(@Query("id") id: String): Call<ResponseBody>?
+
+    @GET("Api/getForumList")
+    fun getForumList(): Call<ResponseBody>
 }
