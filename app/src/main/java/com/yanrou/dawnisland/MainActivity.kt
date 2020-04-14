@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Point
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
@@ -54,11 +53,12 @@ class MainActivity : AppCompatActivity() {
      * 记录当前的页数
      */
     var sharedPreferences: SharedPreferences? = null
-    var drawerLayout: DrawerLayout? = null
-    var seriesFragment: SeriesFragment? = null
-    var trandFragment: TrandFragment? = null
-    var feedFragment: FeedFragment? = null
+    private var drawerLayout: DrawerLayout? = null
+    private var seriesFragment: SeriesFragment? = null
+    private var trandFragment: TrandFragment? = null
+    private var feedFragment: FeedFragment? = null
     var forumName: String? = null
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_toolbar_menu, menu)
         return true
@@ -148,10 +148,6 @@ class MainActivity : AppCompatActivity() {
                     forumName = collapsingToolbarLayout.title.toString()
                     collapsingToolbarLayout.title = "A岛热榜"
                 }
-                if (position == 2) {
-                    //appBarLayout.setExpanded(false);
-                    //subtitleCollapsingToolbarLayout.setTitle("订阅");
-                }
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
@@ -179,27 +175,21 @@ class MainActivity : AppCompatActivity() {
 
     fun getForumList() {
         //本地已有，直接读取
-        Timber.d("getForumList: 开始读取")
         if (sharedPreferences!!.contains("ForumJson")) {
-            Timber.d("getForumList: 本地已有")
-            val ForumJson = sharedPreferences!!.getString("ForumJson", "")
-            val forumJsonList = Gson().fromJson<List<ForumJson>>(ForumJson, object : TypeToken<List<ForumJson?>?>() {}.type)
+            val forumJson = sharedPreferences!!.getString("ForumJson", "")
+            val forumJsonList = Gson().fromJson<List<ForumJson>>(forumJson, object : TypeToken<List<ForumJson?>?>() {}.type)
             val allForum: MutableList<ForumsBean> = ArrayList()
             for (i in forumJsonList.indices) {
                 allForum.addAll(forumJsonList[i].forums)
             }
-            Log.d(TAG, "onResponse: " + allForum.size)
             Fid2Name.setDB(allForum)
             forumsList.addAll(allForum)
             runOnUiThread { forumAdapter!!.notifyDataSetChanged() }
-            Log.d(TAG, "getForumList: 调用碎片方法")
             //seriesFragment.getNewPage();
             //trandFragment.startGetTrend();
         } else { //否则从网络加载
-            Log.d(TAG, "getForumList: 网络加载开始")
             HttpUtil.sendOkHttpRequest("https://nmb.fastmirror.org/Api/getForumList", object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    Log.d(TAG, "onFailure: 获取板块列表失败")
                 }
 
                 @Throws(IOException::class)
@@ -231,7 +221,7 @@ class MainActivity : AppCompatActivity() {
             // 设置新的边缘大小
             val displaySize = Point()
             activity.windowManager.defaultDisplay.getSize(displaySize)
-            edgeSizeField.setInt(leftDragger, Math.max(edgeSize, (displaySize.x *
+            edgeSizeField.setInt(leftDragger, edgeSize.coerceAtLeast((displaySize.x *
                     displayWidthPercentage).toInt()))
             val leftCallbackField = drawerLayout.javaClass.getDeclaredField("mLeftCallback")
             leftCallbackField.isAccessible = true
@@ -244,9 +234,5 @@ class MainActivity : AppCompatActivity() {
         } catch (e: IllegalArgumentException) {
         } catch (e: IllegalAccessException) {
         }
-    }
-
-    companion object {
-        private const val TAG = "MainActivity"
     }
 }
