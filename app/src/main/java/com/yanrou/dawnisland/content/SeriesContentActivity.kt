@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.MultiTypeAdapter
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.interfaces.SimpleCallback
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.yanrou.dawnisland.R
 import com.yanrou.dawnisland.SeriesRecyclerOnScrollListener
@@ -27,6 +29,7 @@ import com.yanrou.dawnisland.reply.ReplyDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.*
 
 
@@ -42,6 +45,8 @@ class SeriesContentActivity : AppCompatActivity() {
     private lateinit var smartRefreshLayout: SmartRefreshLayout
     private var multiTypeAdapter: MultiTypeAdapter? = null
     private lateinit var viewModel: SeriesContentViewModel
+    private val jumpPopup: JumpPopup by lazy { JumpPopup(this) }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.series_content_menu, menu)
         val onlyPoSwitch = menu.findItem(R.id.only_po_switch)
@@ -89,7 +94,10 @@ class SeriesContentActivity : AppCompatActivity() {
         })
         recyclerView.adapter = multiTypeAdapter
         smartRefreshLayout.setEnableAutoLoadMore(false)
-        smartRefreshLayout.setOnRefreshListener { viewModel.refresh(layoutManager.findLastVisibleItemPosition()) }
+        smartRefreshLayout.setOnRefreshListener {
+            viewModel.loadPreviousPage(layoutManager.findLastVisibleItemPosition())
+        }
+
         smartRefreshLayout.setOnLoadMoreListener { viewModel.loadMore(layoutManager.findLastVisibleItemPosition()) }
         viewModel.listLiveData.observe(this, Observer { contentItems ->
             lifecycleScope.launch(Dispatchers.Default) {
@@ -135,6 +143,23 @@ class SeriesContentActivity : AppCompatActivity() {
                 copyToClipboard(this, ">>No." + viewModel.seriesId)
             }
             R.id.jump_page -> {
+                val page = viewModel.getNowPage((recyclerView.layoutManager as LinearLayoutManager)
+                        .findLastCompletelyVisibleItemPosition()) ?: 1
+                XPopup.Builder(baseContext)
+                        .setPopupCallback(object : SimpleCallback() {
+                            override fun beforeShow() {
+                                super.beforeShow()
+                                jumpPopup.updatePages(page, viewModel.maxPage)
+                            }
+                        })
+                        .asCustom(jumpPopup)
+                        .show()
+                        .dismissWith {
+                            if (jumpPopup.submit) {
+                                Timber.i("jumping to ${jumpPopup.targetPage}")
+                                viewModel.jumpPage(jumpPopup.targetPage)
+                            }
+                        }
             }
             R.id.reply -> {
                 val replyDialog = ReplyDialog()
@@ -165,7 +190,4 @@ class SeriesContentActivity : AppCompatActivity() {
         private const val TAG = "SeriesContentActivity"
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 }
