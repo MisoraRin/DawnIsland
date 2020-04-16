@@ -88,8 +88,9 @@ fun removeQuote(content: String): String {
     /** api response
     <font color=\"#789922\">&gt;&gt;No.23527403</font>
      */
-    val regex = """<font color="#789922">.*</font><br ?/?>*""".toRegex()
-    return regex.replace(content, "")
+    val regex = """<font color="#789922">.*</font>""".toRegex()
+    val regex2 = """<font color="#789922">.*</font><br ?/?>""".toRegex()
+    return regex.replace(regex2.replace(content, ""), "")
 }
 
 fun transformContent(content: String): SpannableStringBuilder {
