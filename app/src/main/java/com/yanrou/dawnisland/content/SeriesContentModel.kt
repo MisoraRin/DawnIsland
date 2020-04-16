@@ -27,6 +27,9 @@ class SeriesContentModel(private val id: String) {
      * 标记最后一页是否有广告
      */
     private var hasAd = false
+
+    private var _replyCount = 0
+    val maxPage get() = 1.coerceAtLeast(kotlin.math.ceil(_replyCount.toDouble() / 19).toInt())
     /**
      * 控制翻页，如果有缓存就会从缓存中获取上次看到的位置,没有的话从第一页开始
      */
@@ -70,6 +73,7 @@ class SeriesContentModel(private val id: String) {
 
         wholePage = (seriesContentJson.replys.size == 20 || (seriesContentJson.replys.size == 19 && !"9999999".equals(seriesContentJson.replys.get(0).seriesId)))
 
+        _replyCount = seriesContentJson.replyCount
 
         //为真则表示空页
         if (page != 1 && (seriesContentJson.replys.size == 1 && "9999999" == seriesContentJson.replys[0].seriesId || seriesContentJson.replys.size == 0)) {
@@ -130,6 +134,13 @@ class SeriesContentModel(private val id: String) {
     fun getPageBySeries(seriesId: String): Int? {
         Timber.d("getPage$seriesId")
         return replyMap[seriesId]?.page
+    }
+
+    /**
+     * 清空id，为跳页/刷新准备
+     */
+    fun clearIds() {
+        replyMap.clear()
     }
 
     /**

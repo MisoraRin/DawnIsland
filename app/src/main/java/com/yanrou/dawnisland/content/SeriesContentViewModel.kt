@@ -29,6 +29,13 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
     var loading = false
     var OnlyPoLiveData = MutableLiveData<Boolean>()
 
+    /**
+     * 在这里返回总页数
+     *
+     * @return 总页数
+     */
+    val maxPage get() = model.maxPage
+
     init {
         OnlyPoLiveData.value = false
     }
@@ -52,8 +59,8 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
     /**
      * 下拉逻辑
      */
-    fun refresh(index: Int) {
-        getNowPage(0)?.let { getContent(it, FRONT_PAGE) }
+    fun loadPreviousPage(index: Int) {
+        getNowPage(index)?.let { if (it - 1 > 0) getContent(it - 1, FRONT_PAGE) }
     }
 
     /**
@@ -74,7 +81,12 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
      *
      * @param page 将要跳到的页数
      */
-    fun jumpPage(page: Int) {}
+    fun jumpPage(page: Int) {
+        contentList.clear()
+        onlyPoList.clear()
+        model.clearIds()
+        getContent(page, false)
+    }
 
     /**
      * 在这里返回当前看到的页数,实现方式是通过获取当前可见的最后一个item的pos，然后找到对应的串号，再问model这个串在第几页
@@ -84,13 +96,7 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
         return model.getPageBySeries(contentList[index].seriesId)
     }
 
-    /**
-     * 在这里返回总页数
-     *
-     * @return 总页数
-     */
-    val totalPage: Int
-        get() = 0
+
 
     /**
      * 不需要考虑具体能得到什么数据，只需要告诉model需要新的数据就可以
@@ -110,8 +116,13 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
                     // 表示有数据
                     withContext(Dispatchers.Default) {
                         val rawlist = formatContent(result as List<ReplysBean>)
-                        contentList.addAll(rawlist)
-                        onlyPoList.addAll(getOnlyPoList(rawlist))
+                        if (isNext) {
+                            contentList.addAll(rawlist)
+                            onlyPoList.addAll(getOnlyPoList(rawlist))
+                        } else {
+                            contentList.addAll(0, rawlist)
+                            onlyPoList.addAll(0, getOnlyPoList(rawlist))
+                        }
                     }
                 } else {
                     //没数据，到最后一页了
