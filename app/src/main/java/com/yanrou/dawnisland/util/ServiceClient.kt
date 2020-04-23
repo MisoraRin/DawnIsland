@@ -2,10 +2,14 @@ package com.yanrou.dawnisland.util
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.yanrou.dawnisland.json2class.FeedJson
 import com.yanrou.dawnisland.json2class.SeriesContentJson
 import com.yanrou.dawnisland.json2class.TimeLineJson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.RequestBody
 import retrofit2.Retrofit
+import timber.log.Timber
 
 object ServiceClient {
     private val service: SeriesContentService by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
@@ -44,6 +48,49 @@ object ServiceClient {
 
     fun getQuote(id: String): String {
         return service.getQuote(id)!!.execute().body()!!.string()
+    }
+
+
+    // TODO: handle case where thread is deleted
+    suspend fun getFeeds(uuid: String, page: Int): List<FeedJson> {
+        try {
+            val rawResponse =
+                    withContext(Dispatchers.IO) {
+                        Timber.i("Downloading Feeds on page $page...")
+                        service.getNMBFeeds(uuid, page).execute().body()!!.string()
+                    }
+            return withContext(Dispatchers.Default) {
+                Timber.i("Parsing Feeds...")
+                Gson().fromJson<List<FeedJson>>(rawResponse, object : TypeToken<List<FeedJson>>() {}.type)
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to get Feeds")
+            throw e
+        }
+    }
+
+    suspend fun addFeed(uuid: String, tid: String): String {
+        try {
+            return withContext(Dispatchers.IO) {
+                Timber.i("Adding Feed $tid...")
+                service.addNMBFeed(uuid, tid).execute().body()!!.string()
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to add feed")
+            throw e
+        }
+    }
+
+    suspend fun delFeed(uuid: String, tid: String): String {
+        try {
+            return withContext(Dispatchers.IO) {
+                Timber.i("Deleting Feed $tid...")
+                service.delNMBFeed(uuid, tid).execute().body()!!.string()
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to delete feed")
+            throw e
+        }
     }
 
 
