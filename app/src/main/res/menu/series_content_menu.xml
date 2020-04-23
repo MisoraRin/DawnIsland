@@ -16,6 +16,10 @@
         android:id="@+id/only_po_switch"
 
         android:title="只看po" />
+    <item
+      android:id="@+id/subscribe"
+
+      android:title="订阅" />
     <!--
     <item android:title="订阅">
         <menu>

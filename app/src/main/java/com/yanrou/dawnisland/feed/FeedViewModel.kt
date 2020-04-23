@@ -8,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.yanrou.dawnisland.json2class.FeedJson
 import com.yanrou.dawnisland.util.ServiceClient
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.apache.commons.text.StringEscapeUtils
 import timber.log.Timber
 
 class FeedViewModel(application: Application?) : AndroidViewModel(application!!) {
@@ -43,7 +45,25 @@ class FeedViewModel(application: Application?) : AndroidViewModel(application!!)
     }
 
     fun deleteFeed(id: String) {
-        TODO("delete feed")
+        Timber.i("Deleting Feed $id")
+        viewModelScope.launch(Dispatchers.IO) {
+            ServiceClient.delFeed(subscriberId!!, id).run {
+                // TODO: check failure response, and use response msg
+                /** res:
+                 *  "\u53d6\u6d88\u8ba2\u9605\u6210\u529f!"
+                 */
+                val msg = StringEscapeUtils.unescapeJava(this.replace("\"", ""))
+                Timber.i("$msg")
+                for (i in 0 until feedsList.size) {
+                    if (feedsList[i].id == id) {
+                        feedsList.removeAt(i)
+                        feedsIds.remove(id)
+                        _feeds.postValue(feedsList)
+                        break
+                    }
+                }
+            }
+        }
     }
 
     init {
