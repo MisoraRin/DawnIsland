@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -57,6 +59,12 @@ class SeriesContentActivity : AppCompatActivity() {
                 onlyPoSwitch.title = "只看po"
             }
         })
+        menu.findItem(R.id.subscribe).setOnMenuItemClickListener {
+            val subscriptionId = PreferenceManager.getDefaultSharedPreferences(baseContext).getString("subscriber_id", "666")
+            viewModel.addFeed(subscriptionId!!, id!!)
+            Toast.makeText(baseContext, "添加订阅", Toast.LENGTH_SHORT).show()
+            true
+        }
         return true
     }
 

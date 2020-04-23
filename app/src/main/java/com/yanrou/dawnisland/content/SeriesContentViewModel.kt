@@ -15,6 +15,8 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.apache.commons.text.StringEscapeUtils
+import timber.log.Timber
 
 class SeriesContentViewModel(application: Application) : AndroidViewModel(application) {
     val TAG = "SeriesContentViewModel"
@@ -224,5 +226,18 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
         return contentItems
     }
 
+    fun addFeed(subscriptionId: String, tid: String) {
+        Timber.i("Adding Feed $tid")
+        viewModelScope.launch(Dispatchers.IO) {
+            ServiceClient.addFeed(subscriptionId, tid).run {
+                // TODO: check failure response, and use msg
+                /** res:
+                 *  "\u53d6\u6d88\u8ba2\u9605\u6210\u529f!"
+                 */
+                val msg = StringEscapeUtils.unescapeJava(this.replace("\"", ""))
+                Timber.i("$msg")
+            }
+        }
+    }
 
 }

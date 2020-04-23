@@ -1,6 +1,7 @@
 package com.yanrou.dawnisland.util
 
 import androidx.recyclerview.widget.DiffUtil
+import com.yanrou.dawnisland.serieslist.CardViewFactory
 import com.yanrou.dawnisland.serieslist.SeriesCardView
 
 class DiffCallback(private val oldList: List<Any>, private val newList: List<Any>) : DiffUtil.Callback() {
@@ -8,6 +9,8 @@ class DiffCallback(private val oldList: List<Any>, private val newList: List<Any
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
         if (oldItem is SeriesCardView && newItem is SeriesCardView) {
+            return oldItem.id == newItem.id
+        } else if (oldItem is CardViewFactory.MyCardView && newItem is CardViewFactory.MyCardView) {
             return oldItem.id == newItem.id
         }
         return false
