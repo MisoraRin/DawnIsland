@@ -21,22 +21,22 @@ import com.yanrou.dawnisland.content.SeriesContentActivity
 import com.yanrou.dawnisland.json2class.FeedJson
 import com.yanrou.dawnisland.serieslist.CardViewFactory
 import com.yanrou.dawnisland.util.DiffCallback
+import timber.log.Timber
 
 class FeedFragment : Fragment() {
     private var mViewModel: FeedViewModel? = null
+    private var multiTypeAdapter: MultiTypeAdapter? = null
     private var recyclerView: RecyclerView? = null
-    private var refreshLayout: SmartRefreshLayout? = null
-    private var multiTypeAdapter: MultiTypeAdapter = MultiTypeAdapter()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.feed_fragment, container, false)
         recyclerView = rootView.findViewById(R.id.feed_recycler_view)
-        refreshLayout = rootView.findViewById(R.id.smart_refresh)
+        val refreshLayout:SmartRefreshLayout = rootView.findViewById(R.id.smart_refresh)
 
         mViewModel = ViewModelProvider(this).get(FeedViewModel::class.java)
-
+        multiTypeAdapter = MultiTypeAdapter()
         val clickListener = View.OnClickListener {
             val intent = Intent(context, SeriesContentActivity::class.java)
             intent.putExtra("id", (it as CardViewFactory.MyCardView).id)
@@ -57,25 +57,25 @@ class FeedFragment : Fragment() {
             true
         }
 
-        multiTypeAdapter.register(FeedJson::class.java, FeedItemViewBinder(clickListener, longClickListener))
+        multiTypeAdapter!!.register(FeedJson::class.java, FeedItemViewBinder(clickListener, longClickListener))
 
         recyclerView!!.layoutManager = LinearLayoutManager(recyclerView!!.context)
         recyclerView!!.adapter = multiTypeAdapter
-        refreshLayout!!.setEnableAutoLoadMore(false)
-        refreshLayout!!.setOnLoadMoreListener { refreshLayout: RefreshLayout ->
+        refreshLayout.setEnableAutoLoadMore(false)
+        refreshLayout.setOnLoadMoreListener {
             mViewModel!!.getFeeds()
             refreshLayout.finishLoadMore()
         }
 
-        refreshLayout!!.setOnRefreshListener {
+        refreshLayout.setOnRefreshListener {
             mViewModel!!.refresh()
-            refreshLayout!!.finishRefresh()
+            refreshLayout.finishRefresh()
         }
 
         mViewModel!!.feeds.observe(viewLifecycleOwner, Observer { newList ->
-            val diffResult = DiffUtil.calculateDiff(DiffCallback(multiTypeAdapter.items, newList))
-            multiTypeAdapter.items = newList.toList()
-            diffResult.dispatchUpdatesTo(multiTypeAdapter)
+            val diffResult = DiffUtil.calculateDiff(DiffCallback(multiTypeAdapter!!.items, newList))
+            multiTypeAdapter!!.items = newList.toList()
+            diffResult.dispatchUpdatesTo(multiTypeAdapter!!)
         })
 
         return rootView
@@ -83,8 +83,8 @@ class FeedFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        refreshLayout = null
         recyclerView = null
+        multiTypeAdapter = null
     }
 
     companion object {
