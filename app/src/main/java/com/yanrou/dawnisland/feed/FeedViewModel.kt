@@ -66,6 +66,13 @@ class FeedViewModel(application: Application?) : AndroidViewModel(application!!)
         }
     }
 
+    fun refresh() {
+        feedsList.clear()
+        feedsIds.clear()
+        pageCount = 1
+        getFeeds()
+    }
+
     init {
         subscriberId = PreferenceManager.getDefaultSharedPreferences(getApplication()).getString("subscriber_id", "666")
         getFeeds()

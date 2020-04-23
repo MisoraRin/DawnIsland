@@ -17,6 +17,7 @@ import androidx.core.view.GravityCompat
 import androidx.customview.widget.ViewDragHelper
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
@@ -166,6 +167,9 @@ class MainActivity : AppCompatActivity() {
         forumList!!.layoutManager = layoutManager2
         forumList!!.adapter = forumAdapter
         getForumList()
+
+        // resource initialization
+        resourceInitialization()
     }
 
     val view: Unit
@@ -248,5 +252,15 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
+    }
+
+    private fun resourceInitialization() {
+        // default subscriptionId
+        PreferenceManager.getDefaultSharedPreferences(baseContext).run {
+            val mFeedsId = getString("subscriber_id", "666")
+            if (mFeedsId == "666") {
+                edit().putString("subscriber_id", UUID.randomUUID().toString()).apply()
+            }
+        }
     }
 }

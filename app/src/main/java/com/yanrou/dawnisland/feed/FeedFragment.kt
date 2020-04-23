@@ -67,7 +67,10 @@ class FeedFragment : Fragment() {
             refreshLayout.finishLoadMore()
         }
 
-        refreshLayout!!.setOnRefreshListener { refreshLayout1: RefreshLayout -> refreshLayout1.finishRefresh(0) }
+        refreshLayout!!.setOnRefreshListener {
+            mViewModel!!.refresh()
+            refreshLayout!!.finishRefresh()
+        }
 
         mViewModel!!.feeds.observe(viewLifecycleOwner, Observer { newList ->
             val diffResult = DiffUtil.calculateDiff(DiffCallback(multiTypeAdapter.items, newList))
