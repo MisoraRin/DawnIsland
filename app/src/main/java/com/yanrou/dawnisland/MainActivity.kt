@@ -14,35 +14,26 @@ import androidx.customview.widget.ViewDragHelper
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.drakeet.multitype.MultiTypeAdapter
 import com.tencent.bugly.crashreport.CrashReport
 import com.yanrou.dawnisland.feed.FeedFragment
+import com.yanrou.dawnisland.forum.ForumDiffCallback
+import com.yanrou.dawnisland.forum.ForumGroupViewBinder
+import com.yanrou.dawnisland.forum.ForumItemViewBinder
 import com.yanrou.dawnisland.forum.ForumViewModel
+import com.yanrou.dawnisland.json2class.ForumJson
 import com.yanrou.dawnisland.json2class.ForumsBean
 import com.yanrou.dawnisland.serieslist.SeriesFragment
 import com.yanrou.dawnisland.settings.SettingsActivity
 import com.yanrou.dawnisland.trend.TrandFragment
 import com.yanrou.dawnisland.util.ReadableTime
-import com.yanrou.dawnisland.util.getForumList
+import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import java.util.*
-import androidx.preference.PreferenceManager
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.susion.rabbit.Rabbit.open
-import com.yanrou.dawnisland.json2class.ForumJson
-import com.yanrou.dawnisland.json2class.ForumJson.ForumsBean
-import com.yanrou.dawnisland.util.HttpUtil
-import com.yanrou.dawnisland.util.ReadableTime
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Response
-import com.yanrou.dawnisland.util.ReadableTime
-import kotlinx.android.synthetic.main.activity_main.*
-import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
     private var seriesFragment: SeriesFragment? = null
@@ -148,7 +139,7 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-        val forumAdapter = PinnedHeaderAdapter().apply {
+        val forumAdapter = MultiTypeAdapter().apply {
             register(ForumsBean::class.java, ForumItemViewBinder(this@MainActivity) { id: Int, name: String? ->
                 drawer_layout!!.closeDrawers()
                 coolapsing_toolbar.title = name
@@ -165,54 +156,40 @@ class MainActivity : AppCompatActivity() {
             adapter = forumAdapter
             //addItemDecoration(PinnedHeaderItemDecoration())
         }
-        forumViewModel.forumOnView.observe(this, Observer {
+        forumViewModel.forumOnView.observe(this, androidx.lifecycle.Observer {
             val oldList = forumAdapter.items
             //创建一个新的表
-            val newList: List<Any> = ArrayList(it!!)
+            val newList: List<Any> = ArrayList(it)
             val diffResult = DiffUtil.calculateDiff(ForumDiffCallback(oldList, newList), false)
             forumAdapter.items = newList
             diffResult.dispatchUpdatesTo(forumAdapter)
         })
-
-    }
-
-                @Throws(IOException::class)
-                override fun onResponse(call: Call, response: Response) {
-                    val json = response.body!!.string()
-                    sharedPreferences!!.edit().putString("ForumJson", json).apply()
-                    getForumList()
-                }
-            })
-        }
+        resourceInitialization()
     }
 
     private fun setDrawerLeftEdgeSize(activity: Activity, drawerLayout: DrawerLayout, displayWidthPercentage: Float) {
-            // 找到 ViewDragHelper 并设置 Accessible 为true
-            //Right
-            val leftDraggerField = drawerLayout.javaClass.getDeclaredField("mLeftDragger")
-            leftDraggerField.isAccessible = true
-            val leftDragger = leftDraggerField[drawerLayout] as ViewDragHelper
+        // 找到 ViewDragHelper 并设置 Accessible 为true
+        //Right
+        val leftDraggerField = drawerLayout.javaClass.getDeclaredField("mLeftDragger")
+        leftDraggerField.isAccessible = true
+        val leftDragger = leftDraggerField[drawerLayout] as ViewDragHelper
 
-            // 找到 edgeSizeField 并设置 Accessible 为true
-            val edgeSizeField = leftDragger.javaClass.getDeclaredField("mEdgeSize")
-            edgeSizeField.isAccessible = true
-            val edgeSize = edgeSizeField.getInt(leftDragger)
+        // 找到 edgeSizeField 并设置 Accessible 为true
+        val edgeSizeField = leftDragger.javaClass.getDeclaredField("mEdgeSize")
+        edgeSizeField.isAccessible = true
+        val edgeSize = edgeSizeField.getInt(leftDragger)
 
-            // 设置新的边缘大小
-            val displaySize = Point()
-            activity.windowManager.defaultDisplay.getSize(displaySize)
-            edgeSizeField.setInt(leftDragger, edgeSize.coerceAtLeast((displaySize.x *
-                    displayWidthPercentage).toInt()))
-            val leftCallbackField = drawerLayout.javaClass.getDeclaredField("mLeftCallback")
-            leftCallbackField.isAccessible = true
-            val leftCallback = leftCallbackField[drawerLayout] as ViewDragHelper.Callback
-            val peekRunnableField = leftCallback.javaClass.getDeclaredField("mPeekRunnable")
-            peekRunnableField.isAccessible = true
+        // 设置新的边缘大小
+        val displaySize = Point()
+        activity.windowManager.defaultDisplay.getSize(displaySize)
+        edgeSizeField.setInt(leftDragger, edgeSize.coerceAtLeast((displaySize.x *
+                displayWidthPercentage).toInt()))
+        val leftCallbackField = drawerLayout.javaClass.getDeclaredField("mLeftCallback")
+        leftCallbackField.isAccessible = true
+        val leftCallback = leftCallbackField[drawerLayout] as ViewDragHelper.Callback
+        val peekRunnableField = leftCallback.javaClass.getDeclaredField("mPeekRunnable")
+        peekRunnableField.isAccessible = true
         peekRunnableField[leftCallback] = Runnable {}
-    }
-
-    companion object {
-        private const val TAG = "MainActivity"
     }
 
     private fun resourceInitialization() {
