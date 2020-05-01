@@ -35,7 +35,7 @@ class PinnedHeaderItemDecoration : ItemDecoration(), IPinnedHeaderDecoration {
             if (pinnedHeaderPosition != -1) {
                 //创建该View
                 val pinnedHeaderViewHolder = adapter.onCreateViewHolder(parent, adapter.getItemViewType(pinnedHeaderPosition))
-                adapter.onBindViewHolder(pinnedHeaderViewHolder, pinnedHeaderPosition)
+                adapter.onBindViewHolderZ(pinnedHeaderViewHolder, pinnedHeaderPosition, adapter.getItemViewType(pinnedHeaderPosition))
                 //要固定的view
                 val pinnedHeaderView = pinnedHeaderViewHolder.itemView
                 ensurePinnedHeaderViewLayout(pinnedHeaderView, parent)
