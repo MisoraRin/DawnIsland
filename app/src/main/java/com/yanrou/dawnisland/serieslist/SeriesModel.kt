@@ -15,7 +15,7 @@ class SeriesModel {
     private var fid: Int = -1
 
     init {
-        fid2Name = Fid2Name.getDb()
+        fid2Name = Fid2Name.db
     }
 
     /**
