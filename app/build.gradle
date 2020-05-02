@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'bugly'
 
-apply from: 'rabbit-plugin.gradle'
+//apply from: 'rabbit-plugin.gradle'
 
 apply plugin: 'kotlin-android'
 
@@ -111,7 +111,7 @@ dependencies {
     // alternately - if using Java8, use the following instead of lifecycle-compiler
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
-    implementation rootProject.ext.rabbitDependence
+//    implementation rootProject.ext.rabbitDependence
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.0-beta-5"
 
     implementation 'com.lxj:xpopup:1.8.17'
