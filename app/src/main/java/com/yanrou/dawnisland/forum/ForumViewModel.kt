@@ -9,7 +9,6 @@ import com.yanrou.dawnisland.Fid2Name
 import com.yanrou.dawnisland.json2class.ForumJson
 import com.yanrou.dawnisland.util.ServiceClient
 import com.yanrou.dawnisland.util.getForumList
-import com.yanrou.dawnisland.util.hasForumList
 import com.yanrou.dawnisland.util.putForumList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -73,17 +72,13 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
         forumOnView.value = generateForumListWithGroup()
     }
 
-    //TODO 只要forumJsonList是一个List<FourmList>就行
     private suspend fun getForumListRaw(): List<ForumJson> {
-        //本地已有，直接读取
-        val forumJson =
-                if (MMKV.defaultMMKV().hasForumList()) {
-                    MMKV.defaultMMKV().getForumList()
-                } else {
-                    val json = withContext(Dispatchers.IO) { ServiceClient.getForumList() }
-                    MMKV.defaultMMKV().putForumList(json)
-                    json
-                }
+        var forumJson = MMKV.defaultMMKV().getForumList()
+        if (forumJson.isEmpty()) {
+            val json = withContext(Dispatchers.IO) { ServiceClient.getForumList() }
+            MMKV.defaultMMKV().putForumList(json)
+            forumJson = json
+        }
         return ServiceClient.convertForumListFromJson(forumJson)
     }
 

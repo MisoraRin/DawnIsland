@@ -9,9 +9,5 @@ fun MMKV.putForumList(json: String) {
 }
 
 fun MMKV.getForumList(): String {
-    return this.getString(FORUM_JSON_KEY, null)!!
-}
-
-fun MMKV.hasForumList(): Boolean {
-    return this.containsKey(FORUM_JSON_KEY)
+    return this.getString(FORUM_JSON_KEY, "")!!
 }
