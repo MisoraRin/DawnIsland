@@ -4,11 +4,11 @@ import android.text.Html;
 import android.text.Spanned;
 
 public class TrendItem {
-    String rank;
-    String trend;
-    Spanned content;
-    String forum;
-    String id;
+    private String rank;
+    private String trend;
+    private Spanned content;
+    private String forum;
+    private String id;
 
 
     public TrendItem(String rank, String trend, String content, String forum, String id) {

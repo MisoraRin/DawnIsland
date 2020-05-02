@@ -29,7 +29,7 @@ import com.yanrou.dawnisland.json2class.ForumJson
 import com.yanrou.dawnisland.json2class.ForumsBean
 import com.yanrou.dawnisland.serieslist.SeriesFragment
 import com.yanrou.dawnisland.settings.SettingsActivity
-import com.yanrou.dawnisland.trend.TrandFragment
+import com.yanrou.dawnisland.trend.TrendFragment
 import com.yanrou.dawnisland.util.ReadableTime
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
@@ -37,7 +37,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private var seriesFragment: SeriesFragment? = null
-    private var trandFragment: TrandFragment? = null
+    private var trendFragment: TrendFragment? = null
     private var feedFragment: FeedFragment? = null
     var forumName: String? = null
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -106,15 +106,15 @@ class MainActivity : AppCompatActivity() {
         if (supportFragmentManager.fragments.size == 0) {
             seriesFragment = SeriesFragment()
             myViewPagerAdapter.addFragment(seriesFragment)
-            trandFragment = TrandFragment.newInstance(this)
-            myViewPagerAdapter.addFragment(trandFragment)
+            trendFragment = TrendFragment()
+            myViewPagerAdapter.addFragment(trendFragment)
             feedFragment = FeedFragment()
             myViewPagerAdapter.addFragment(feedFragment)
         } else {
             myViewPagerAdapter.addFragments(supportFragmentManager.fragments)
             supportFragmentManager.fragments.apply {
                 this[0]?.let { seriesFragment = it as SeriesFragment }
-                this[1]?.let { trandFragment = it as TrandFragment }
+                this[1]?.let { trendFragment = it as TrendFragment }
                 //this[2]?.let { feedFragment = it as FeedFragment}
             }
 
