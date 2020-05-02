@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.yanrou.dawnisland.OnItemClick;
 import com.yanrou.dawnisland.R;
 
 import java.util.List;
@@ -17,11 +16,8 @@ import java.util.List;
 public class SubscriberAdapter extends RecyclerView.Adapter<SubscriberAdapter.ViewHolder> {
 
     List<SubscriberItem> subscriberItemList;
-    OnItemClick onItemClick;
 
-    void setOnItemClick(OnItemClick o) {
-        onItemClick = o;
-    }
+
 
     public SubscriberAdapter(List<SubscriberItem> subscriberItemList) {
         this.subscriberItemList = subscriberItemList;
@@ -36,7 +32,7 @@ public class SubscriberAdapter extends RecyclerView.Adapter<SubscriberAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.subscribe_series_item, parent, false);
-        return new SubscriberAdapter.ViewHolder(view, onItemClick);
+        return new SubscriberAdapter.ViewHolder(view);
     }
 
     @Override
@@ -61,7 +57,7 @@ public class SubscriberAdapter extends RecyclerView.Adapter<SubscriberAdapter.Vi
         TextView content;
         TextView newInfo;
 
-        public ViewHolder(@NonNull View itemView, final OnItemClick onItemClick) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             cookie = itemView.findViewById(R.id.SeriesListCookie);
             content = itemView.findViewById(R.id.SeriesListContent);
@@ -69,7 +65,7 @@ public class SubscriberAdapter extends RecyclerView.Adapter<SubscriberAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onItemClick.onItemClick(seriesid, forum);
+
                 }
             });
         }
