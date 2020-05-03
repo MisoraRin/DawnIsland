@@ -16,7 +16,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,9 +27,6 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.yanrou.dawnisland.R
 import com.yanrou.dawnisland.SeriesRecyclerOnScrollListener
 import com.yanrou.dawnisland.reply.ReplyDialog
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
 
@@ -108,18 +104,17 @@ class SeriesContentActivity : AppCompatActivity() {
 
         smartRefreshLayout.setOnLoadMoreListener { viewModel.loadMore(layoutManager.findLastVisibleItemPosition()) }
         viewModel.listLiveData.observe(this, Observer { contentItems ->
-            lifecycleScope.launch(Dispatchers.Default) {
-                val oldList = multiTypeAdapter!!.items
-                //创建一个新的表
-                val newList: List<Any> = ArrayList<Any>(contentItems!!)
-                val diffResult = DiffUtil.calculateDiff(DiffContentList(oldList, newList))
-                multiTypeAdapter!!.items = newList
-                withContext(Dispatchers.Main) {
-                    diffResult.dispatchUpdatesTo(multiTypeAdapter!!)
-                    smartRefreshLayout.finishRefresh()
-                    smartRefreshLayout.finishLoadMore()
-                }
-            }
+            val oldList = multiTypeAdapter!!.items
+            //创建一个新的表
+            val newList: List<Any> = ArrayList<Any>(contentItems!!)
+            val diffResult = DiffUtil.calculateDiff(DiffContentList(oldList, newList))
+            multiTypeAdapter!!.items = newList
+
+            diffResult.dispatchUpdatesTo(multiTypeAdapter!!)
+            smartRefreshLayout.finishRefresh()
+            smartRefreshLayout.finishLoadMore()
+
+
         })
         //告诉view model可以开始读取数据了
         viewModel.firstStart()

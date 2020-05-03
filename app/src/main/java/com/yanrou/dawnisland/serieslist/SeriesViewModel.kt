@@ -5,11 +5,11 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yanrou.dawnisland.Fid2Name
 import com.yanrou.dawnisland.json2class.TimeLineJson
 import com.yanrou.dawnisland.span.RoundBackgroundColorSpan
 import com.yanrou.dawnisland.util.extractQuote
@@ -22,7 +22,6 @@ import kotlinx.coroutines.withContext
 
 class SeriesViewModel : ViewModel() {
 
-    private val TAG = "SeriesViewModel"
     private var model: SeriesModel = SeriesModel()
     private val roundBackgroundColorSpan = RoundBackgroundColorSpan(Color.parseColor("#12DBD1"), Color.parseColor("#FFFFFF"))
 
@@ -34,52 +33,53 @@ class SeriesViewModel : ViewModel() {
         COMPLETE,
         FAIL
     }
-
-
-    /**
-     * @param state 用来表示不同的加载情况，方便结束以后调用
-     */
-
     private val _loadingState = MutableLiveData(LoadingState.COMPLETE)
     val loadingState get() = _loadingState
 
     private val _seriesCards = MutableLiveData<List<SeriesCardView>>()
     val seriesCards get() = _seriesCards
 
-
     init {
-        Log.d(TAG, "VM getting first page")
-        getNextPage()
+//            getNextPage()
     }
-
     /**
      * 当前所有串的view
      */
     var seriesCardList = mutableListOf<SeriesCardView>()
 
+    var first = true
+    fun getFirstPage() {
+        if (first) {
+            getNextPage()
+            first = false
+        }
+    }
+
     fun getNextPage() {
+        if (model.fid2Name == null) {
+            model.fid2Name = Fid2Name.db.value
+        }
         if (loadingState.value == LoadingState.LOADING) {
             return
         }
         loadingState.value = LoadingState.LOADING
         viewModelScope.launch {
-            var list: List<TimeLineJson>
+            val list: List<TimeLineJson>
             try {
                 list = model.getSeriesList(fid, page)
             } catch (e: Exception) {
-                Log.e(TAG, "Get Series List error", e)
+
                 _loadingState.postValue(LoadingState.FAIL)
                 return@launch
             }
             // no new data
             if (list.isEmpty()) {
-                Log.d(TAG, "No new data for page $page")
+
                 _loadingState.postValue(LoadingState.COMPLETE)
                 return@launch
             }
 
             withContext(Dispatchers.Default) {
-                Log.d(TAG, "processing data for page $page..")
                 list.map {
 
 //                    seriesIds.add(it.id)

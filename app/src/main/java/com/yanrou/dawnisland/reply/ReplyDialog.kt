@@ -60,7 +60,7 @@ class ReplyDialog : DialogFragment() {
     init {
         autoTransition.duration = 150
         lifecycleScope.launchWhenCreated {
-            viewModel = ViewModelProvider(this@ReplyDialog.activity!!).get(ReplyViewModel::class.java)
+            viewModel = ViewModelProvider(this@ReplyDialog.requireActivity()).get(ReplyViewModel::class.java)
         }
     }
     /**
@@ -73,7 +73,7 @@ class ReplyDialog : DialogFragment() {
 
         setStyle(STYLE_NO_TITLE, R.style.BottomReplyDialog)
 
-        val bundle = arguments!!
+        val bundle = requireArguments()
 
         seriesId = bundle.getString("seriesId")
 
@@ -176,7 +176,7 @@ class ReplyDialog : DialogFragment() {
         }
         constraintLayout!!.isClickable = true
         getDialog()!!.window!!.decorView.setOnTouchListener { _, event ->
-            activity!!.dispatchTouchEvent(event)
+            requireActivity().dispatchTouchEvent(event)
             false
         }
         contentText!!.requestFocus()
@@ -201,7 +201,6 @@ class ReplyDialog : DialogFragment() {
 
         TransitionManager.beginDelayedTransition(constraintLayout!!, autoTransition)
         firstConstraintSet.clone(constraintLayout)
-        Log.d(TAG, "onGlobalLayout: $change")
         if (change < 0) {
             firstConstraintSet.setMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, -change)
             fullScreenConstraintSet.setMargin(R.id.choose_image_button, ConstraintSet.BOTTOM, -change)
@@ -219,7 +218,6 @@ class ReplyDialog : DialogFragment() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == 1) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onRequestPermissionsResult: " + grantResults.contentToString())
                 openAlbum()
             } else {
                 Toast.makeText(context, "You denied the permission", Toast.LENGTH_SHORT).show()
@@ -300,7 +298,7 @@ class ReplyDialog : DialogFragment() {
     private fun getImagePath(uri: Uri?, selection: String?): String? {
         var path: String? = null
         // 通过Uri和selection来获取真实的图片路径
-        val cursor = activity!!.contentResolver.query(uri!!, null, selection, null, null)
+        val cursor = requireActivity().contentResolver.query(uri!!, null, selection, null, null)
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
@@ -361,7 +359,7 @@ class ReplyDialog : DialogFragment() {
         val view: View = LayoutInflater.from(context).inflate(R.layout.switch_cookie_list, null)
         val list: ListViewAdaptWidth = view.findViewById(R.id.cookie_list)
         popup = PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        list.adapter = ArrayAdapter(context!!, R.layout.switch_cookie_in_popup, viewModel.getCookieNameList())
+        list.adapter = ArrayAdapter(requireContext(), R.layout.switch_cookie_in_popup, viewModel.getCookieNameList())
         list.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ -> viewModel.switchCookie(position) }
         list.emptyView = view.findViewById(android.R.id.empty);
         popup!!.elevation = 20f
@@ -376,6 +374,5 @@ class ReplyDialog : DialogFragment() {
                 Manifest.permission.READ_EXTERNAL_STORAGE)
         private const val CHOOSE_PHOTO = 2
         private const val REQUEST_EXTERNAL_STORAGE = 1
-        private const val TAG = "ReplyDialog"
     }
 }

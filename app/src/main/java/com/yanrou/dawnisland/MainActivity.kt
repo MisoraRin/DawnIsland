@@ -1,73 +1,42 @@
 package com.yanrou.dawnisland
 
 import android.app.Activity
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Point
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
 import androidx.customview.widget.ViewDragHelper
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import com.drakeet.multitype.MultiTypeAdapter
-import com.tencent.bugly.crashreport.CrashReport
 import com.yanrou.dawnisland.feed.FeedFragment
-import com.yanrou.dawnisland.forum.ForumDiffCallback
-import com.yanrou.dawnisland.forum.ForumGroupViewBinder
-import com.yanrou.dawnisland.forum.ForumItemViewBinder
 import com.yanrou.dawnisland.forum.ForumViewModel
-import com.yanrou.dawnisland.json2class.ForumJson
-import com.yanrou.dawnisland.json2class.ForumsBean
 import com.yanrou.dawnisland.serieslist.SeriesFragment
-import com.yanrou.dawnisland.settings.SettingsActivity
 import com.yanrou.dawnisland.trend.TrendFragment
 import com.yanrou.dawnisland.util.ReadableTime
-import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private var seriesFragment: SeriesFragment? = null
+    val forumViewModel by viewModels<ForumViewModel>()
     private var trendFragment: TrendFragment? = null
     private var feedFragment: FeedFragment? = null
     var forumName: String? = null
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_toolbar_menu, menu)
-        return true
-    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.setting -> {
-                val intent = Intent(this@MainActivity, SettingsActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.cookie_button -> {
-                val intent1 = Intent(this@MainActivity, CookiesManageActivity::class.java)
-                startActivity(intent1)
-            }
-            R.id.crash -> CrashReport.testJavaCrash()
-            else -> {
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.d(forumViewModel.toString())
 
-        val forumViewModel = ViewModelProvider(this).get(ForumViewModel::class.java)
         setContentView(R.layout.activity_main)
-//        open(true, this)
+
+        val ts = supportFragmentManager.beginTransaction()
+        val seriesFragment = supportFragmentManager.findFragmentByTag("series")
+        if (seriesFragment == null) {
+            ts.add(R.id.fragmentContainer, SeriesFragment.newInstance(), "series").commit()
+        }
+
 
         /**
          * 初始化
@@ -85,85 +54,7 @@ class MainActivity : AppCompatActivity() {
             //设置导航栏(NavigationBar)颜色透明
             //window.setNavigationBarColor(Color.TRANSPARENT);
         }
-        /**
-         * 设置抽屉滑动响应宽度
-         */
-        setDrawerLeftEdgeSize(this, drawer_layout, 1f)
-        /**
-         * 标题栏组件初始化
-         */
-        toolbar.apply {
-            setSupportActionBar(this)
-            setNavigationOnClickListener { drawer_layout!!.openDrawer(GravityCompat.START) }
-            setOnClickListener { seriesFragment!!.refresh() }
-        }
-        supportActionBar!!.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(R.drawable.toolbar_home_as_up)
-        }
 
-        val myViewPagerAdapter = MyViewPagerAdapter(supportFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
-        if (supportFragmentManager.fragments.size == 0) {
-            seriesFragment = SeriesFragment()
-            myViewPagerAdapter.addFragment(seriesFragment)
-            trendFragment = TrendFragment()
-            myViewPagerAdapter.addFragment(trendFragment)
-            feedFragment = FeedFragment()
-            myViewPagerAdapter.addFragment(feedFragment)
-        } else {
-            myViewPagerAdapter.addFragments(supportFragmentManager.fragments)
-            supportFragmentManager.fragments.apply {
-                this[0]?.let { seriesFragment = it as SeriesFragment }
-                this[1]?.let { trendFragment = it as TrendFragment }
-                //this[2]?.let { feedFragment = it as FeedFragment}
-            }
-
-        }
-        main_page_viewer.apply {
-            adapter = myViewPagerAdapter
-            addOnPageChangeListener(object : OnPageChangeListener {
-                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-                override fun onPageSelected(position: Int) {
-                    Timber.d("onPageSelected: $position")
-                    if (position == 0) {
-                        coolapsing_toolbar.title = forumName
-                    }
-                    if (position == 1) {
-                        appbar_layout.setExpanded(false)
-                        forumName = coolapsing_toolbar.title.toString()
-                        coolapsing_toolbar.title = "A岛热榜"
-                    }
-                }
-
-                override fun onPageScrollStateChanged(state: Int) {}
-            })
-        }
-
-        val forumAdapter = MultiTypeAdapter().apply {
-            register(ForumsBean::class.java, ForumItemViewBinder(this@MainActivity) { id: Int, name: String? ->
-                drawer_layout!!.closeDrawers()
-                coolapsing_toolbar.title = name
-                seriesFragment!!.changeForum(id)
-            })
-            register(ForumJson::class.java, ForumGroupViewBinder {
-                Timber.d("$it was clicked")
-                forumViewModel.refreshForumGroupExpandState(it)
-            })
-        }
-
-        forum_list.apply {
-            layoutManager = LinearLayoutManager(this.context)
-            adapter = forumAdapter
-            //addItemDecoration(PinnedHeaderItemDecoration())
-        }
-        forumViewModel.forumOnView.observe(this, androidx.lifecycle.Observer {
-            val oldList = forumAdapter.items
-            //创建一个新的表
-            val newList: List<Any> = ArrayList(it)
-            val diffResult = DiffUtil.calculateDiff(ForumDiffCallback(oldList, newList), false)
-            forumAdapter.items = newList
-            diffResult.dispatchUpdatesTo(forumAdapter)
-        })
         resourceInitialization()
     }
 
@@ -202,4 +93,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-//我裂开了我push不上去随便写点什么commit一下试试
