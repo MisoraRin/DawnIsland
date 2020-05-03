@@ -26,7 +26,7 @@ import com.yanrou.dawnisland.json2class.ForumJson
 import com.yanrou.dawnisland.json2class.ForumsBean
 import com.yanrou.dawnisland.settings.SettingsActivity
 import com.yanrou.dawnisland.util.DiffCallback
-import kotlinx.android.synthetic.main.fragment_series2.*
+import kotlinx.android.synthetic.main.fragment_series.*
 import timber.log.Timber
 
 
@@ -42,7 +42,7 @@ class SeriesFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_series2, container, false)
+        return inflater.inflate(R.layout.fragment_series, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
