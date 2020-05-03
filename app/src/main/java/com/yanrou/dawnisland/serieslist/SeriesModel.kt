@@ -1,6 +1,5 @@
 package com.yanrou.dawnisland.serieslist
 
-import com.yanrou.dawnisland.Fid2Name
 import com.yanrou.dawnisland.json2class.TimeLineJson
 import com.yanrou.dawnisland.util.ServiceClient
 import kotlinx.coroutines.Dispatchers
@@ -9,15 +8,10 @@ import java.io.IOException
 
 class SeriesModel {
 
-    private var fid2Name: Map<Int, String>? = null
+    var fid2Name: Map<Int, String>? = null
 
     // MIGHT NOT BE NEEDED
     private var fid: Int = -1
-
-    init {
-        fid2Name = Fid2Name.db
-    }
-
     /**
      * 当前所有串
      */

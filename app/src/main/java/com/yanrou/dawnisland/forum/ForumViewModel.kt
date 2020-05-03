@@ -41,7 +41,7 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
                         forumMap[forum.id] = forum.name
                     }
                 }
-                withContext(Dispatchers.Main) { Fid2Name.db = forumMap }
+                withContext(Dispatchers.Main) { Fid2Name.db.value = forumMap }
             }
             //等待map初始化完成
             initFidMap.join()
