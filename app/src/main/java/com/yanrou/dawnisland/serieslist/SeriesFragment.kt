@@ -172,6 +172,7 @@ class SeriesFragment : Fragment() {
     }
 
     private fun changeForum(fid: Int) {
+        viewModel.page = 1
         series_list_fragment!!.scrollToPosition(0)
         updateAdapter(emptyList())
         smartrefresh!!.finishRefresh()
