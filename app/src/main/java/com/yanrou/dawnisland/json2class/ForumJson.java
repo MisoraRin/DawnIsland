@@ -1,9 +1,12 @@
 package com.yanrou.dawnisland.json2class;
 
+import androidx.annotation.Keep;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+@Keep
 public class ForumJson {
     /**
      * id : 4
