@@ -1,27 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".trend.TrendFragment">
 
-    <!-- TODO: Update blank fragment trend_item -->
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/cotent_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
-        app:contentInsetStartWithNavigation="0dp"
-        app:subtitle="adnmb.com"
-        app:subtitleTextAppearance="@style/CollSubTitle"
-        app:subtitleTextColor="#D2FFFFFF"
-        app:title="昨日撕逼"
-        app:titleTextColor="#FFFFFF" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/trend_recycleview"
         android:layout_width="match_parent"

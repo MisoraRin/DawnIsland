@@ -43,7 +43,7 @@ public class ImageViewerView extends AppCompatActivity {
 
   // TODO: enable image collections(within same thread) view
   private void setupToolbar(String imgUrl) {
-    toolbar = findViewById(R.id.content_toolbar);
+      toolbar = findViewById(R.id.toolbar);
 
     setSupportActionBar(toolbar);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
