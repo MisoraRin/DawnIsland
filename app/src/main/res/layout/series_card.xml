@@ -16,7 +16,7 @@
         android:id="@+id/transformationLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:transformation_duration="550">
+        app:transformation_duration="300">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@id/SeriesListContraintLayout"

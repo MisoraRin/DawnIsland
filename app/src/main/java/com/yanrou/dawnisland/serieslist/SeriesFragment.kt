@@ -9,15 +9,16 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.drakeet.multitype.MultiTypeAdapter
-import com.skydoves.transformationlayout.addTransformation
+import com.skydoves.transformationlayout.TransformationCompat
 import com.skydoves.transformationlayout.onTransformationStartContainer
 import com.tencent.bugly.crashreport.CrashReport
 import com.yanrou.dawnisland.*
-import com.yanrou.dawnisland.content.SeriesContentFragment
+import com.yanrou.dawnisland.content.SeriesContentActivity
 import com.yanrou.dawnisland.settings.SettingsActivity
 import com.yanrou.dawnisland.util.DiffCallback
 import kotlinx.android.synthetic.main.fragment_series.*
 import timber.log.Timber
+
 
 private const val SERIES_ID = "series_id"
 private const val FORUM_NAME = "forum_name"
@@ -66,18 +67,22 @@ class SeriesFragment : Fragment() {
                         viewModel.getNextPage()
                     },
                     { seriesId, forumName, bundle, transformationLayout ->
-                        val fragment = SeriesContentFragment()
-                        fragment.arguments = Bundle().apply {
-                            putString(SERIES_ID, seriesId)
-                            putString(FORUM_NAME, forumName)
-                            putParcelable("TransformationParams", transformationLayout.getParcelableParams())
-                        }
-                        requireParentFragment().parentFragmentManager
-                                .beginTransaction()
-                                .addTransformation(transformationLayout)
-                                .replace(R.id.fragmentContainer, fragment, "series_content")
-                                .addToBackStack("series_content")
-                                .commit()
+//                        val fragment = SeriesContentFragment()
+//                        fragment.arguments = Bundle().apply {
+//                            putString(SERIES_ID, seriesId)
+//                            putString(FORUM_NAME, forumName)
+//                            putParcelable("TransformationParams", transformationLayout.getParcelableParams())
+//                        }
+//                        requireParentFragment().parentFragmentManager
+//                                .beginTransaction()
+//                                .addTransformation(transformationLayout)
+//                                .replace(R.id.fragmentContainer, fragment, "series_content")
+//                                .addToBackStack("series_content")
+//                                .commit()
+                        val intent = Intent(context, SeriesContentActivity::class.java)
+                        intent.putExtra("id", seriesId)
+                        intent.putExtra("forumTextView", forumName)
+                        TransformationCompat.startActivity(transformationLayout, intent)
                     }
             ))
             register(FooterView::class.java, FooterViewBinder())
