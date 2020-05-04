@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,9 +21,33 @@ class TrendFragment : Fragment() {
     var trendList: RecyclerView? = null
     var trendItems: List<TrendItem> = emptyList()
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            requireActivity().window.apply {
+                clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+                //设置布局能够延伸到状态栏(StatusBar)和导航栏(NavigationBar)里面
+                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                //设置状态栏(StatusBar)颜色透明
+                statusBarColor = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
+                //设置导航栏(NavigationBar)颜色透明
+                //window.setNavigationBarColor(Color.TRANSPARENT);
+            }
+        }
+    }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        requireActivity().window.apply {
+            clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+            //设置布局能够延伸到状态栏(StatusBar)和导航栏(NavigationBar)里面
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            //设置状态栏(StatusBar)颜色透明
+            statusBarColor = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
+            //设置导航栏(NavigationBar)颜色透明
+            //window.setNavigationBarColor(Color.TRANSPARENT);
+        }
         val layoutManager = LinearLayoutManager(trendList!!.context)
         trendList!!.layoutManager = layoutManager
         val trendAdapter = TrendAdapter(trendItems) { context, id, forum ->

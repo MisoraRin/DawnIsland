@@ -7,6 +7,7 @@ import androidx.room.Room;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.mmkv.MMKV;
 import com.yanrou.dawnisland.entities.DawnDatabase;
+import com.yanrou.dawnisland.util.ReadableTime;
 
 import timber.log.Timber;
 
@@ -16,6 +17,7 @@ import timber.log.Timber;
  */
 public class MyApplication extends Application {
     static private DawnDatabase dawnDatabase;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -23,15 +25,16 @@ public class MyApplication extends Application {
 //        Rabbit.INSTANCE.init(this, new RabbitConfig());
 
         dawnDatabase = Room.databaseBuilder(
-            getApplicationContext(), DawnDatabase.class, "dawnDB"
+                getApplicationContext(), DawnDatabase.class, "dawnDB"
         )
-            .fallbackToDestructiveMigration()
-            .build();
+                .fallbackToDestructiveMigration()
+                .build();
 
-      if (BuildConfig.DEBUG) {
-        Timber.plant(new Timber.DebugTree());
-      }
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
         MMKV.initialize(this);
+        ReadableTime.initialize(this);
     }
 
     static public DawnDatabase getDaoSession() {

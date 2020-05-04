@@ -2,6 +2,7 @@ package com.yanrou.dawnisland.serieslist
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Point
 import android.os.Bundle
 import android.view.*
@@ -37,7 +38,6 @@ class SeriesFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        Timber.d(forumViewModel.toString())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -45,9 +45,32 @@ class SeriesFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_series, container, false)
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            requireActivity().window.apply {
+                clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+                //设置布局能够延伸到状态栏(StatusBar)和导航栏(NavigationBar)里面
+                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                //设置状态栏(StatusBar)颜色透明
+                statusBarColor = Color.TRANSPARENT
+                //设置导航栏(NavigationBar)颜色透明
+                //window.setNavigationBarColor(Color.TRANSPARENT);
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Timber.d(viewModel.toString())
+        requireActivity().window.apply {
+            clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+            //设置布局能够延伸到状态栏(StatusBar)和导航栏(NavigationBar)里面
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            //设置状态栏(StatusBar)颜色透明
+            statusBarColor = Color.TRANSPARENT
+            //设置导航栏(NavigationBar)颜色透明
+            //window.setNavigationBarColor(Color.TRANSPARENT);
+        }
         /**
          * 设置抽屉滑动响应宽度
          */
