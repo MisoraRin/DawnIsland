@@ -1,10 +1,8 @@
 package com.yanrou.dawnisland.json2class;
 
-import androidx.annotation.Keep;
-
 import com.google.gson.annotations.SerializedName;
 
-@Keep
+
 public class ForumsBean {
     /**
      * id : -1
