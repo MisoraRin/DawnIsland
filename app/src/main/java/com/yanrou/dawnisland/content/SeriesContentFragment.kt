@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -41,14 +40,14 @@ class SeriesContentFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        smart_refresh.transitionName = seriesId
-        requireActivity().window.apply {
-            clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-            //设置布局能够延伸到状态栏(StatusBar)和导航栏(NavigationBar)里面
-            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            //设置状态栏(StatusBar)颜色透明
-            statusBarColor = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
+        toolbar.apply {
+            (requireActivity() as AppCompatActivity).setSupportActionBar(this)
         }
+
+        (requireActivity() as AppCompatActivity).supportActionBar!!.apply {
+            setDisplayHomeAsUpEnabled(true)
+        }
+        smart_refresh.transitionName = seriesId
 //        actionBar.setDisplayHomeAsUpEnabled(true)
         toolbar.title = "A岛 · $forumName"
         toolbar.subtitle = ">>No.$seriesId · adnmb.com"

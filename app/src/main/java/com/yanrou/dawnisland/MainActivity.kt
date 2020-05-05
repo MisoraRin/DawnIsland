@@ -1,14 +1,15 @@
 package com.yanrou.dawnisland
 
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
-
 import com.yanrou.dawnisland.forum.ForumViewModel
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
     val forumViewModel by viewModels<ForumViewModel>()
@@ -18,7 +19,10 @@ class MainActivity : AppCompatActivity() {
         window.apply {
             clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.colorPrimary)
+            val option: Int = decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            decorView.systemUiVisibility = option
+            statusBarColor = Color.TRANSPARENT
+//            statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.colorPrimary)
         }
         val mainFragment = supportFragmentManager.findFragmentByTag("main_fragment")
         if (mainFragment == null) {
