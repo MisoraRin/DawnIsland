@@ -15,7 +15,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.drakeet.multitype.MultiTypeAdapter
-import com.skydoves.transformationlayout.onTransformationStartContainer
 import com.yanrou.dawnisland.feed.FeedFragment
 import com.yanrou.dawnisland.forum.ForumDiffCallback
 import com.yanrou.dawnisland.forum.ForumGroupViewBinder
@@ -39,7 +38,6 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        onTransformationStartContainer()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

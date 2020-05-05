@@ -12,11 +12,6 @@
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp">
     <!--app:cardElevation="2dp"-->
-    <com.skydoves.transformationlayout.TransformationLayout
-        android:id="@+id/transformationLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:transformation_duration="300">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@id/SeriesListContraintLayout"
@@ -189,7 +184,6 @@
             android:textStyle="bold"
             android:visibility="invisible" />
 
-    </com.skydoves.transformationlayout.TransformationLayout>
 </com.google.android.material.card.MaterialCardView>
 
 

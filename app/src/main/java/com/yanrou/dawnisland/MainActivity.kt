@@ -6,14 +6,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
-import com.skydoves.transformationlayout.onTransformationStartContainer
+
 import com.yanrou.dawnisland.forum.ForumViewModel
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
     val forumViewModel by viewModels<ForumViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
-        onTransformationStartContainer()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         window.apply {

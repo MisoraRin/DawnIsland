@@ -10,6 +10,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -22,7 +23,6 @@ import com.drakeet.multitype.MultiTypeAdapter
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
-import com.skydoves.transformationlayout.TransformationAppCompatActivity
 import com.yanrou.dawnisland.R
 import com.yanrou.dawnisland.SeriesRecyclerOnScrollListener
 import com.yanrou.dawnisland.reply.ReplyDialog
@@ -33,7 +33,7 @@ import java.util.*
 /**
  * @author suche
  */
-class SeriesContentActivity : TransformationAppCompatActivity() {
+class SeriesContentActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var toolbar: Toolbar
     private lateinit var actionBar: ActionBar

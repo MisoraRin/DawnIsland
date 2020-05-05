@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.MultiTypeAdapter
-import com.skydoves.transformationlayout.TransformationLayout
-import com.skydoves.transformationlayout.onTransformationEndContainer
 import com.yanrou.dawnisland.R
 import com.yanrou.dawnisland.SeriesRecyclerOnScrollListener
 import kotlinx.android.synthetic.main.activity_series_content.*
@@ -34,8 +32,6 @@ class SeriesContentFragment : Fragment() {
             seriesId = it.getString(SERIES_ID)
             forumName = it.getString(FORUM_NAME)
         }
-        val params = arguments?.getParcelable<TransformationLayout.Params>("TransformationParams")
-        onTransformationEndContainer(params!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
