@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.transition.Fade
 import com.drakeet.multitype.MultiTypeAdapter
 import com.yanrou.dawnisland.feed.FeedFragment
 import com.yanrou.dawnisland.forum.ForumDiffCallback
@@ -32,16 +31,13 @@ class MainFragment : Fragment() {
     var forumAdapter: MultiTypeAdapter? = null
     private val forumViewModel by activityViewModels<ForumViewModel>()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        exitTransition = Fade()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         toolbar.apply {
             (requireActivity() as AppCompatActivity).setSupportActionBar(this)
             setNavigationOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
