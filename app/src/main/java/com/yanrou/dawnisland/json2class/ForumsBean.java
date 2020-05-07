@@ -2,6 +2,7 @@ package com.yanrou.dawnisland.json2class;
 
 import com.google.gson.annotations.SerializedName;
 
+
 public class ForumsBean {
     /**
      * id : -1
