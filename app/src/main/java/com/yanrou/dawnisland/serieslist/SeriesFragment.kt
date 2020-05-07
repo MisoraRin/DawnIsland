@@ -64,6 +64,7 @@ class SeriesFragment : Fragment() {
                         val fragment = SeriesContentFragment.newInstance(seriesId, forumName)
                         requireParentFragment().parentFragmentManager
                                 .beginTransaction()
+                                .setReorderingAllowed(true)
                                 .replace(R.id.fragmentContainer, fragment, "series_content")
                                 .addToBackStack("series_content")
                                 .commit()
@@ -71,8 +72,6 @@ class SeriesFragment : Fragment() {
             ))
             register(FooterView::class.java, FooterViewBinder())
         }
-
-
 
         series_list_fragment!!.adapter = seriesListAdapter
         viewModel.seriesCards.observe(viewLifecycleOwner, Observer {
