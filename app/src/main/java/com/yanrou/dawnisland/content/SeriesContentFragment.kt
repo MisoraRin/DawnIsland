@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Fade
 import com.drakeet.multitype.MultiTypeAdapter
 import com.yanrou.dawnisland.R
 import com.yanrou.dawnisland.SeriesRecyclerOnScrollListener
@@ -33,7 +32,6 @@ class SeriesContentFragment : Fragment() {
             forumName = it.getString(FORUM_NAME)
         }
         setHasOptionsMenu(true)
-        returnTransition = Fade()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

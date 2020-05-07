@@ -64,6 +64,7 @@ class SeriesFragment : Fragment() {
                         val fragment = SeriesContentFragment.newInstance(seriesId, forumName)
                         requireParentFragment().parentFragmentManager
                                 .beginTransaction()
+                                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                                 .setReorderingAllowed(true)
                                 .replace(R.id.fragmentContainer, fragment, "series_content")
                                 .addToBackStack("series_content")
