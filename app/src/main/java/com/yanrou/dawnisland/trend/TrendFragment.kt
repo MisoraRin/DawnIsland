@@ -28,6 +28,7 @@ class TrendFragment : Fragment() {
             val fragment = SeriesContentFragment.newInstance(seriesId, forumName)
             requireParentFragment().parentFragmentManager
                     .beginTransaction()
+                    .setReorderingAllowed(true)
                     .replace(R.id.fragmentContainer, fragment, "series_content")
                     .addToBackStack("series_content")
                     .commit()
