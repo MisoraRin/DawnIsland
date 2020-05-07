@@ -33,7 +33,7 @@ class SeriesContentFragment : Fragment() {
             forumName = it.getString(FORUM_NAME)
         }
         setHasOptionsMenu(true)
-        enterTransition=Fade()
+        returnTransition = Fade()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
