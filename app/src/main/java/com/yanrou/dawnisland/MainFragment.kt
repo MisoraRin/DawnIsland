@@ -8,9 +8,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Fade
+import com.drakeet.multitype.MultiTypeAdapter
 import com.yanrou.dawnisland.feed.FeedFragment
+import com.yanrou.dawnisland.forum.ForumDiffCallback
+import com.yanrou.dawnisland.forum.ForumGroupViewBinder
+import com.yanrou.dawnisland.forum.ForumItemViewBinder
 import com.yanrou.dawnisland.forum.ForumViewModel
+import com.yanrou.dawnisland.json2class.ForumJson
+import com.yanrou.dawnisland.json2class.ForumsBean
 import com.yanrou.dawnisland.serieslist.SeriesFragment
 import com.yanrou.dawnisland.trend.TrendFragment
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -20,6 +28,8 @@ class MainFragment : Fragment() {
     private val FEED_FRAGMENT_TAG = "feed"
     private val SERIES_FRAGMENT_TAG = "series"
     private val TREND_FRAGMENT_TAG = "trend"
+
+    var forumAdapter: MultiTypeAdapter? = null
     private val forumViewModel by activityViewModels<ForumViewModel>()
 
 
@@ -42,29 +52,29 @@ class MainFragment : Fragment() {
             setHomeAsUpIndicator(R.drawable.toolbar_home_as_up)
         }
 
-//        val forumAdapter = MultiTypeAdapter().apply {
-//            register(ForumsBean::class.java, ForumItemViewBinder(requireContext()) { id: Int, name: String? ->
-//                drawerLayout.closeDrawers()
-//                toolbar.title = name
-////                changeForum(id)
-//            })
-//            register(ForumJson::class.java, ForumGroupViewBinder {
-//                forumViewModel.refreshForumGroupExpandState(it)
-//            })
-//        }
+        forumAdapter = MultiTypeAdapter().apply {
+            register(ForumsBean::class.java, ForumItemViewBinder(requireContext()) { id: Int, name: String? ->
+                drawerLayout.closeDrawers()
+                toolbar.title = name
+//                changeForum(id)
+            })
+            register(ForumJson::class.java, ForumGroupViewBinder {
+                forumViewModel.refreshForumGroupExpandState(it)
+            })
+        }
 
-//        forum_list.apply {
-//            layoutManager = LinearLayoutManager(this.context)
-//            adapter = forumAdapter
-//        }
-//        forumViewModel.forumOnView.observe(requireActivity(), androidx.lifecycle.Observer {
-//            val oldList = forumAdapter.items
-//            //创建一个新的表
-//            val newList: List<Any> = ArrayList(it)
-//            val diffResult = DiffUtil.calculateDiff(ForumDiffCallback(oldList, newList), false)
-//            forumAdapter.items = newList
-//            diffResult.dispatchUpdatesTo(forumAdapter)
-//        })
+        forum_list.apply {
+            layoutManager = LinearLayoutManager(this.context)
+            adapter = forumAdapter
+        }
+        forumViewModel.forumOnView.observe(requireActivity(), androidx.lifecycle.Observer {
+            val oldList = forumAdapter!!.items
+            //创建一个新的表
+            val newList: List<Any> = ArrayList(it)
+            val diffResult = DiffUtil.calculateDiff(ForumDiffCallback(oldList, newList), false)
+            forumAdapter!!.items = newList
+            diffResult.dispatchUpdatesTo(forumAdapter!!)
+        })
 
         val ts = childFragmentManager.beginTransaction()
         val seriesFragment = childFragmentManager.findFragmentByTag("series")
@@ -94,6 +104,11 @@ class MainFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        forumAdapter = null
+    }
+
     private fun switchFragment(fragmentTag: String) {
         val transaction = childFragmentManager.beginTransaction()
         //先判断有没有添加进去
@@ -101,7 +116,7 @@ class MainFragment : Fragment() {
         if (childFragmentManager.findFragmentByTag(fragmentTag) == null) {
             Timber.d("未添加")
             if (currentFragment != null) {
-                transaction.hide(currentFragment!!)
+                transaction.hide(currentFragment)
             }
             val targetFragment =
                     when (fragmentTag) {
@@ -113,7 +128,7 @@ class MainFragment : Fragment() {
             transaction.add(R.id.listContainer, targetFragment, fragmentTag)
         } else {
             val targetFragment = childFragmentManager.findFragmentByTag(fragmentTag)!!
-            currentFragment?.let { transaction.hide(currentFragment!!) }
+            currentFragment?.let { transaction.hide(currentFragment) }
             transaction.show(targetFragment)
         }
         transaction.commit()
