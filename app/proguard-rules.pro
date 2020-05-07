@@ -107,3 +107,5 @@
 # xpopup的混淆规则
 -dontwarn com.lxj.xpopup.widget.**
 -keep class com.lxj.xpopup.widget.**{*;}
+
+-keep class com.yanrou.dawnisland.json2class.**{*;}

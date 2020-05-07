@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.Window
@@ -72,9 +71,7 @@ class SeriesContentActivity : AppCompatActivity() {
         actionBar.setDisplayHomeAsUpEnabled(true)
         val intent = intent
         id = intent.getStringExtra("id")
-        //TODO 这里应该传入fid，然后通过DB类获取到板块名称，而不是直接传入板块名称
         forumName = intent.getStringExtra("forumTextView")
-        Log.d(TAG, "onCreate: $id")
         toolbar.title = "A岛 · $forumName"
         toolbar.subtitle = ">>No.$id · adnmb.com"
         viewModel = ViewModelProvider(this).get(SeriesContentViewModel::class.java)
@@ -133,7 +130,7 @@ class SeriesContentActivity : AppCompatActivity() {
 
     private fun initView() {
         recyclerView = findViewById(R.id.series_content_recycleview)
-        toolbar = findViewById(R.id.cotent_toolbar)
+        toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         actionBar = this.supportActionBar!!
         smartRefreshLayout = findViewById(R.id.smart_refresh)
@@ -189,8 +186,5 @@ class SeriesContentActivity : AppCompatActivity() {
         clipboard.setPrimaryClip(ClipData.newPlainText(null, content)) //参数一：标签，可为空，参数二：要复制到剪贴板的文本
     }
 
-    companion object {
-        private const val TAG = "SeriesContentActivity"
-    }
 
 }

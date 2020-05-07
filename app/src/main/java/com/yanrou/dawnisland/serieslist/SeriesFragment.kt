@@ -73,8 +73,6 @@ class SeriesFragment : Fragment() {
             register(FooterView::class.java, FooterViewBinder())
         }
 
-
-
         series_list_fragment!!.adapter = seriesListAdapter
         viewModel.seriesCards.observe(viewLifecycleOwner, Observer {
             updateAdapter(it)
