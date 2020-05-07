@@ -8,12 +8,9 @@
     android:tag="close egg"
     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-    <TextView
-        android:background="@android:color/transparent"
-        android:gravity="center"
-        android:layout_height="77dp"
+    <com.scwang.smartrefresh.layout.header.ClassicsHeader
         android:layout_width="match_parent"
-        android:text="看看我会不会变成Header" />
+        android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:background="#F8F8F9"
@@ -22,11 +19,9 @@
         android:layout_width="match_parent"
         android:overScrollMode="never" />
 
-    <TextView
-        android:gravity="center"
-        android:layout_height="77dp"
+    <com.scwang.smartrefresh.layout.footer.ClassicsFooter
         android:layout_width="match_parent"
-        android:text="看看我会不会变成footer" />
+        android:layout_height="wrap_content" />
 
 </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
