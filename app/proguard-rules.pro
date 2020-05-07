@@ -40,7 +40,6 @@
 }
 
 
--keep class *.*.widget.** {*;}
 
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}

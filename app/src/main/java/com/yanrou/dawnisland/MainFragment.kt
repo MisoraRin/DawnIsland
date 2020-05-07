@@ -1,31 +1,16 @@
 package com.yanrou.dawnisland
 
-import android.app.Activity
-import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.customview.widget.ViewDragHelper
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Fade
-import com.drakeet.multitype.MultiTypeAdapter
 import com.yanrou.dawnisland.feed.FeedFragment
-import com.yanrou.dawnisland.forum.ForumDiffCallback
-import com.yanrou.dawnisland.forum.ForumGroupViewBinder
-import com.yanrou.dawnisland.forum.ForumItemViewBinder
 import com.yanrou.dawnisland.forum.ForumViewModel
-import com.yanrou.dawnisland.json2class.ForumJson
-import com.yanrou.dawnisland.json2class.ForumsBean
 import com.yanrou.dawnisland.serieslist.SeriesFragment
 import com.yanrou.dawnisland.trend.TrendFragment
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -41,12 +26,11 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        exitTransition=Fade()
+        exitTransition = Fade()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        setDrawerLeftEdgeSize(requireActivity(), drawerLayout)
 
         toolbar.apply {
             (requireActivity() as AppCompatActivity).setSupportActionBar(this)
@@ -113,7 +97,7 @@ class MainFragment : Fragment() {
     private fun switchFragment(fragmentTag: String) {
         val transaction = childFragmentManager.beginTransaction()
         //先判断有没有添加进去
-        val currentFragment = childFragmentManager.fragments.last{ !it.isHidden }
+        val currentFragment = childFragmentManager.fragments.last { !it.isHidden }
         if (childFragmentManager.findFragmentByTag(fragmentTag) == null) {
             Timber.d("未添加")
             if (currentFragment != null) {
@@ -134,30 +118,6 @@ class MainFragment : Fragment() {
         }
         transaction.commit()
         childFragmentManager.executePendingTransactions()
-    }
-
-    private fun setDrawerLeftEdgeSize(activity: Activity, drawerLayout: DrawerLayout) {
-        // 找到 ViewDragHelper 并设置 Accessible 为true
-        //Right
-        val leftDraggerField = drawerLayout.javaClass.getDeclaredField("mLeftDragger")
-        leftDraggerField.isAccessible = true
-        val leftDragger = leftDraggerField[drawerLayout] as ViewDragHelper
-
-        // 找到 edgeSizeField 并设置 Accessible 为true
-        val edgeSizeField = leftDragger.javaClass.getDeclaredField("mEdgeSize")
-        edgeSizeField.isAccessible = true
-        val edgeSize = edgeSizeField.getInt(leftDragger)
-
-        // 设置新的边缘大小
-        val displaySize = Point()
-        activity.windowManager.defaultDisplay.getSize(displaySize)
-        edgeSizeField.setInt(leftDragger, edgeSize.coerceAtLeast((displaySize.x)))
-        val leftCallbackField = drawerLayout.javaClass.getDeclaredField("mLeftCallback")
-        leftCallbackField.isAccessible = true
-        val leftCallback = leftCallbackField[drawerLayout] as ViewDragHelper.Callback
-        val peekRunnableField = leftCallback.javaClass.getDeclaredField("mPeekRunnable")
-        peekRunnableField.isAccessible = true
-        peekRunnableField[leftCallback] = Runnable {}
     }
 
     companion object {
