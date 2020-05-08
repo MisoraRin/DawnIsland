@@ -48,7 +48,7 @@ class SeriesContentFragment : Fragment() {
         (requireActivity() as AppCompatActivity).supportActionBar!!.apply {
             setDisplayHomeAsUpEnabled(true)
         }
-        smart_refresh.transitionName = seriesId
+        refresher.transitionName = seriesId
 //        actionBar.setDisplayHomeAsUpEnabled(true)
         toolbar.title = "A岛 · $forumName"
         toolbar.subtitle = ">>No.$seriesId · adnmb.com"
@@ -71,12 +71,12 @@ class SeriesContentFragment : Fragment() {
             }
         })
         series_content_recycleview.adapter = multiTypeAdapter
-        smart_refresh.setEnableAutoLoadMore(false)
-        smart_refresh.setOnRefreshListener {
+        refresher.setEnableAutoLoadMore(false)
+        refresher.setOnRefreshListener {
             viewModel.loadPreviousPage(layoutManager.findLastVisibleItemPosition())
         }
 
-        smart_refresh.setOnLoadMoreListener { viewModel.loadMore(layoutManager.findLastVisibleItemPosition()) }
+        refresher.setOnLoadMoreListener { viewModel.loadMore(layoutManager.findLastVisibleItemPosition()) }
         viewModel.listLiveData.observe(viewLifecycleOwner, Observer { contentItems ->
             val oldList = multiTypeAdapter.items
             //创建一个新的表
@@ -85,8 +85,8 @@ class SeriesContentFragment : Fragment() {
             multiTypeAdapter.items = newList
 
             diffResult.dispatchUpdatesTo(multiTypeAdapter)
-            smart_refresh.finishRefresh()
-            smart_refresh.finishLoadMore()
+            refresher.finishRefresh()
+            refresher.finishLoadMore()
 
 
         })

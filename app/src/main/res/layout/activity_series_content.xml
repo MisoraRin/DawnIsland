@@ -24,7 +24,7 @@
         app:titleTextColor="#FFFFFF" />
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        android:id="@+id/smart_refresh"
+        android:id="@+id/refresher"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:tag="close egg">

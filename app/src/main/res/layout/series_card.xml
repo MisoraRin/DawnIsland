@@ -11,7 +11,6 @@
     app:cardBackgroundColor="#FFFFFF"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp">
-    <!--app:cardElevation="2dp"-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@id/SeriesListContraintLayout"
@@ -44,10 +43,6 @@
                 android:id="@id/SeriesListForum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingTop="2dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="2dp"
                 android:text="欢乐恶搞"
                 android:textColor="#FCFCFC"
                 android:textSize="12sp"

@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yanrou.dawnisland.R
 import com.yanrou.dawnisland.content.SeriesContentFragment
-import kotlinx.android.synthetic.main.fragment_trand.*
+import kotlinx.android.synthetic.main.fragment_series.*
 
 class TrendFragment : Fragment() {
     private val viewModel by viewModels<TrendViewModel>()
@@ -18,8 +18,8 @@ class TrendFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val layoutManager = LinearLayoutManager(trend_recycleview!!.context)
-        trend_recycleview!!.layoutManager = layoutManager
+        val layoutManager = LinearLayoutManager(recyclerview!!.context)
+        recyclerview!!.layoutManager = layoutManager
         val trendAdapter = TrendAdapter(emptyList()) { context, seriesId, forumName ->
             val fragment = SeriesContentFragment.newInstance(seriesId, forumName)
             requireParentFragment().parentFragmentManager
@@ -30,7 +30,7 @@ class TrendFragment : Fragment() {
                     .addToBackStack("series_content")
                     .commit()
         }
-        trend_recycleview!!.adapter = trendAdapter
+        recyclerview!!.adapter = trendAdapter
         viewModel.listLiveData.observe(viewLifecycleOwner, Observer {
             trendAdapter.trendItems = it
             trendAdapter.notifyDataSetChanged()
@@ -39,6 +39,6 @@ class TrendFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_trand, container, false)
+        return inflater.inflate(R.layout.fragment_series, container, false)
     }
 }
