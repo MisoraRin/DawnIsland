@@ -8,5 +8,5 @@
     <item name="SeriesListContent" type="id" />
     <item name="SeriesListImageView2" type="id" />
     <item name="SeriesListReply_count" type="id" />
-    <item name="s" type="id" />
+    <item name="refresher" type="id" />
 </resources>

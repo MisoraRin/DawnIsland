@@ -15,13 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.drakeet.multitype.MultiTypeAdapter
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
-import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.yanrou.dawnisland.R
 import com.yanrou.dawnisland.content.SeriesContentActivity
 import com.yanrou.dawnisland.json2class.FeedJson
 import com.yanrou.dawnisland.serieslist.CardViewFactory
 import com.yanrou.dawnisland.util.DiffCallback
-import timber.log.Timber
 
 class FeedFragment : Fragment() {
     private var mViewModel: FeedViewModel? = null
@@ -31,9 +29,9 @@ class FeedFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.feed_fragment, container, false)
-        recyclerView = rootView.findViewById(R.id.feed_recycler_view)
-        val refreshLayout:SmartRefreshLayout = rootView.findViewById(R.id.smart_refresh)
+        val rootView = inflater.inflate(R.layout.fragment_series, container, false)
+        recyclerView = rootView.findViewById(R.id.recyclerview)
+        val refreshLayout: SmartRefreshLayout = rootView.findViewById(R.id.refresher)
 
         mViewModel = ViewModelProvider(this).get(FeedViewModel::class.java)
         multiTypeAdapter = MultiTypeAdapter()

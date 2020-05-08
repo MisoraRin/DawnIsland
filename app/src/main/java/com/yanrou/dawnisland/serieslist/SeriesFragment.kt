@@ -39,19 +39,19 @@ class SeriesFragment : Fragment() {
             Timber.d(it.toString())
             viewModel.getFirstPage()
         })
-        smartrefresh!!.setEnableAutoLoadMore(false)
+        refresher!!.setEnableAutoLoadMore(false)
 
-        smartrefresh!!.setOnLoadMoreListener {
-            smartrefresh!!.finishLoadMore(0)
+        refresher!!.setOnLoadMoreListener {
+            refresher!!.finishLoadMore(0)
         }
-        smartrefresh!!.setOnRefreshListener {
+        refresher!!.setOnRefreshListener {
             refresh()
         }
         /**
          * 这里是添加layoutManager
          */
         val layoutManager = LinearLayoutManager(activity)
-        series_list_fragment!!.layoutManager = layoutManager
+        recyclerview!!.layoutManager = layoutManager
         /**
          * 添加adapter
          */
@@ -74,10 +74,10 @@ class SeriesFragment : Fragment() {
             register(FooterView::class.java, FooterViewBinder())
         }
 
-        series_list_fragment!!.adapter = seriesListAdapter
+        recyclerview!!.adapter = seriesListAdapter
         viewModel.seriesCards.observe(viewLifecycleOwner, Observer {
             updateAdapter(it)
-            smartrefresh!!.closeHeaderOrFooter()
+            refresher!!.closeHeaderOrFooter()
         })
     }
 
@@ -112,17 +112,17 @@ class SeriesFragment : Fragment() {
 
     private fun changeForum(fid: Int) {
         viewModel.page = 1
-        series_list_fragment!!.scrollToPosition(0)
+        recyclerview!!.scrollToPosition(0)
         updateAdapter(emptyList())
-        smartrefresh!!.finishRefresh()
-        smartrefresh!!.autoRefreshAnimationOnly()
+        refresher!!.finishRefresh()
+        refresher!!.autoRefreshAnimationOnly()
         viewModel.changeForum(fid)
     }
 
     private fun refresh() {
         viewModel.page = 1
-        series_list_fragment!!.scrollToPosition(0)
-        smartrefresh!!.autoRefreshAnimationOnly()
+        recyclerview!!.scrollToPosition(0)
+        refresher!!.autoRefreshAnimationOnly()
         viewModel.refresh()
     }
 

@@ -133,7 +133,7 @@ class SeriesContentActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         actionBar = this.supportActionBar!!
-        smartRefreshLayout = findViewById(R.id.smart_refresh)
+        smartRefreshLayout = findViewById(R.id.refresher)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
