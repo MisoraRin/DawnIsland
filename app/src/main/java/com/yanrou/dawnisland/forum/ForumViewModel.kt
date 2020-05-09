@@ -43,10 +43,6 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
                 }
                 withContext(Dispatchers.Main) { Fid2Name.db.value = forumMap }
             }
-            //等待map初始化完成
-            initFidMap.join()
-            //可以开始取数据了,更改这个livedata的值就好，默认是时间线
-            switchedForum.value = -1
         }
 
     }
