@@ -5,16 +5,12 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
-import com.yanrou.dawnisland.forum.ForumViewModel
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        //尽早初始化板块map
-        ViewModelProvider(this).get(ForumViewModel::class.java)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         window.apply {

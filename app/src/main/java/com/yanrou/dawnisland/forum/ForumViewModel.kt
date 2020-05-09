@@ -26,7 +26,7 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun getForumList() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             forumList = getForumListRaw()
             groupState = List(forumList.size) { GroupInfo(-1, true) }
             //下面两个任务异步进行，一个是用来生成fid到forum的映射，另一个用来显示分组
