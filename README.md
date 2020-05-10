@@ -87,6 +87,10 @@ https://www.notion.so/A-dfca6a884cb0426c9ff616af1791f4c8#02a99723257446d79c2b1b9
 https://github.com/wenhelinlu/spark/wiki/RecyclerView%E9%AB%98%E7%BA%A7%E5%B8%83%E5%B1%80%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E7%95%8C%E9%9D%A2%E6%81%A2%E5%A4%8D%E9%98%85%E8%AF%BB%E4%BD%8D%E7%BD%AE%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%8F%8A%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9
 精准进度恢复（还没做）基于此实现
 
+### 侧栏滑动
+https://blog.csdn.net/weixin_36222137/article/details/53411029
+
+我们曾经使用过这个方案，用来处理侧栏滑动
 # 贡献代码
 如果你有意**长期**维护项目，可以直接通过rourou.miao@foxmail.com、issue来联系我，我可以将你邀请进来。
 
