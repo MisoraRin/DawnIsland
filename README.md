@@ -8,23 +8,41 @@ yanrou、aliaseasy 、suchen、ss（未完全，待补）
 看到设计稿好看就做了
 # 开源库
 本项目使用了以下依赖（链接以后慢慢写）
+
 okhttp
+
 gson
+
 legacy
+
 glide
+
 jsoup
+
 multitype
+
 photoview
+
 bugly
+
 SmartRefreshLayout
+
 retrofit
+
 xpopup
+
 recyclerview-animators
+
 mmkv-static
+
 utilcodex
+
 DslTablayout
+
 ShadowLayout
+
 transformationlayout
+
 # 技术指导
 除了上面直接使用到的库，一些其他的开源代码、文章同样给与了不少帮助
 @aliaseasy98 开发者之一，虽然感谢开发者有点奇怪，但是说真的，没有他这个项目不会有现在那么好，我们一起整理了架构、探讨了各种问题的解决方案。
