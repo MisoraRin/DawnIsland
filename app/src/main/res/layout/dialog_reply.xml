@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/reply_dialog_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/inputLayout" />
+
+    <LinearLayout
+        android:id="@+id/inputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/feifei_info_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/state_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/post_title_reply_state"
+                app:layout_constraintBottom_toTopOf="@+id/edit_content"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/series_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/example_series_id" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/full_screen"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="@string/full_screen_button"
+                android:tint="#ABABAB"
+                app:srcCompat="@drawable/ic_full_screen" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/edit_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:autofillHints=""
+            android:background="#FAFAFA"
+            android:ems="10"
+            android:gravity="clip_horizontal"
+            android:hint="@string/input_text_hint"
+            android:inputType="none"
+            android:maxLines="10"
+            android:minLines="4"
+            android:padding="4dp"
+            android:textSize="15sp" />
+
+
+        <TextView
+            android:id="@+id/cookie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/example_cookie"
+            app:layout_constraintBottom_toBottomOf="@+id/state_text_view"
+            app:layout_constraintEnd_toStartOf="@+id/full_screen" />
+
+        <ImageView
+            android:id="@+id/will_send_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/preview_image_content_description"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/background_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/choose_image_button"
+            app:srcCompat="@mipmap/ic_launcher" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/feifei_info_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/tabLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:id="@+id/spart_line_1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/spartLineInReplyDialog"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/email_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:autofillHints=""
+            android:background="@null"
+            android:ems="10"
+            android:hint="@string/email_text_view_hint"
+            android:inputType="textPersonName"
+            android:textSize="15sp"
+            android:visibility="visible"
+            tools:ignore="TextFields" />
+
+        <View
+            android:id="@+id/spart_line_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/spartLineInReplyDialog"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/title_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:autofillHints=""
+            android:background="@null"
+            android:ems="10"
+            android:hint="@string/title_text_view_hint"
+            android:inputType="textPersonName"
+            android:textSize="15sp"
+            android:visibility="visible" />
+
+        <View
+            android:id="@+id/spart_line_3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/spartLineInReplyDialog"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/name_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:autofillHints=""
+            android:background="@null"
+            android:ems="10"
+            android:hint="@string/name_text_view_hint"
+            android:inputType="textPersonName"
+            android:textSize="15sp"
+            android:visibility="visible" />
+
+        <View
+            android:id="@+id/spart_line_4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/spartLineInReplyDialog"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+    <com.angcyo.tablayout.DslTabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:tab_item_is_equ_width="true">
+
+
+        <ImageView
+            android:id="@+id/expand_more_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/expand_user_info_input"
+            app:srcCompat="@drawable/ic_unfold_more" />
+
+        <ImageView
+            android:id="@+id/open_emoji_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/colorPrimary"
+            app:srcCompat="@drawable/bi_10" />
+
+        <ImageView
+            android:id="@+id/choose_image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/choose_image_buttom"
+            android:src="@drawable/choose_image" />
+
+        <ImageView
+            android:id="@+id/doodle_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/open_doodle"
+            android:src="@drawable/brush_icon" />
+
+        <ImageView
+            android:id="@+id/send_reply"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/send_reply_button"
+            android:src="@drawable/send_icon" />
+
+    </com.angcyo.tablayout.DslTabLayout>
+
+    <FrameLayout
+        android:id="@+id/expand_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/emoji_keyboard"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

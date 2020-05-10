@@ -45,6 +45,23 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="post_title_reply_state"><![CDATA[回复 > No.]]></string>
+    <string name="full_screen_button">full_screen_button</string>
+    <string name="expand_user_info_input">expand_user_info_input</string>
+    <string name="choose_image_buttom">choose_image_buttom</string>
+    <string name="input_text_hint">在这里输入文字</string>
+    <string name="open_doodle">open_doodle</string>
+    <string name="example_series_id">14332233</string>
+    <string name="send_reply_button">send_reply_button</string>
+    <string name="name_text_view_hint">名称</string>
+    <string name="title_text_view_hint">标题</string>
+    <string name="email_text_view_hint">邮箱</string>
+    <string name="preview_image_content_description">this is a preview of image which will be sent</string>
+    <string name="example_cookie">Wdnmd12</string>
+    <string name="need_read_storage_permission">我莫得权限QAQ</string>
+    <string name="need_write_storage_permission">我莫得权限QAQ</string>
+    <string name="need_take_picture_permission">我莫得拍照权限QAQ</string>
+    <string name="post_title_new_thread_state">发布新串</string>
 
 
 </resources>
