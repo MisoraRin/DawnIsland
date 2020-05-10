@@ -52,7 +52,7 @@ class MainFragment : Fragment() {
             register(ForumsBean::class.java, ForumItemViewBinder(requireContext()) { id: Int, name: String? ->
                 drawerLayout.closeDrawers()
                 toolbar.title = name
-//                changeForum(id)
+                (childFragmentManager.findFragmentByTag("series") as SeriesFragment).changeForum(id)
             })
             register(ForumJson::class.java, ForumGroupViewBinder {
                 forumViewModel.refreshForumGroupExpandState(it)
