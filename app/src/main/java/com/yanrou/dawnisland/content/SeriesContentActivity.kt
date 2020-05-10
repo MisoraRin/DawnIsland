@@ -25,6 +25,8 @@ import com.lxj.xpopup.interfaces.SimpleCallback
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.yanrou.dawnisland.R
 import com.yanrou.dawnisland.SeriesRecyclerOnScrollListener
+import com.yanrou.dawnisland.constant.TYPE_KEY
+import com.yanrou.dawnisland.constant.TYPE_REPLY
 import com.yanrou.dawnisland.reply.ReplyDialog
 import timber.log.Timber
 import java.util.*
@@ -165,6 +167,7 @@ class SeriesContentActivity : AppCompatActivity() {
                 val replyDialog = ReplyDialog()
                 val bundle = Bundle()
                 bundle.putString("seriesId", id)
+                bundle.putInt(TYPE_KEY, TYPE_REPLY)
                 replyDialog.arguments = bundle
                 val ft = supportFragmentManager.beginTransaction()
                 if (supportFragmentManager.findFragmentByTag("reply") == null) {
@@ -181,7 +184,7 @@ class SeriesContentActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun copyToClipboard(context: Context, content: CharSequence?) {
+    private fun copyToClipboard(context: Context, content: CharSequence?) {
         val clipboard: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboard.setPrimaryClip(ClipData.newPlainText(null, content)) //参数一：标签，可为空，参数二：要复制到剪贴板的文本
     }
