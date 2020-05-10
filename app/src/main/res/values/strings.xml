@@ -58,6 +58,10 @@
     <string name="email_text_view_hint">邮箱</string>
     <string name="preview_image_content_description">this is a preview of image which will be sent</string>
     <string name="example_cookie">Wdnmd12</string>
+    <string name="need_read_storage_permission">我莫得权限QAQ</string>
+    <string name="need_write_storage_permission">我莫得权限QAQ</string>
+    <string name="need_take_picture_permission">我莫得拍照权限QAQ</string>
+    <string name="post_title_new_thread_state">发布新串</string>
 
 
 </resources>
