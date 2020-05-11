@@ -1,5 +1,6 @@
 package com.yanrou.dawnisland.trend
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yanrou.dawnisland.R
-import com.yanrou.dawnisland.content.SeriesContentFragment
+import com.yanrou.dawnisland.content.SeriesContentActivity
 import kotlinx.android.synthetic.main.fragment_series.*
 
 class TrendFragment : Fragment() {
@@ -21,14 +22,18 @@ class TrendFragment : Fragment() {
         val layoutManager = LinearLayoutManager(recyclerview!!.context)
         recyclerview!!.layoutManager = layoutManager
         val trendAdapter = TrendAdapter(emptyList()) { context, seriesId, forumName ->
-            val fragment = SeriesContentFragment.newInstance(seriesId, forumName)
-            requireParentFragment().parentFragmentManager
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragmentContainer, fragment, "series_content")
-                    .addToBackStack("series_content")
-                    .commit()
+//            val fragment = SeriesContentFragment.newInstance(seriesId, forumName)
+//            requireParentFragment().parentFragmentManager
+//                    .beginTransaction()
+//                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+//                    .setReorderingAllowed(true)
+//                    .replace(R.id.fragmentContainer, fragment, "series_content")
+//                    .addToBackStack("series_content")
+//                    .commit()
+            val intent = Intent(requireContext(), SeriesContentActivity::class.java)
+            intent.putExtra("id", seriesId)
+            intent.putExtra("forumTextView", forumName)
+            startActivity(intent)
         }
         recyclerview!!.adapter = trendAdapter
         viewModel.listLiveData.observe(viewLifecycleOwner, Observer {
