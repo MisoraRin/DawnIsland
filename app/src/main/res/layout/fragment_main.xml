@@ -45,7 +45,7 @@
             app:tab_select_color="@color/colorPrimary">
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/thread"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
@@ -53,7 +53,7 @@
                 android:tint="#626262" />
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/trend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
@@ -61,7 +61,7 @@
                 android:tint="#626262" />
 
             <ImageView
-                android:id="@+id/imageView4"
+                android:id="@+id/feed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
