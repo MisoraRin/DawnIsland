@@ -37,10 +37,8 @@ class MainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewLifecycleOwner
         super.onViewCreated(view, savedInstanceState)
         toolbar.apply {
-
             (requireActivity() as AppCompatActivity).setSupportActionBar(this)
             setNavigationOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
         }
