@@ -2,42 +2,54 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:id="@+id/drawerLayout"
     tools:context=".MainFragment">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:fitsSystemWindows="true"
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
-            app:contentInsetStartWithNavigation="0dp"
-            app:subtitle="adnmb.com"
-            app:subtitleTextAppearance="@style/CollSubTitle"
-            app:subtitleTextColor="#D2FFFFFF"
-            app:title="时间线"
-            app:titleTextColor="#FFFFFF" />
+            android:layout_height="match_parent">
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/listContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:fitsSystemWindows="true"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
+                app:contentInsetStartWithNavigation="0dp"
+                app:subtitle="adnmb.com"
+                app:subtitleTextAppearance="@style/CollSubTitle"
+                app:subtitleTextColor="#D2FFFFFF"
+                app:title="时间线"
+                app:titleTextColor="#FFFFFF" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/listContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/toolbar"
+                android:layout_marginTop="0dp" />
+
+        </RelativeLayout>
 
         <com.angcyo.tablayout.DslTabLayout
             android:id="@+id/dslTabLayout"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:background="#F2FFFFFF"
+            app:layout_anchor="@+id/relativeLayout"
+            app:layout_anchorGravity="bottom|center"
+            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:tab_badge_ignore_child_padding="false"
             app:tab_draw_indicator="true"
@@ -69,7 +81,7 @@
                 android:tint="#626262" />
 
         </com.angcyo.tablayout.DslTabLayout>
-    </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -82,9 +94,9 @@
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:clickable="true"
+            android:focusable="true"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/drawerhead"
-            android:focusable="true" />
+            app:srcCompat="@drawable/drawerhead" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/forum_list"
