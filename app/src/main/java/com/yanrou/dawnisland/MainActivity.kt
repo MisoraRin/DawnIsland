@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
             val option: Int = decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             decorView.systemUiVisibility = option
             statusBarColor = Color.TRANSPARENT
-//            statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.colorPrimary)
         }
         val mainFragment = supportFragmentManager.findFragmentByTag("main_fragment")
         if (mainFragment == null) {
