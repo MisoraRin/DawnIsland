@@ -3,6 +3,7 @@ package com.yanrou.dawnisland.serieslist
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -61,15 +62,6 @@ class SeriesFragment : Fragment() {
                         viewModel.getNextPage()
                     },
                     { seriesId, forumName ->
-//                        val fragment = SeriesContentFragment.newInstance(seriesId, forumName)
-//                        requireParentFragment().parentFragmentManager
-//                                .beginTransaction()
-//                                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-//                                .setReorderingAllowed(true)
-//                                .replace(R.id.fragmentContainer, fragment, "series_content")
-//                                .addToBackStack("series_content")
-//                                .commit()
-
                         val intent = Intent(context, SeriesContentActivity::class.java)
                         intent.putExtra("id", seriesId)
                         intent.putExtra("forumTextView", forumName)
@@ -84,6 +76,11 @@ class SeriesFragment : Fragment() {
             updateAdapter(it)
             refresher!!.closeHeaderOrFooter()
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Fid2Name.db.value?.get(viewModel.fid)?.let { (requireActivity() as AppCompatActivity).supportActionBar?.title = it }
     }
 
     override fun onDestroyView() {
