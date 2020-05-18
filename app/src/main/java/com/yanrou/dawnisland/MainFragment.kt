@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.angcyo.tablayout.delegate.ViewPager1Delegate
 import com.drakeet.multitype.MultiTypeAdapter
-import com.yanrou.dawnisland.feed.FeedFragment
 import com.yanrou.dawnisland.forum.ForumDiffCallback
 import com.yanrou.dawnisland.forum.ForumGroupViewBinder
 import com.yanrou.dawnisland.forum.ForumItemViewBinder
@@ -19,16 +20,11 @@ import com.yanrou.dawnisland.forum.ForumViewModel
 import com.yanrou.dawnisland.json2class.ForumJson
 import com.yanrou.dawnisland.json2class.ForumsBean
 import com.yanrou.dawnisland.serieslist.SeriesFragment
-import com.yanrou.dawnisland.trend.TrendFragment
 import kotlinx.android.synthetic.main.fragment_main.*
-import timber.log.Timber
 
 class MainFragment : Fragment() {
-    private val FEED_FRAGMENT_TAG = "feed"
-    private val SERIES_FRAGMENT_TAG = "series"
-    private val TREND_FRAGMENT_TAG = "trend"
 
-    var forumAdapter: MultiTypeAdapter? = null
+    private var forumAdapter: MultiTypeAdapter? = null
     private val forumViewModel by activityViewModels<ForumViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +48,7 @@ class MainFragment : Fragment() {
             register(ForumsBean::class.java, ForumItemViewBinder(requireContext()) { id: Int, name: String? ->
                 drawerLayout.closeDrawers()
                 toolbar.title = name
-                (childFragmentManager.findFragmentByTag("series") as SeriesFragment).changeForum(id)
+                (childFragmentManager.findFragmentByTag(makeFragmentName(R.id.viewPager, 0)) as SeriesFragment).changeForum(id)
             })
             register(ForumJson::class.java, ForumGroupViewBinder {
                 forumViewModel.refreshForumGroupExpandState(it)
@@ -72,32 +68,15 @@ class MainFragment : Fragment() {
             diffResult.dispatchUpdatesTo(forumAdapter!!)
         })
 
-        val ts = childFragmentManager.beginTransaction()
-        val seriesFragment = childFragmentManager.findFragmentByTag("series")
-        if (seriesFragment == null) {
-            SeriesFragment.newInstance().apply {
-                ts.add(R.id.listContainer, this, "series").commit()
-            }
-        }
+        viewPager.adapter = MyViewPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
+        viewPager.drawerListener = { drawerLayout.openDrawer(GravityCompat.START) }
+
         dslTabLayout.configTabLayoutConfig {
-            onGetIcoStyleView = { itemView: View, index: Int ->
+            onGetIcoStyleView = { itemView, _ ->
                 itemView
             }
         }
-        dslTabLayout.configTabLayoutConfig {
-            onSelectItemView =
-                    { _, index, selected, _ ->
-                        Timber.d("$index is selected")
-                        if (selected) {
-                            when (index) {
-                                0 -> switchFragment(SERIES_FRAGMENT_TAG)
-                                1 -> switchFragment(TREND_FRAGMENT_TAG)
-                                2 -> switchFragment(FEED_FRAGMENT_TAG)
-                            }
-                        }
-                        false
-                    }
-        }
+        ViewPager1Delegate.install(viewPager, dslTabLayout)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -110,31 +89,8 @@ class MainFragment : Fragment() {
         forumAdapter = null
     }
 
-    private fun switchFragment(fragmentTag: String) {
-        val transaction = childFragmentManager.beginTransaction()
-        //先判断有没有添加进去
-        val currentFragment = childFragmentManager.fragments.last { !it.isHidden }
-        if (childFragmentManager.findFragmentByTag(fragmentTag) == null) {
-            Timber.d("未添加")
-            if (currentFragment != null) {
-                transaction.hide(currentFragment)
-            }
-            val targetFragment =
-                    when (fragmentTag) {
-                        SERIES_FRAGMENT_TAG -> SeriesFragment.newInstance()
-                        FEED_FRAGMENT_TAG -> FeedFragment()
-                        TREND_FRAGMENT_TAG -> TrendFragment()
-                        else -> throw Exception("没有这个标签")
-                    }
-            transaction.add(R.id.listContainer, targetFragment, fragmentTag)
-        } else {
-            val targetFragment = childFragmentManager.findFragmentByTag(fragmentTag)!!
-            currentFragment?.let { transaction.hide(currentFragment) }
-            transaction.show(targetFragment)
-        }
-        transaction.commit()
-        childFragmentManager.executePendingTransactions()
-    }
+
+    private fun makeFragmentName(viewId: Int, id: Long) = "android:switcher:$viewId:$id"
 
     companion object {
         @JvmStatic

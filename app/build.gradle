@@ -126,6 +126,7 @@ dependencies {
 //    implementation "com.github.skydoves:transformationlayout:1.0.4"
 
     implementation 'com.github.angcyo.DslTablayout:TabLayout:1.5.3'
+    implementation 'com.github.angcyo.DslTablayout:ViewPager1Delegate:1.5.3'
 
     implementation 'com.github.lihangleo2:ShadowLayout:2.1.8'
 

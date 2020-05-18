@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -22,14 +23,6 @@ class TrendFragment : Fragment() {
         val layoutManager = LinearLayoutManager(recyclerview!!.context)
         recyclerview!!.layoutManager = layoutManager
         val trendAdapter = TrendAdapter(emptyList()) { context, seriesId, forumName ->
-//            val fragment = SeriesContentFragment.newInstance(seriesId, forumName)
-//            requireParentFragment().parentFragmentManager
-//                    .beginTransaction()
-//                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-//                    .setReorderingAllowed(true)
-//                    .replace(R.id.fragmentContainer, fragment, "series_content")
-//                    .addToBackStack("series_content")
-//                    .commit()
             val intent = Intent(requireContext(), SeriesContentActivity::class.java)
             intent.putExtra("id", seriesId)
             intent.putExtra("forumTextView", forumName)
@@ -42,6 +35,10 @@ class TrendFragment : Fragment() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = "昨日争吵"
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_series, container, false)
