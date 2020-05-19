@@ -5,13 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.drakeet.multitype.ItemViewBinder
 import com.yanrou.dawnisland.R
 import timber.log.Timber
 
-class SeriesCardViewBinder(val loadMore: () -> Unit, val jumpToContent: (seriesId: String, forumName: String) -> Unit) : ItemViewBinder<SeriesCardView, SeriesCardViewBinder.ViewHolder>() {
+class SeriesCardViewBinder(val loadMore: () -> Unit, private val jumpToContent: (seriesId: String, forumName: String) -> Unit) : ItemViewBinder<SeriesCardView, SeriesCardViewBinder.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, item: SeriesCardView) {
         holder.id = item.id
         holder.forumName = item.forum
@@ -36,36 +37,28 @@ class SeriesCardViewBinder(val loadMore: () -> Unit, val jumpToContent: (seriesI
     }
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
+        val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(parent.context)
+        val letterSpace = defaultSharedPreferences.getInt(CardViewFactory.LETTER_SPACE, 0) * 1.0f / 50
+        val mainTextSize = defaultSharedPreferences.getInt(CardViewFactory.MAIN_TEXT_SIZE, 15)
         val view = inflater.inflate(R.layout.series_card, parent, false)
-        return ViewHolder(view, jumpToContent)
+        return ViewHolder(view, jumpToContent).apply {
+            content.letterSpacing = letterSpace
+            content.textSize = mainTextSize.toFloat()
+        }
     }
 
     class ViewHolder(itemView: View, jumpToContent: (seriesId: String, forumName: String) -> Unit) : RecyclerView.ViewHolder(itemView) {
         var id: String = ""
         var forumName: String = ""
-        var cookie: TextView
-        var content: TextView
-        var time: TextView
-        var forumTextView: TextView
-        var sage: TextView
-        var replycount: TextView
-        var image: ImageView
+        var cookie: TextView = itemView.findViewById(R.id.SeriesListCookie)
+        var content: TextView = itemView.findViewById(R.id.SeriesListContent)
+        var time: TextView = itemView.findViewById(R.id.SeriesListTime)
+        var forumTextView: TextView = itemView.findViewById(R.id.SeriesListForum)
+        var sage: TextView = itemView.findViewById(R.id.sage)
+        var image: ImageView = itemView.findViewById(R.id.SeriesListImageView2)
 
         init {
-            cookie = itemView.findViewById(R.id.SeriesListCookie)
-            content = itemView.findViewById(R.id.SeriesListContent)
-            time = itemView.findViewById(R.id.SeriesListTime)
-            forumTextView = itemView.findViewById(R.id.SeriesListForum)
-            image = itemView.findViewById(R.id.SeriesListImageView2)
-            sage = itemView.findViewById(R.id.sage)
-            replycount = itemView.findViewById(R.id.reply_count)
-            itemView.setOnClickListener {
-                jumpToContent(id, forumName)
-//                val intent = Intent(it.context, SeriesContentActivity::class.java)
-//                intent.putExtra("id", id)
-//                intent.putExtra("forumTextView", forumName)
-//                it.context.startActivity(intent)
-            }
+            itemView.setOnClickListener { jumpToContent(id, forumName) }
         }
     }
 }
