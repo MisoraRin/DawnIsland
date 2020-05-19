@@ -11,8 +11,10 @@ import android.text.style.StyleSpan
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
-import com.yanrou.dawnisland.content.ContentItem
+import com.yanrou.dawnisland.Reference
 import com.yanrou.dawnisland.span.SegmentSpacingSpan
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
 
 
 fun transformForumName(forumName: String): Spanned {
@@ -23,22 +25,22 @@ fun transformForumName(forumName: String): Spanned {
     }
 }
 
-fun transformCookie(userid: String, admin: Int, isPo: ((po: String) -> Boolean)): SpannableStringBuilder {
+fun transformCookie(userId: String, admin: Int, isPo: ((po: String) -> Boolean)): SpannableStringBuilder {
     /*
       处理饼干
       PO需要加粗
       普通饼干是灰色，po是黑色，红名是红色
      */
-    val cookie = SpannableStringBuilder(userid)
+    val cookie = SpannableStringBuilder(userId)
     if (admin == 1) {
         val adminColor = ForegroundColorSpan(Color.parseColor("#FF0F0F"))
         cookie.setSpan(adminColor, 0, cookie.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
         // TODO: support multiple po
-    } else if (isPo(userid)) {
+    } else if (isPo(userId)) {
         val poColor = ForegroundColorSpan(Color.parseColor("#000000"))
         cookie.setSpan(poColor, 0, cookie.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
     }
-    if (isPo(userid)) {
+    if (isPo(userId)) {
         val styleSpanBold = StyleSpan(Typeface.BOLD)
         cookie.setSpan(styleSpanBold, 0, cookie.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
     }
@@ -76,21 +78,14 @@ fun extractQuote(content: String): List<String> {
 
 }
 
-fun addLineHeightAndSegGap(contentItem: ContentItem, lineHeight: Int, segGap: Int) {
-    if (contentItem.content.toString().contains("\n\n")) {
-        contentItem.content.setSpan(SegmentSpacingSpan(lineHeight, lineHeight), 0, contentItem.content.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+fun SpannableStringBuilder.addLineHeightAndSegGap(lineHeight: Int, segGap: Int) {
+    if (this.toString().contains("\n\n")) {
+        this.setSpan(SegmentSpacingSpan(lineHeight, lineHeight), 0, this.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
     } else {
-        contentItem.content.setSpan(SegmentSpacingSpan(lineHeight, segGap), 0, contentItem.content.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        this.setSpan(SegmentSpacingSpan(lineHeight, segGap), 0, this.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
     }
 }
 
-fun removeQuote(content: String): String {
-    /** api response
-    <font color=\"#789922\">&gt;&gt;No.23527403</font>
-     */
-    val regex = """<font color="#789922">.*</font>(<br ?/?>)?""".toRegex()
-    return regex.replace(content, "")
-}
 
 fun transformContent(content: String): SpannableStringBuilder {
 
@@ -99,12 +94,10 @@ fun transformContent(content: String): SpannableStringBuilder {
     } else {
         SpannableStringBuilder(Html.fromHtml(content))
     }
-
     return transformHideContent(nonHide)
-
 }
 
-fun transformHideContent(content:SpannableStringBuilder): SpannableStringBuilder{
+fun transformHideContent(content: SpannableStringBuilder): SpannableStringBuilder {
     var index = -1
     var hideStart: Int
     var hideEnd: Int
@@ -140,4 +133,54 @@ fun transformHideContent(content:SpannableStringBuilder): SpannableStringBuilder
         hideEnd = content.indexOf("[/h]", index)
     }
     return content
+}
+
+/**
+ * 用来获取引用内容
+ * 引用内容分为串内引用和串外引用，这个是用来获取串外引用的跳转原帖链接的
+ *
+ * @param html
+ * @return
+ */
+private fun decodeReference(html: String): Reference {
+    val reference = Reference()
+    val doc = Jsoup.parse(html)
+    val elements: List<Element> = doc.allElements
+    for (element in elements) {
+        val className = element.className()
+        if ("h-threads-item-reply h-threads-item-ref" == className) {
+            reference.id = element.attr("data-threads-id")
+        } else if ("h-threads-img-a" == className) {
+            reference.image = element.attr("href")
+        } else if ("h-threads-img" == className) {
+            reference.thumb = element.attr("src")
+        } else if ("h-threads-info-title" == className) {
+            reference.title = element.text()
+        } else if ("h-threads-info-email" == className) { // TODO email or user ?
+            reference.user = element.text()
+        } else if ("h-threads-info-createdat" == className) {
+            reference.time = element.text()
+        } else if ("h-threads-info-uid" == className) {
+            val user = element.text()
+            if (user.startsWith("ID:")) {
+                reference.userId = user.substring(3)
+            } else {
+                reference.userId = user
+            }
+            reference.admin = element.childNodeSize() > 1
+        } else if ("h-threads-info-id" == className) {
+            val href = element.attr("href")
+            if (href.startsWith("/t/")) {
+                val index = href.indexOf('?')
+                if (index >= 0) {
+                    reference.postId = href.substring(3, index)
+                } else {
+                    reference.postId = href.substring(3)
+                }
+            }
+        } else if ("h-threads-content" == className) {
+            reference.content = element.html()
+        }
+    }
+    return reference
 }
