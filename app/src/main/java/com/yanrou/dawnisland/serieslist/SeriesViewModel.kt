@@ -13,7 +13,7 @@ import com.yanrou.dawnisland.Fid2Name
 import com.yanrou.dawnisland.json2class.TimeLineJson
 import com.yanrou.dawnisland.span.RoundBackgroundColorSpan
 import com.yanrou.dawnisland.util.extractQuote
-import com.yanrou.dawnisland.util.removeQuote
+
 import com.yanrou.dawnisland.util.transformContent
 import com.yanrou.dawnisland.util.transformTime
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +33,7 @@ class SeriesViewModel : ViewModel() {
         COMPLETE,
         FAIL
     }
+
     private val _loadingState = MutableLiveData(LoadingState.COMPLETE)
     val loadingState get() = _loadingState
 
@@ -42,6 +43,7 @@ class SeriesViewModel : ViewModel() {
     init {
 //            getNextPage()
     }
+
     /**
      * 当前所有串的view
      */
@@ -99,10 +101,7 @@ class SeriesViewModel : ViewModel() {
                     // TODO: add quotes
                     val quotes = extractQuote(it.content)
 
-                    val noQuotesContent = removeQuote(it.content)
-
-                    // will also hide [h]
-                    seriesCardView.content = transformContent(noQuotesContent)
+                    seriesCardView.content = transformContent(it.content)
 
                     val cookie = SpannableString(it.userid)
                     if (it.admin == 1) {
