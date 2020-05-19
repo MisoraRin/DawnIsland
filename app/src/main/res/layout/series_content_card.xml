@@ -43,17 +43,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-      android:id="@+id/SeriesListContent"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="6dp"
-      android:text="测试测试测试"
-      android:textColor="@color/mainContentTextColor"
-      android:textIsSelectable="false"
-      android:textSize="16sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/seriesQuotes" />
+        android:id="@+id/SeriesListContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="测试测试测试"
+        android:textColor="@color/mainContentTextColor"
+        android:textIsSelectable="false"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier" />
 
     <TextView
         android:id="@+id/SeriesListTime"
@@ -81,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-      app:constraint_referenced_ids="SeriesListCookie,sega,titleAndName"
+        app:constraint_referenced_ids="SeriesListCookie,sega,titleAndName"
         tools:layout_editor_absoluteX="5dp"
         tools:layout_editor_absoluteY="731dp" />
 
@@ -94,15 +94,6 @@
         android:textSize="13sp"
         app:layout_constraintEnd_toStartOf="@+id/number"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-      android:id="@+id/seriesQuotes"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="6dp"
-      android:orientation="vertical"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/barrier" />
 
     <ImageView
       android:id="@+id/seriesContentImageView"
@@ -117,11 +108,14 @@
     <View
         android:id="@+id/view2"
         android:layout_width="match_parent"
-        android:layout_height="1.2px"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="12dp"
         android:background="#E0E0E0"
-      app:layout_constraintTop_toBottomOf="@+id/seriesContentImageView"
-        tools:layout_editor_absoluteX="12dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seriesContentImageView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
