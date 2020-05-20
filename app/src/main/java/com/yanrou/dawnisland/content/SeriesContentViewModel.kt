@@ -1,10 +1,7 @@
 package com.yanrou.dawnisland.content
 
 
-import android.annotation.SuppressLint
 import android.app.Application
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -12,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.yanrou.dawnisland.json2class.ReplysBean
 import com.yanrou.dawnisland.serieslist.CardViewFactory
-import com.yanrou.dawnisland.span.ReferenceClickableSpan
 import com.yanrou.dawnisland.util.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +28,7 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
     lateinit var seriesId: String
     private var loading = false
     var onlyPoLiveData = MutableLiveData(false)
-    lateinit var referenceHandler: (id: String) -> Unit
+    lateinit var referenceHandler: ReferenceHandler
 
     /**
      * 在这里返回总页数
@@ -155,58 +151,46 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
     /**
      * 用于处理Reply数据以显示到view层
      */
-    @SuppressLint("BinaryOperationInTimber")
     private fun formatContent(replysBeans: List<ReplysBean>): List<ContentItem> {
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
         val lineHeight = sharedPreferences.getInt(CardViewFactory.LINE_HEIGHT, 0)
         val segGap = sharedPreferences.getInt(CardViewFactory.SEG_GAP, 0)
 
-        val contentItems = ArrayList<ContentItem>(20)
+        return replysBeans.map {
+            ContentItem().apply {
 
-        for (temp in replysBeans) {
-            val contentItem = ContentItem()
+                time = transformTime(it.now)
 
-            contentItem.time = transformTime(temp.now)
+                cookie = transformCookie(it.userid, it.admin, model::isPo)
 
-            contentItem.cookie = transformCookie(temp.userid, temp.admin, model::isPo)
-
-            contentItem.content = transformContent(temp.content).apply {
-                addLineHeightAndSegGap(lineHeight, segGap)
-                val spans = getSpans(0, length, ForegroundColorSpan::class.java)
-                for (span in spans) {
-                    Timber.d("引用颜色" + span.foregroundColor + "内容" + this.subSequence(this.getSpanStart(span), this.getSpanEnd(span)))
-                    if (this.subSequence(this.getSpanStart(span), this.getSpanEnd(span)).contains(">>No.")) {
-                        setSpan(ReferenceClickableSpan(subSequence(this.getSpanStart(span), this.getSpanEnd(span)).substring(5), referenceHandler), getSpanStart(span), getSpanEnd(span), Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                    }
+                content = transformContent(it.content).apply {
+                    addLineHeightAndSegGap(lineHeight, segGap)
+                    addQuoteSpan(referenceHandler)
                 }
+
+                sega = if (it.sage == 1) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+
+                seriesId = it.seriesId
+
+                if (it.ext != null && "" != it.ext) {
+                    hasImage = true
+                    imgurl = it.img + it.ext
+                } else {
+                    hasImage = false
+                }
+
+                val titleAndName = transformTitleAndName(it.title, it.name)
+                hasTitleOrName = titleAndName != ""
+                this.titleAndName = titleAndName
             }
-
-            contentItem.sega = if (temp.sage == 1) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
-
-            contentItem.seriesId = temp.seriesId
-
-            if (temp.ext != null && "" != temp.ext) {
-                contentItem.hasImage = true
-                contentItem.imgurl = temp.img + temp.ext
-            } else {
-                contentItem.hasImage = false
-            }
-
-            val titleAndName = transformTitleAndName(temp.title, temp.name)
-            if (titleAndName != "") {
-                contentItem.hasTitleOrName = true
-            }
-
-            contentItem.titleAndName = titleAndName
-            contentItems.add(contentItem)
         }
-        return contentItems
     }
+
 
     fun addFeed(subscriptionId: String, tid: String) {
         viewModelScope.launch(Dispatchers.IO) {

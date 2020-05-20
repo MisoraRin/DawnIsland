@@ -12,10 +12,12 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import com.yanrou.dawnisland.Reference
+import com.yanrou.dawnisland.span.ReferenceClickableSpan
 import com.yanrou.dawnisland.span.SegmentSpacingSpan
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
+typealias ReferenceHandler = (id: String) -> Unit
 
 fun transformForumName(forumName: String): Spanned {
     return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
@@ -133,6 +135,19 @@ fun transformHideContent(content: SpannableStringBuilder): SpannableStringBuilde
         hideEnd = content.indexOf("[/h]", index)
     }
     return content
+}
+
+fun SpannableStringBuilder.addQuoteSpan(referenceHandler: ReferenceHandler) {
+    val spans = getSpans(0, length, ForegroundColorSpan::class.java).filter {
+        it.foregroundColor == Color.parseColor("#789922") && it.getText(this).contains(">>No.")
+    }
+    for (span in spans) {
+        setSpan(ReferenceClickableSpan(span.getText(this).substring(5), referenceHandler), getSpanStart(span), getSpanEnd(span), Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+    }
+}
+
+private fun ForegroundColorSpan.getText(string: SpannableStringBuilder): CharSequence {
+    return string.subSequence(string.getSpanStart(this), string.getSpanEnd(this))
 }
 
 /**

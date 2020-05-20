@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.drakeet.multitype.MultiTypeAdapter
-import com.tencent.bugly.crashreport.CrashReport
 import com.yanrou.dawnisland.*
 import com.yanrou.dawnisland.content.SeriesContentActivity
 import com.yanrou.dawnisland.settings.SettingsActivity
@@ -27,8 +26,10 @@ class SeriesFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?,
+    ): View? {
         return inflater.inflate(R.layout.fragment_series, container, false)
     }
 
@@ -57,17 +58,12 @@ class SeriesFragment : Fragment() {
          * 添加adapter
          */
         seriesListAdapter = MultiTypeAdapter().apply {
-            register(SeriesCardView::class.java, SeriesCardViewBinder(
-                    {
-                        viewModel.getNextPage()
-                    },
-                    { seriesId, forumName ->
-                        val intent = Intent(context, SeriesContentActivity::class.java)
-                        intent.putExtra("id", seriesId)
-                        intent.putExtra("forumTextView", forumName)
-                        startActivity(intent)
-                    }
-            ))
+            register(SeriesCardView::class.java, SeriesCardViewBinder(viewModel::getNextPage) { seriesId, forumName ->
+                val intent = Intent(context, SeriesContentActivity::class.java)
+                intent.putExtra("id", seriesId)
+                intent.putExtra("forumTextView", forumName)
+                startActivity(intent)
+            })
             register(FooterView::class.java, FooterViewBinder())
         }
 
@@ -104,7 +100,6 @@ class SeriesFragment : Fragment() {
                 val intent1 = Intent(requireContext(), CookiesManageActivity::class.java)
                 startActivity(intent1)
             }
-            R.id.crash -> CrashReport.testJavaCrash()
             else -> {
             }
         }
@@ -133,11 +128,4 @@ class SeriesFragment : Fragment() {
         seriesListAdapter!!.items = newList.toList()
         diffResult.dispatchUpdatesTo(seriesListAdapter!!)
     }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = SeriesFragment()
-    }
-
-
 }
