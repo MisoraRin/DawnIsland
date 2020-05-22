@@ -157,7 +157,11 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
         val lineHeight = sharedPreferences.getInt(CardViewFactory.LINE_HEIGHT, 0)
         val segGap = sharedPreferences.getInt(CardViewFactory.SEG_GAP, 0)
 
-        return replysBeans.map {
+        return replysBeans.map(convertToContentItem(lineHeight, segGap))
+    }
+
+    private fun convertToContentItem(lineHeight: Int, segGap: Int): (ReplysBean) -> ContentItem {
+        return {
             ContentItem().apply {
 
                 time = transformTime(it.now)
