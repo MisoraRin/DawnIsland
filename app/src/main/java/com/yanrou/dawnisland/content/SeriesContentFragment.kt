@@ -54,13 +54,13 @@ class SeriesContentFragment : Fragment() {
         toolbar.subtitle = ">>No.$seriesId · adnmb.com"
         viewModel.seriesId = seriesId!!
         val multiTypeAdapter = MultiTypeAdapter()
-        multiTypeAdapter.register(ContentItem::class.java, ContentViewBinder(requireActivity()))
+        multiTypeAdapter.register(ContentItem::class.java, ContentViewBinder())
         val layoutManager = LinearLayoutManager(series_content_recycleview.context)
         series_content_recycleview.layoutManager = layoutManager
         //用于刷新的监听器
         series_content_recycleview.addOnScrollListener(object : SeriesRecyclerOnScrollListener() {
             override fun onLoadMore() {
-                viewModel.loadMore(layoutManager.findLastVisibleItemPosition())
+                viewModel.loadMore()
             }
         })
         //用于报告页数的监听器
@@ -76,7 +76,7 @@ class SeriesContentFragment : Fragment() {
             viewModel.loadPreviousPage(layoutManager.findLastVisibleItemPosition())
         }
 
-        refresher.setOnLoadMoreListener { viewModel.loadMore(layoutManager.findLastVisibleItemPosition()) }
+        refresher.setOnLoadMoreListener { viewModel.loadMore() }
         viewModel.listLiveData.observe(viewLifecycleOwner, Observer { contentItems ->
             val oldList = multiTypeAdapter.items
             //创建一个新的表

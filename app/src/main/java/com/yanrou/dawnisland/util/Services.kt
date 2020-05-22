@@ -8,19 +8,19 @@ import retrofit2.http.*
 
 interface SeriesContentService {
     @GET("Api/thread")
-    fun getSeriesContent(@Query("id") id: String?, @Query("page") page: Int): Call<ResponseBody>?
+    fun getSeriesContent(@Query("id") id: String, @Query("page") page: Int): Call<ResponseBody>
 
     @GET("Api/showf")
-    fun getSeriesList(@Query("id") id: Int?, @Query("page") page: Int): Call<ResponseBody>?
+    fun getSeriesList(@Query("id") id: Int, @Query("page") page: Int): Call<ResponseBody>
 
     @GET("Api/timeline")
     fun getTimelineList(@Query("page") page: Int): Call<ResponseBody>?
 
     @POST("Home/Forum/doReplyThread.html")
-    fun sendReply(@Body body: RequestBody, @Header("Cookie") cookie: String): Call<ResponseBody>?
+    fun sendReply(@Body body: RequestBody, @Header("Cookie") cookie: String): Call<ResponseBody>
 
     @GET("Api/ref")
-    fun getQuote(@Query("id") id: String): Call<ResponseBody>?
+    fun getQuote(@Query("id") id: String): Call<ResponseBody>
 
     @GET("Api/feed")
     fun getNMBFeeds(@Query("uuid") fid: String, @Query("page") page: Int): Call<ResponseBody>

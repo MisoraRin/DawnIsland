@@ -2,11 +2,8 @@ package com.yanrou.dawnisland.content
 
 import android.app.Activity
 import android.content.Intent
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.preference.PreferenceManager
@@ -80,26 +77,26 @@ class QuotePopup(private val caller: Activity) : CenterPopupView(caller) {
 
         }
 
-        findViewById<LinearLayout>(R.id.seriesQuotes).let { linearLayout ->
-            val quotes = contentItem.quotes
-            if (quotes.isNotEmpty()) {
-                linearLayout.removeAllViews()
-                val quotePopup = QuotePopup(caller)
-                quotes.map { id ->
-                    val q = LayoutInflater.from(caller)
-                            .inflate(R.layout.quote_list_item, linearLayout as ViewGroup, false)
-                    q.findViewById<TextView>(R.id.quoteId).text = "No. $id"
-                    q.setOnClickListener {
-                        // TODO: get Po based on Thread
-                        quotePopup.showQuote(id, po)
-                    }
-                    linearLayout.addView(q)
-                }
-                linearLayout.visibility = View.VISIBLE
-            } else {
-                linearLayout.visibility = View.GONE
-            }
-        }
+//        findViewById<LinearLayout>(R.id.seriesQuotes).let { linearLayout ->
+//            val quotes = contentItem.quotes
+//            if (quotes.isNotEmpty()) {
+//                linearLayout.removeAllViews()
+//                val quotePopup = QuotePopup(caller)
+//                quotes.map { id ->
+//                    val q = LayoutInflater.from(caller)
+//                            .inflate(R.layout.quote_list_item, linearLayout as ViewGroup, false)
+//                    q.findViewById<TextView>(R.id.quoteId).text = "No. $id"
+//                    q.setOnClickListener {
+//                        // TODO: get Po based on Thread
+//                        quotePopup.showQuote(id, po)
+//                    }
+//                    linearLayout.addView(q)
+//                }
+//                linearLayout.visibility = View.VISIBLE
+//            } else {
+//                linearLayout.visibility = View.GONE
+//            }
+//        }
 
         findViewById<TextView>(R.id.SeriesListContent).setText(contentItem.content, TextView.BufferType.SPANNABLE)
 
@@ -174,16 +171,16 @@ class QuotePopup(private val caller: Activity) : CenterPopupView(caller) {
         contentItem.quotes = quotes
 
 
-        val noQuotesContent = removeQuote(replyBean.content)
+//        val noQuotesContent = removeQuote(replyBean.content)
 
         // will also hide [h]
-        contentItem.content = transformContent(noQuotesContent)
+        contentItem.content = transformContent(replyBean.content)
 
         // 添加段间距和行间距，由于需要读取设置所以先放到这里
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(caller.application)
         val lineHeight = sharedPreferences.getInt(CardViewFactory.LINE_HEIGHT, 0)
         val segGap = sharedPreferences.getInt(CardViewFactory.SEG_GAP, 0)
-        addLineHeightAndSegGap(contentItem, lineHeight, segGap)
+//        addLineHeightAndSegGap(contentItem, lineHeight, segGap)
 
         if (replyBean.sage == 1) {
             contentItem.sega = View.VISIBLE

@@ -49,7 +49,7 @@ class SeriesContentActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.series_content_menu, menu)
         val onlyPoSwitch = menu.findItem(R.id.only_po_switch)
-        viewModel.OnlyPoLiveData.observe(this, Observer { t ->
+        viewModel.onlyPoLiveData.observe(this, Observer { t ->
             if (t) {
                 onlyPoSwitch.title = "查看所有"
             } else {
@@ -77,15 +77,18 @@ class SeriesContentActivity : AppCompatActivity() {
         toolbar.title = "A岛 · $forumName"
         toolbar.subtitle = ">>No.$id · adnmb.com"
         viewModel = ViewModelProvider(this).get(SeriesContentViewModel::class.java)
+        viewModel.referenceHandler = {
+            QuotePopup(this).showQuote(it, "")
+        }
         viewModel.seriesId = id.toString()
         multiTypeAdapter = MultiTypeAdapter()
-        multiTypeAdapter!!.register(ContentItem::class.java, ContentViewBinder(this@SeriesContentActivity))
+        multiTypeAdapter!!.register(ContentItem::class.java, ContentViewBinder())
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
         //用于刷新的监听器
         recyclerView.addOnScrollListener(object : SeriesRecyclerOnScrollListener() {
             override fun onLoadMore() {
-                viewModel.loadMore(layoutManager.findLastVisibleItemPosition())
+                viewModel.loadMore()
             }
         })
         //用于报告页数的监听器
@@ -101,7 +104,7 @@ class SeriesContentActivity : AppCompatActivity() {
             viewModel.loadPreviousPage(layoutManager.findLastVisibleItemPosition())
         }
 
-        smartRefreshLayout.setOnLoadMoreListener { viewModel.loadMore(layoutManager.findLastVisibleItemPosition()) }
+        smartRefreshLayout.setOnLoadMoreListener { viewModel.loadMore() }
         viewModel.listLiveData.observe(this, Observer { contentItems ->
             val oldList = multiTypeAdapter!!.items
             //创建一个新的表
@@ -120,14 +123,10 @@ class SeriesContentActivity : AppCompatActivity() {
     }
 
     @Suppress("unused")
-    private fun makeStatusBarTran(window: Window) { //这一步要做，因为如果这两个flag没有清除的话下面没有生效
+    private fun makeStatusBarTran(window: Window) {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-        //设置布局能够延伸到状态栏(StatusBar)和导航栏(NavigationBar)里面
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        //设置状态栏(StatusBar)颜色透明
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimary)
-        //设置导航栏(NavigationBar)颜色透明
-//window.setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
     }
 
     private fun initView() {
