@@ -101,7 +101,7 @@ class SeriesContentActivity : AppCompatActivity() {
         recyclerView.adapter = multiTypeAdapter
         smartRefreshLayout.setEnableAutoLoadMore(false)
         smartRefreshLayout.setOnRefreshListener {
-            viewModel.loadPreviousPage(layoutManager.findLastVisibleItemPosition())
+            viewModel.loadPreviousPage()
         }
 
         smartRefreshLayout.setOnLoadMoreListener { viewModel.loadMore() }

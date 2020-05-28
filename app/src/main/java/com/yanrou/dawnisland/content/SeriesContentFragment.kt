@@ -73,7 +73,7 @@ class SeriesContentFragment : Fragment() {
         series_content_recycleview.adapter = multiTypeAdapter
         refresher.setEnableAutoLoadMore(false)
         refresher.setOnRefreshListener {
-            viewModel.loadPreviousPage(layoutManager.findLastVisibleItemPosition())
+            viewModel.loadPreviousPage()
         }
 
         refresher.setOnLoadMoreListener { viewModel.loadMore() }

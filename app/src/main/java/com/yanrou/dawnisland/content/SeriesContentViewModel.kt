@@ -38,6 +38,15 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
     val maxPage
         get() = model.maxPage
 
+    private val lastPage
+        get() = model.getPageBySeries(contentList.last().seriesId)
+
+    private val firstPage
+        get() = model.getPageBySeries(contentList[0].seriesId)
+
+    private val nowPage
+        get() = model.getPageBySeries(contentList[nowIndex].seriesId)
+
     /**
      * activity onCreate完成以后调用这个方法
      */
@@ -50,14 +59,14 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
      * 加载更多
      */
     fun loadMore() {
-        getNowPage(contentList.lastIndex)?.let { getContent(it, nextPage) }
+        lastPage?.let { getContent(it, nextPage) }
     }
 
     /**
      * 下拉逻辑
      */
-    fun loadPreviousPage(index: Int) {
-        getNowPage(index)?.let { if (it - 1 > 0) getContent(it - 1, frontPage) }
+    fun loadPreviousPage() {
+        firstPage?.let { if (it - 1 > 0) getContent(it - 1, frontPage) }
     }
 
     /**
