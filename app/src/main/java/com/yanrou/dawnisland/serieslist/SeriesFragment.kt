@@ -58,10 +58,12 @@ class SeriesFragment : Fragment() {
          * 添加adapter
          */
         seriesListAdapter = MultiTypeAdapter().apply {
-            register(SeriesCardView::class.java, SeriesCardViewBinder(viewModel::getNextPage) { seriesId, forumName ->
+            register(SeriesCardView::class.java, SeriesCardViewBinder(viewModel::getNextPage) { seriesId, forumName, view ->
                 val intent = Intent(context, SeriesContentActivity::class.java)
                 intent.putExtra("id", seriesId)
                 intent.putExtra("forumTextView", forumName)
+                view.transitionName = "shared_element_container"
+
                 startActivity(intent)
             })
             register(FooterView::class.java, FooterViewBinder())

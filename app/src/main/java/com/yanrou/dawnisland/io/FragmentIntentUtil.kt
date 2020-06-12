@@ -8,20 +8,17 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.MediaStore
 import android.widget.Toast
-import androidx.activity.invoke
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import com.yanrou.dawnisland.R
-import timber.log.Timber
 
 object FragmentIntentUtil {
 
     private fun requestPermission(caller: Fragment, permission: String) {
-        caller.registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            Timber.i("requesting $permission permission...")
-        }(permission)
+//        caller.registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+//            Timber.i("requesting $permission permission...")
+//        }(permission)
     }
 
     fun checkReadStoragePermission(caller: Fragment): Boolean {
@@ -84,11 +81,11 @@ object FragmentIntentUtil {
     }
 
     fun getImageFromGallery(caller: Fragment, type: String, callback: (Uri?) -> Unit) {
-        caller.registerForActivityResult(ActivityResultContracts.GetContent(), callback)(type)
+//        caller.registerForActivityResult(ActivityResultContracts.GetContent(), callback)(type)
     }
 
     fun getImageFromCamera(caller: Fragment, uri: Uri, callback: (Boolean) -> Unit) {
-        caller.registerForActivityResult(MyTakePicture(), callback)(uri)
+//        caller.registerForActivityResult(MyTakePicture(), callback)(uri)
     }
 
     // temp workaround for Default TakePicture, which might not return thumbnail upon success
@@ -112,7 +109,7 @@ object FragmentIntentUtil {
     }
 
     fun drawNewDoodle(caller: Fragment, callback: (Uri?) -> Unit) {
-        caller.registerForActivityResult(MakeDoodle(), callback)(caller)
+//        caller.registerForActivityResult(MakeDoodle(), callback)(caller)
     }
 
     internal class MakeDoodle :

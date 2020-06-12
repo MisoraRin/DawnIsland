@@ -12,7 +12,7 @@ import com.drakeet.multitype.ItemViewBinder
 import com.yanrou.dawnisland.R
 import timber.log.Timber
 
-class SeriesCardViewBinder(val loadMore: () -> Unit, private val jumpToContent: (seriesId: String, forumName: String) -> Unit) : ItemViewBinder<SeriesCardView, SeriesCardViewBinder.ViewHolder>() {
+class SeriesCardViewBinder(val loadMore: () -> Unit, private val jumpToContent: (seriesId: String, forumName: String, view: View) -> Unit) : ItemViewBinder<SeriesCardView, SeriesCardViewBinder.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, item: SeriesCardView) {
         holder.id = item.id
         holder.forumName = item.forum
@@ -20,6 +20,7 @@ class SeriesCardViewBinder(val loadMore: () -> Unit, private val jumpToContent: 
         holder.time.text = item.time
         holder.forumTextView.setText(item.forumAndReply, TextView.BufferType.SPANNABLE)
         holder.content.text = item.content
+        holder.itemView.transitionName = item.id
         if (item.haveImage) {
             holder.image.visibility = View.VISIBLE
             Glide.with(holder.image.context)
@@ -47,7 +48,7 @@ class SeriesCardViewBinder(val loadMore: () -> Unit, private val jumpToContent: 
         }
     }
 
-    class ViewHolder(itemView: View, jumpToContent: (seriesId: String, forumName: String) -> Unit) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, jumpToContent: (seriesId: String, forumName: String, view: View) -> Unit) : RecyclerView.ViewHolder(itemView) {
         var id: String = ""
         var forumName: String = ""
         var cookie: TextView = itemView.findViewById(R.id.SeriesListCookie)
@@ -58,7 +59,7 @@ class SeriesCardViewBinder(val loadMore: () -> Unit, private val jumpToContent: 
         var image: ImageView = itemView.findViewById(R.id.SeriesListImageView2)
 
         init {
-            itemView.setOnClickListener { jumpToContent(id, forumName) }
+            itemView.setOnClickListener { jumpToContent(id, forumName, itemView) }
         }
     }
 }

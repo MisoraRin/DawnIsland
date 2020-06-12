@@ -39,7 +39,8 @@ class SeriesContentModel(id: String) {
         }
 
         val s = withContext(Dispatchers.IO) {
-            ServiceClient.getSeriesContentFromNet(seriesId, mpage)
+            com.yanrou.dawnisland.io.network.getSeriesContent(seriesId, mpage).body!!.string()
+//            ServiceClient.getSeriesContentFromNet(seriesId, mpage)
         }
         //先判断串是否存在，如果为真表示串已经被删
         if ("\"\\u8be5\\u4e3b\\u9898\\u4e0d\\u5b58\\u5728\"" == s || "" == s) {

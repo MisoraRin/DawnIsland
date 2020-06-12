@@ -17,8 +17,8 @@ import com.yanrou.dawnisland.SeriesRecyclerOnScrollListener
 import kotlinx.android.synthetic.main.activity_series_content.*
 import java.util.*
 
-private const val SERIES_ID = "series_id"
-private const val FORUM_NAME = "forum_name"
+const val SERIES_ID = "series_id"
+const val FORUM_NAME = "forum_name"
 
 class SeriesContentFragment : Fragment() {
     private var seriesId: String? = null
@@ -53,6 +53,9 @@ class SeriesContentFragment : Fragment() {
         toolbar.title = "A岛 · $forumName"
         toolbar.subtitle = ">>No.$seriesId · adnmb.com"
         viewModel.seriesId = seriesId!!
+        viewModel.referenceHandler = {
+            QuotePopup(requireActivity()).showQuote(it, "")
+        }
         val multiTypeAdapter = MultiTypeAdapter()
         multiTypeAdapter.register(ContentItem::class.java, ContentViewBinder())
         val layoutManager = LinearLayoutManager(series_content_recycleview.context)
