@@ -2,8 +2,8 @@ package com.yanrou.dawnisland.util
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.yanrou.dawnisland.json2class.ForumJson
 import com.yanrou.dawnisland.json2class.FeedJson
+import com.yanrou.dawnisland.json2class.ForumJson
 import com.yanrou.dawnisland.json2class.SeriesContentJson
 import com.yanrou.dawnisland.json2class.TimeLineJson
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +22,7 @@ object ServiceClient {
 
     private val gson = Gson()
 
-    fun getSeriesContentFromNet(seriesId: String, page: Int): String {
+    suspend fun getSeriesContentFromNet(seriesId: String, page: Int): String {
         return service.getSeriesContent(seriesId, page)!!.execute().body()!!.string()
     }
 
