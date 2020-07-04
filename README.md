@@ -48,7 +48,7 @@ transformationlayout
 # 技术指导
 除了上面直接使用到的库，一些其他的开源代码、文章同样给与了不少帮助
 
-@aliaseasy98 开发者之一，虽然感谢开发者有点奇怪，但是说真的，没有他这个项目不会有现在那么好，我们一起整理了架构、探讨了各种问题的解决方案。
+@aliaseasy98 开发者之一，我们一起整理了架构、探讨了各种问题的解决方案。
 
 @drakeet 纯纯写作开发者，我们使用了他的multitype，同时他指导了我们如何处理事件分发，以及提供诸多优秀的解决思路，他精益求精的态度对我影响也很大。
 
@@ -91,6 +91,12 @@ https://github.com/wenhelinlu/spark/wiki/RecyclerView%E9%AB%98%E7%BA%A7%E5%B8%83
 https://blog.csdn.net/weixin_36222137/article/details/53411029
 
 我们曾经使用过这个方案，用来处理侧栏滑动
+
+### 使用代码进行动态布局
+https://juejin.im/post/5eb07c3c5188256d924367fb
+https://github.com/DrKLO/Telegram/tree/master/TMessagesProj/src/main/java/org/telegram/ui
+
+追求极致性能，我们将尝试使用代码进行布局构建
 # 贡献代码
 如果你有意**长期**维护项目，可以直接通过rourou.miao@foxmail.com、issue来联系我，我可以将你邀请进来。
 
