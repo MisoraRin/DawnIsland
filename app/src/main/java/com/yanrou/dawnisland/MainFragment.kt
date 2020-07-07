@@ -9,6 +9,7 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
@@ -20,6 +21,9 @@ import com.yanrou.dawnisland.forum.ForumViewModel
 import com.yanrou.dawnisland.json2class.ForumJson
 import com.yanrou.dawnisland.serieslist.SeriesFragment
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainFragment : Fragment() {
 
@@ -60,7 +64,10 @@ class MainFragment : Fragment() {
         }
 
         forumViewModel.forumOnView.observe(requireActivity()) {
-            (forum_list.adapter as DslAdapter).resetItem(generateForumListWithGroup(it))
+            lifecycleScope.launch(Dispatchers.Main.immediate) {
+                (forum_list.adapter as DslAdapter).resetItem(withContext(Dispatchers.Default) { generateForumListWithGroup(it) })
+            }
+
         }
 
         viewPager.adapter = MyViewPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
