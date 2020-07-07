@@ -115,7 +115,7 @@ dependencies {
 //    implementation rootProject.ext.rabbitDependence
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 
-    implementation 'com.lxj:xpopup:1.8.17'
+    implementation 'com.lxj:xpopup:2.0.6'
     implementation 'com.afollestad.material-dialogs:input:3.3.0'
 
     implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
@@ -131,4 +131,6 @@ dependencies {
     implementation 'com.ljx.rxhttp:rxhttp:2.2.5'
     kapt 'com.ljx.rxhttp:rxhttp-compiler:2.2.5'
     implementation 'com.ljx.rxlife:rxlife-coroutine:2.0.0'
+
+    implementation 'com.github.angcyo:DslAdapter:2.5.1'
 }

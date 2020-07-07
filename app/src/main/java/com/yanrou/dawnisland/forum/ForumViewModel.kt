@@ -17,10 +17,7 @@ import kotlinx.coroutines.withContext
 
 class ForumViewModel(application: Application) : AndroidViewModel(application) {
     private var forumList: List<ForumJson> = emptyList()
-    private lateinit var groupState: List<GroupInfo>
-    val forumOnView = MutableLiveData<List<Any>>(emptyList())
-    private val switchedForum = MutableLiveData<Int>()
-
+    val forumOnView = MutableLiveData<List<ForumJson>>(emptyList())
 
     init {
         getForumList()
@@ -29,10 +26,10 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
     private fun getForumList() {
         viewModelScope.launch(Dispatchers.Default) {
             forumList = getForumListRaw()
-            groupState = List(forumList.size) { GroupInfo(-1, true) }
+
             //下面两个任务异步进行，一个是用来生成fid到forum的映射，另一个用来显示分组
             async(Dispatchers.Main) {
-                forumOnView.value = generateForumListWithGroup()
+                forumOnView.value = forumList
             }
             async(Dispatchers.Default) {
                 //这个地方本来可以用kotlin自带的方法，但是那个方法会产生一堆Pair对象，触发GC，所以还是手写算了
@@ -48,26 +45,17 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-    private fun generateForumListWithGroup(): List<Any> {
-        val tempList = ArrayList<Any>(80)
-        forumList.withIndex().forEach {
-            groupState[it.index].adapterPosition = tempList.size
-            tempList.add(it.value)
-            if (groupState[it.index].isExpand) {
-                tempList.addAll(it.value.forums)
-            }
-        }
-        return tempList
-    }
-
-    fun refreshForumGroupExpandState(adapterPosition: Int) {
-        groupState.map {
-            if (it.adapterPosition == adapterPosition) {
-                it.isExpand = it.isExpand.not()
-            }
-        }
-        forumOnView.value = generateForumListWithGroup()
-    }
+//    private fun generateForumListWithGroup(): List<Any> {
+//        val tempList = ArrayList<Any>(80)
+//        forumList.withIndex().forEach {
+//            groupState[it.index].adapterPosition = tempList.size
+//            tempList.add(it.value)
+//            if (groupState[it.index].isExpand) {
+//                tempList.addAll(it.value.forums)
+//            }
+//        }
+//        return tempList
+//    }
 
     private suspend fun getForumListRaw(): List<ForumJson> {
         var forumJson = MMKV.defaultMMKV().getForumList()

@@ -9,16 +9,15 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.angcyo.dsladapter.DslAdapter
+import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.tablayout.delegate.ViewPager1Delegate
 import com.drakeet.multitype.MultiTypeAdapter
-import com.yanrou.dawnisland.forum.ForumDiffCallback
-import com.yanrou.dawnisland.forum.ForumGroupViewBinder
-import com.yanrou.dawnisland.forum.ForumItemViewBinder
+import com.yanrou.dawnisland.forum.ForumGroupItem
+import com.yanrou.dawnisland.forum.ForumItem
 import com.yanrou.dawnisland.forum.ForumViewModel
 import com.yanrou.dawnisland.json2class.ForumJson
-import com.yanrou.dawnisland.json2class.ForumsBean
 import com.yanrou.dawnisland.serieslist.SeriesFragment
 import kotlinx.android.synthetic.main.fragment_main.*
 
@@ -44,29 +43,25 @@ class MainFragment : Fragment() {
             setHomeAsUpIndicator(R.drawable.toolbar_home_as_up)
         }
 
-        forumAdapter = MultiTypeAdapter().apply {
-            register(ForumsBean::class.java, ForumItemViewBinder(requireContext()) { id: Int, name: String? ->
-                drawerLayout.closeDrawers()
-                toolbar.title = name
-                (childFragmentManager.findFragmentByTag(makeFragmentName(R.id.viewPager, 0)) as SeriesFragment).changeForum(id)
-            })
-            register(ForumJson::class.java, ForumGroupViewBinder {
-                forumViewModel.refreshForumGroupExpandState(it)
-            })
-        }
-
+//        forumAdapter = MultiTypeAdapter().apply {
+//            register(ForumsBean::class.java, ForumItemViewBinder(requireContext()) { id: Int, name: String? ->
+//                drawerLayout.closeDrawers()
+//                toolbar.title = name
+//                (childFragmentManager.findFragmentByTag(makeFragmentName(R.id.viewPager, 0)) as SeriesFragment).changeForum(id)
+//            })
+//            register(ForumJson::class.java, ForumGroupViewBinder {
+//                forumViewModel.refreshForumGroupExpandState(it)
+//            })
+//        }
+//        HoverItemDecoration().attachToRecyclerView(forum_list)
         forum_list.apply {
             layoutManager = LinearLayoutManager(this.context)
-            adapter = forumAdapter
+            adapter = DslAdapter()
         }
-        forumViewModel.forumOnView.observe(requireActivity(), androidx.lifecycle.Observer {
-            val oldList = forumAdapter!!.items
-            //创建一个新的表
-            val newList: List<Any> = ArrayList(it)
-            val diffResult = DiffUtil.calculateDiff(ForumDiffCallback(oldList, newList), false)
-            forumAdapter!!.items = newList
-            diffResult.dispatchUpdatesTo(forumAdapter!!)
-        })
+
+        forumViewModel.forumOnView.observe(requireActivity()) {
+            (forum_list.adapter as DslAdapter).resetItem(generateForumListWithGroup(it))
+        }
 
         viewPager.adapter = MyViewPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
         viewPager.drawerListener = { drawerLayout.openDrawer(GravityCompat.START) }
@@ -91,6 +86,26 @@ class MainFragment : Fragment() {
 
 
     private fun makeFragmentName(viewId: Int, id: Long) = "android:switcher:$viewId:$id"
+
+    private fun generateForumListWithGroup(forumList: List<ForumJson>): List<DslAdapterItem> {
+        val tempList = ArrayList<DslAdapterItem>(80)
+        forumList.withIndex().forEach {
+            tempList.add(ForumGroupItem().apply {
+                forumJson = forumList[it.index]
+            })
+            tempList.addAll(List(forumList[it.index].forums.size) { index ->
+                ForumItem().apply {
+                    forumsBean = forumList[it.index].forums[index]
+                    clickHandler = { id: Int, name: String? ->
+                        drawerLayout.closeDrawers()
+                        toolbar.title = name
+                        (childFragmentManager.findFragmentByTag(makeFragmentName(R.id.viewPager, 0)) as SeriesFragment).changeForum(id)
+                    }
+                }
+            })
+        }
+        return tempList
+    }
 
     companion object {
         @JvmStatic
