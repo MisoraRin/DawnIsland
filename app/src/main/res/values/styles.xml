@@ -60,8 +60,8 @@
 
     <!-- 底部 dialog 进入离开动画 -->
     <style name="Animation.Bottom" parent="@android:style/Animation">
-        <item name="android:windowEnterAnimation">@anim/bottom_up_in</item>
-        <item name="android:windowExitAnimation">@anim/bottom_down_out</item>
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
         <item name="android:windowReenterTransition">@null</item>
     </style>
 
