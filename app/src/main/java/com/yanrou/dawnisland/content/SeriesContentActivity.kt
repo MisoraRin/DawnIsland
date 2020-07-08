@@ -1,8 +1,5 @@
 package com.yanrou.dawnisland.content
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -28,6 +25,7 @@ import com.yanrou.dawnisland.SeriesRecyclerOnScrollListener
 import com.yanrou.dawnisland.constant.TYPE_KEY
 import com.yanrou.dawnisland.constant.TYPE_REPLY
 import com.yanrou.dawnisland.reply.ReplyDialog
+import com.yanrou.dawnisland.util.copyToClipboard
 import timber.log.Timber
 import java.util.*
 
@@ -182,11 +180,4 @@ class SeriesContentActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    private fun copyToClipboard(context: Context, content: CharSequence?) {
-        val clipboard: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboard.setPrimaryClip(ClipData.newPlainText(null, content)) //参数一：标签，可为空，参数二：要复制到剪贴板的文本
-    }
-
-
 }
