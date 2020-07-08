@@ -17,24 +17,26 @@ class ForumGroupViewBinder(val clickHandler: (position: Int) -> Unit) : ItemView
         var fid = 0
         var linearLayout: LinearLayout
         var forum: TextView
-        var imageView: ImageView
+        var arrow: ImageView = itemView.findViewById(R.id.arrow)
         var pos = 0
 
         init {
-            forum = itemView.findViewById(R.id.forum_name)
-            imageView = itemView.findViewById(R.id.icon)
+            forum = itemView.findViewById(R.id.group_name)
             linearLayout = itemView.findViewById(R.id.forum_layout)
-            itemView.setOnClickListener { v -> clickHandler(layoutPosition) }
+            itemView.setOnClickListener { v ->
+                clickHandler(layoutPosition)
+            }
         }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, item: ForumJson) {
         holder.forum.text = item.name
-        holder.imageView.visibility = View.GONE
     }
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.forum_list_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.forum_group_item, parent, false)
         return ViewHolder(view, clickHandler)
     }
+
+
 }
