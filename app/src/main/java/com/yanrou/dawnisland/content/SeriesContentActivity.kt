@@ -139,7 +139,7 @@ class SeriesContentActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> finish()
+            android.R.id.home -> onBackPressed()
             R.id.copy_series_id -> {
                 copyToClipboard(this, ">>No." + viewModel.seriesId)
             }
