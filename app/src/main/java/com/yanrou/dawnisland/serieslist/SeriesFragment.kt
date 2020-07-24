@@ -37,7 +37,7 @@ class SeriesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //TODO 暂时的解决方案，最终应该把第一次获取放到一个globa里面
-        Fid2Name.db.observe(viewLifecycleOwner, Observer {
+        Fid2Name.db.observe(viewLifecycleOwner, {
             Timber.d(it.toString())
             viewModel.getFirstPage()
         })
