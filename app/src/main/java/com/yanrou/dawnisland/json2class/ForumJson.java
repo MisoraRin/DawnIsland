@@ -2,10 +2,22 @@ package com.yanrou.dawnisland.json2class;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 
 public class ForumJson {
+    private Boolean isExpand = true;
+
+    public Boolean getIsExpand() {
+        return isExpand;
+    }
+
+    public void setIsExpand(Boolean expand) {
+        isExpand = expand;
+    }
+
     /**
      * id : 4
      * sort : 1
@@ -15,6 +27,7 @@ public class ForumJson {
      */
 
     @SerializedName("id")
+    @NotNull
     private String id;
     @SerializedName("sort")
     private String sort;

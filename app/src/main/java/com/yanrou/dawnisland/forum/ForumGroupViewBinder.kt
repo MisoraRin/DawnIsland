@@ -10,27 +10,39 @@ import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.ItemViewBinder
 import com.yanrou.dawnisland.R
 import com.yanrou.dawnisland.json2class.ForumJson
+import com.yanrou.dawnisland.util.startRotationAnim
 
-class ForumGroupViewBinder(val clickHandler: (position: Int) -> Unit) : ItemViewBinder<ForumJson, ForumGroupViewBinder.ViewHolder>() {
-    class ViewHolder(itemView: View, val clickHandler: (position: Int) -> Unit) : RecyclerView.ViewHolder(itemView) {
+class ForumGroupViewBinder(val clickHandler: (String) -> Unit) : ItemViewBinder<ForumJson, ForumGroupViewBinder.ViewHolder>() {
+    class ViewHolder(itemView: View, val clickHandler: (String) -> Unit) : RecyclerView.ViewHolder(itemView) {
         var fname: String? = null
-        var fid = 0
-        var linearLayout: LinearLayout
-        var forum: TextView
+        lateinit var forumJson: ForumJson
+        var linearLayout: LinearLayout = itemView.findViewById(R.id.forum_layout)
+        var forum: TextView = itemView.findViewById(R.id.group_name)
         var arrow: ImageView = itemView.findViewById(R.id.arrow)
         var pos = 0
 
         init {
-            forum = itemView.findViewById(R.id.group_name)
-            linearLayout = itemView.findViewById(R.id.forum_layout)
             itemView.setOnClickListener { v ->
-                clickHandler(layoutPosition)
+                clickHandler(forumJson.id)
+                if (forumJson.isExpand) {
+                    arrow.startRotationAnim(180f, 0f)
+                } else {
+                    arrow.startRotationAnim(0f, 180f)
+                }
             }
         }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, item: ForumJson) {
         holder.forum.text = item.name
+        holder.forumJson = item
+        holder.arrow.apply {
+            rotation = if (item.isExpand) {
+                0f
+            } else {
+                180f
+            }
+        }
     }
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
