@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.MediaStore
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import com.yanrou.dawnisland.R
@@ -89,45 +88,45 @@ object FragmentIntentUtil {
     }
 
     // temp workaround for Default TakePicture, which might not return thumbnail upon success
-    internal class MyTakePicture :
-            ActivityResultContract<Uri, Boolean>() {
-        @CallSuper
-        override fun createIntent(
-                context: Context,
-                input: Uri
-        ): Intent {
-            return Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    .putExtra(MediaStore.EXTRA_OUTPUT, input)
-        }
-
-        override fun parseResult(
-                resultCode: Int,
-                intent: Intent?
-        ): Boolean {
-            return (intent == null || resultCode != Activity.RESULT_OK).not()
-        }
-    }
+//    internal class MyTakePicture :
+//            ActivityResultContract<Uri, Boolean>() {
+//        @CallSuper
+//        override fun createIntent(
+//                context: Context,
+//                input: Uri
+//        ): Intent {
+//            return Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//                    .putExtra(MediaStore.EXTRA_OUTPUT, input)
+//        }
+//
+//        override fun parseResult(
+//                resultCode: Int,
+//                intent: Intent?
+//        ): Boolean {
+//            return (intent == null || resultCode != Activity.RESULT_OK).not()
+//        }
+//    }
 
     fun drawNewDoodle(caller: Fragment, callback: (Uri?) -> Unit) {
 //        caller.registerForActivityResult(MakeDoodle(), callback)(caller)
     }
 
-    internal class MakeDoodle :
-            ActivityResultContract<Fragment, Uri?>() {
-        @CallSuper
-        override fun createIntent(
-                context: Context,
-                input: Fragment
-        ): Intent {
-            return Intent()//input.requireActivity(), DoodleActivity::class.java)
-        }
-
-        override fun parseResult(
-                resultCode: Int,
-                intent: Intent?
-        ): Uri? {
-            return if (intent == null || resultCode != Activity.RESULT_OK) null else intent.data
-        }
-    }
+//    internal class MakeDoodle :
+//            ActivityResultContract<Fragment, Uri?>() {
+//        @CallSuper
+//        override fun createIntent(
+//                context: Context,
+//                input: Fragment
+//        ): Intent {
+//            return Intent()//input.requireActivity(), DoodleActivity::class.java)
+//        }
+//
+//        override fun parseResult(
+//                resultCode: Int,
+//                intent: Intent?
+//        ): Uri? {
+//            return if (intent == null || resultCode != Activity.RESULT_OK) null else intent.data
+//        }
+//    }
 
 }

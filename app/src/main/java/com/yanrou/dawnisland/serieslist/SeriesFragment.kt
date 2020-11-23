@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.drakeet.multitype.MultiTypeAdapter
@@ -15,7 +16,6 @@ import com.yanrou.dawnisland.content.SeriesContentActivity
 import com.yanrou.dawnisland.settings.SettingsActivity
 import com.yanrou.dawnisland.util.DiffCallback
 import kotlinx.android.synthetic.main.fragment_series.*
-import timber.log.Timber
 
 
 class SeriesFragment : Fragment() {
@@ -28,7 +28,7 @@ class SeriesFragment : Fragment() {
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?,
+            savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_series, container, false)
     }
@@ -37,10 +37,9 @@ class SeriesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //TODO 暂时的解决方案，最终应该把第一次获取放到一个globa里面
-        Fid2Name.db.observe(viewLifecycleOwner, {
-            Timber.d(it.toString())
+        Fid2Name.db.observe(viewLifecycleOwner) {
             viewModel.getFirstPage()
-        })
+        }
         refresher!!.setEnableAutoLoadMore(false)
 
         refresher!!.setOnLoadMoreListener {
