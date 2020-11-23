@@ -120,7 +120,7 @@ dependencies {
     implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
 
     implementation 'com.blankj:utilcodex:1.28.0'
-    implementation 'com.tencent:mmkv-static:1.1.1'
+    implementation 'com.tencent:mmkv-static:1.2.5'
 
     implementation 'com.github.angcyo.DslTablayout:TabLayout:1.5.3'
     implementation 'com.github.angcyo.DslTablayout:ViewPager1Delegate:1.5.3'
