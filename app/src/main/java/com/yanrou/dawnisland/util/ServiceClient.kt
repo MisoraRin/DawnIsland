@@ -23,7 +23,7 @@ object ServiceClient {
     private val gson = Gson()
 
     suspend fun getSeriesContentFromNet(seriesId: String, page: Int): String {
-        return service.getSeriesContent(seriesId, page)!!.execute().body()!!.string()
+        return service.getSeriesContent(seriesId, page).string()
     }
 
 

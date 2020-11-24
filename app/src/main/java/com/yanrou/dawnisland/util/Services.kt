@@ -8,7 +8,7 @@ import retrofit2.http.*
 
 interface SeriesContentService {
     @GET("Api/thread")
-    fun getSeriesContent(@Query("id") id: String, @Query("page") page: Int): Call<ResponseBody>
+    suspend fun getSeriesContent(@Query("id") id: String, @Query("page") page: Int): ResponseBody
 
     @GET("Api/showf")
     fun getSeriesList(@Query("id") id: Int, @Query("page") page: Int): Call<ResponseBody>
