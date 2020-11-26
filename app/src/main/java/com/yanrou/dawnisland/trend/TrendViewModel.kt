@@ -18,7 +18,7 @@ class TrendViewModel : ViewModel() {
 
     private fun getTrend() {
         viewModelScope.launch {
-            var seriesContentJson = withContext(Dispatchers.Default) { ServiceClient.preFormatJson(withContext(Dispatchers.IO) { ServiceClient.getSeriesContentFromNet("15347469", 1) }) }
+            var seriesContentJson = withContext(Dispatchers.Default) { ServiceClient.getSeriesContentFromNet("15347469", 1)  }
             val replyCount = seriesContentJson.replyCount
             var page = replyCount / 19
             if ((replyCount % 19) > 0) {
@@ -26,7 +26,7 @@ class TrendViewModel : ViewModel() {
             }
             var lastTrend: ReplysBean?
             do {
-                seriesContentJson = ServiceClient.preFormatJson(withContext(Dispatchers.IO) { ServiceClient.getSeriesContentFromNet("15347469", page) })
+                seriesContentJson = ServiceClient.getSeriesContentFromNet("15347469", page)
                 lastTrend = seriesContentJson.replys.lastOrNull { it.userid == "m9R9kaD" && it.content.contains("Trend") }
                 page--
             } while (lastTrend == null)

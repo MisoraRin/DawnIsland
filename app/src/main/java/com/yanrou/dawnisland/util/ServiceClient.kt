@@ -10,20 +10,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.RequestBody
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 
 object ServiceClient {
     private val service: SeriesContentService by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
         Retrofit.Builder()
                 .baseUrl("https://nmb.fastmirror.org/")
+                .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(SeriesContentService::class.java)
     }
 
     private val gson = Gson()
 
-    suspend fun getSeriesContentFromNet(seriesId: String, page: Int): String {
-        return service.getSeriesContent(seriesId, page).string()
+    suspend fun getSeriesContentFromNet(seriesId: String, page: Int): SeriesContentJson {
+        return service.getSeriesContent(seriesId, page)
     }
 
 

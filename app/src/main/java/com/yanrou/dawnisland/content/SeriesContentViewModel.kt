@@ -117,27 +117,27 @@ class SeriesContentViewModel(application: Application) : AndroidViewModel(applic
         loading = true
         viewModelScope.launch(handle) {
             val result = model.getSeriesContent(page, isNext)
-            if (result is List<*>) {
-                if (result.size > 0) {
-                    // 表示有数据
-                    withContext(Dispatchers.Default) {
-                        val rawlist = formatContent(result as List<ReplysBean>)
-                        if (isNext) {
-                            contentList.addAll(rawlist)
-                            onlyPoList.addAll(getOnlyPoList(rawlist))
-                        } else {
-                            contentList.addAll(0, rawlist)
-                            onlyPoList.addAll(0, getOnlyPoList(rawlist))
-                        }
+            if (result.size > 0) {
+                // 表示有数据
+                withContext(Dispatchers.Default) {
+                    val rawlist = formatContent(result as List<ReplysBean>)
+                    if (isNext) {
+                        contentList.addAll(rawlist)
+                        onlyPoList.addAll(getOnlyPoList(rawlist))
+                    } else {
+                        contentList.addAll(0, rawlist)
+                        onlyPoList.addAll(0, getOnlyPoList(rawlist))
                     }
-                } else {
-                    //没数据，到最后一页了
-                    Timber.d("已到最后一页")
                 }
-            } else if (result is String) {
-                //串已被删除
-                Timber.d("串已被删除")
+            } else {
+                //没数据，到最后一页了
+                Timber.d("已到最后一页")
             }
+            //TODO 改为使用异常而不是返回Any
+//            else if (result is String) {
+//                //串已被删除
+//                Timber.d("串已被删除")
+//            }
 
             withContext(Dispatchers.Main) {
                 if (onlyPoLiveData.value!!) {

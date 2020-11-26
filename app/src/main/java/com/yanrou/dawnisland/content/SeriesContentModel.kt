@@ -1,6 +1,7 @@
 package com.yanrou.dawnisland.content
 
 import com.yanrou.dawnisland.json2class.ReplysBean
+import com.yanrou.dawnisland.json2class.SeriesContentJson
 import com.yanrou.dawnisland.util.ServiceClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,6 +13,7 @@ class SeriesContentModel(id: String) {
     //持有一个Map,用来查询数据、去重
     private var replyMap = HashMap<String, ReplysBean>()
     private var seriesId: String = id
+    private val pageList = HashMap<Int,SeriesContentJson>()
 
     /**
      * 标记最后一页是否完整
@@ -28,26 +30,28 @@ class SeriesContentModel(id: String) {
      * next用于控制是上一页还是下一页，true则下一页，false则上一页
      * 由model处理最后一页是翻页还是刷新当前页
      * 返回一个ReplysBean的List或者一个String
-     * 由于A岛的APi设计问题，不得不很不优雅的写一个Any在这里
+     * -已修改 由于A岛的APi设计问题，不得不很不优雅的写一个Any在这里
      * 当串被删了，就返回一个String对象，如果没有更多数据，就返回一个空list，如果还有数据则返回一个正常的list
      */
-    suspend fun getSeriesContent(page: Int, next: Boolean): Any {
+    suspend fun getSeriesContent(page: Int, next: Boolean): List<ReplysBean> {
         var mpage = page
         if (next && wholePage) {
             Timber.d("页数+1")
             mpage++
         }
-
-        val s = withContext(Dispatchers.IO) {
-            com.yanrou.dawnisland.io.network.getSeriesContent(seriesId, mpage).body!!.string()
-//            ServiceClient.getSeriesContentFromNet(seriesId, mpage)
-        }
+// 下面的网络请求和转换部分由retrofit统一完成
+//        val s = withContext(Dispatchers.IO) {
+//            com.yanrou.dawnisland.io.network.getSeriesContent(seriesId, mpage).body!!.string()
+////            ServiceClient.getSeriesContentFromNet(seriesId, mpage)
+//        }
         //先判断串是否存在，如果为真表示串已经被删
-        if ("\"\\u8be5\\u4e3b\\u9898\\u4e0d\\u5b58\\u5728\"" == s || "" == s) {
-            return s
-        }
+        //TODO 这个判断应当移动到别处，具体来说是Gson converter里面，做一个异常处理
+//        if ("\"\\u8be5\\u4e3b\\u9898\\u4e0d\\u5b58\\u5728\"" == s || "" == s) {
+//            return s
+//        }
 
-        val seriesContentJson = withContext(Dispatchers.Default) { ServiceClient.preFormatJson(s) }
+        val seriesContentJson = withContext(Dispatchers.IO) { ServiceClient.getSeriesContentFromNet(seriesId,mpage) }
+        pageList[mpage] = seriesContentJson
         wholePage = (seriesContentJson.replys.size == 20 || (seriesContentJson.replys.size == 19 && "9999999" != seriesContentJson.replys[0].seriesId))
 
         _replyCount = seriesContentJson.replyCount
@@ -98,8 +102,13 @@ class SeriesContentModel(id: String) {
         return po.contains(userId)
     }
 
-    fun getPageBySeries(seriesId: String): Int? {
-        return replyMap[seriesId]?.page
+    fun getPageBySeries(seriesId: String): Int {
+        return replyMap[seriesId]?.page!!
+    }
+
+    fun getPositionBySeries(seriesId: String):Int{
+        val page=getPositionBySeries(seriesId)
+        return pageList.get(page)!!.replys.indexOfFirst { seriesId == it.seriesId }
     }
 
     /**

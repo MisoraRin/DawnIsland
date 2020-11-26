@@ -1,14 +1,16 @@
 package com.yanrou.dawnisland.util
 
+import com.yanrou.dawnisland.json2class.SeriesContentJson
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 
 interface SeriesContentService {
     @GET("Api/thread")
-    suspend fun getSeriesContent(@Query("id") id: String, @Query("page") page: Int): ResponseBody
+    suspend fun getSeriesContent(@Query("id") id: String, @Query("page") page: Int): SeriesContentJson
 
     @GET("Api/showf")
     fun getSeriesList(@Query("id") id: Int, @Query("page") page: Int): Call<ResponseBody>
